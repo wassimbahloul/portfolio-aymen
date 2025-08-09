@@ -1,0 +1,238 @@
+<div class="admin-home-container">
+  <div class="admin-home-header">
+    <h1>Gestion de la page d'accueil</h1>
+    <p>Modifiez le contenu de votre page d'accueil</p>
+  </div>
+
+  <div class="admin-home-content" *ngIf="!loading">
+    <form [formGroup]="homeForm" (ngSubmit)="onSubmit()">
+      <!-- Basic Information -->
+      <mat-card class="admin-home-section">
+        <mat-card-header>
+          <mat-card-title>Informations principales</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="admin-home-form-row">
+            <mat-form-field appearance="outline" class="admin-home-full-width">
+              <mat-label>Titre principal</mat-label>
+              <input matInput formControlName="title" placeholder="Dr. Nom Prénom">
+            </mat-form-field>
+          </div>
+
+          <div class="admin-home-form-row">
+            <mat-form-field appearance="outline" class="admin-home-full-width">
+              <mat-label>Sous-titre</mat-label>
+              <input matInput formControlName="subtitle" placeholder="Bienvenue sur mon portfolio">
+            </mat-form-field>
+          </div>
+
+          <div class="admin-home-form-row">
+            <mat-label class="aa">Description</mat-label>
+            <mat-form-field appearance="outline" class="admin-home-full-width admin-home-textarea">
+              
+              <textarea matInput 
+                        formControlName="description" 
+                        rows="4" 
+                        placeholder="Description professionnelle..."
+                        maxlength="1000"
+                        class="admin-home-description-textarea"></textarea>
+              <mat-hint>Maximum 1000 caractères</mat-hint>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Experience Section -->
+      <mat-card class="admin-home-section">
+        <mat-card-header>
+          <mat-card-title>Expériences</mat-card-title>
+          <button mat-icon-button type="button" (click)="addExperience()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <div formArrayName="experience">
+            <div *ngFor="let exp of experienceControls; let i = index" 
+                 [formGroupName]="i" 
+                 class="admin-home-experience-item">
+              <div class="admin-home-experience-header">
+                <h4>Expérience {{ i + 1 }}</h4>
+                <button mat-icon-button type="button" (click)="removeExperience(i)" color="warn">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-half-width">
+                  <mat-label>Poste</mat-label>
+                  <input matInput formControlName="position">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="admin-home-half-width">
+                  <mat-label>Institution</mat-label>
+                  <input matInput formControlName="institution">
+                </mat-form-field>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-half-width">
+                  <mat-label>Période</mat-label>
+                  <input matInput formControlName="period">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="admin-home-half-width">
+                  <mat-label>Lien (optionnel)</mat-label>
+                  <input matInput formControlName="link" type="url">
+                </mat-form-field>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-full-width admin-home-textarea">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput 
+                            formControlName="description" 
+                            rows="3" 
+                            placeholder="Description de l'expérience..."
+                            maxlength="300"
+                            class="admin-home-description-textarea"></textarea>
+                  <mat-hint>Maximum 300 caractères</mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Upcoming Events Section -->
+      <mat-card class="admin-home-section">
+        <mat-card-header>
+          <mat-card-title>Événements à venir</mat-card-title>
+          <button mat-icon-button type="button" (click)="addEvent()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <div formArrayName="upcomingEvents">
+            <div *ngFor="let event of eventsControls; let i = index" 
+                 [formGroupName]="i" 
+                 class="admin-home-event-item">
+              <div class="admin-home-event-header">
+                <h4>Événement {{ i + 1 }}</h4>
+                <button mat-icon-button type="button" (click)="removeEvent(i)" color="warn">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-full-width">
+                  <mat-label>Titre</mat-label>
+                  <input matInput formControlName="title">
+                </mat-form-field>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-half-width">
+                  <mat-label>Date</mat-label>
+                  <input matInput formControlName="date">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="admin-home-half-width">
+                  <mat-label>Lieu</mat-label>
+                  <input matInput formControlName="location">
+                </mat-form-field>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-half-width">
+                  <mat-label>Lien (optionnel)</mat-label>
+                  <input matInput formControlName="link" type="url">
+                </mat-form-field>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-full-width admin-home-textarea">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput 
+                            formControlName="description" 
+                            rows="3" 
+                            placeholder="Description de l'événement..."
+                            maxlength="300"
+                            class="admin-home-description-textarea"></textarea>
+                  <mat-hint>Maximum 300 caractères</mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Online Seminars Section -->
+      <mat-card class="admin-home-section">
+        <mat-card-header>
+          <mat-card-title>Séminaires en ligne</mat-card-title>
+          <button mat-icon-button type="button" (click)="addSeminar()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <div formArrayName="onlineSeminars">
+            <div *ngFor="let seminar of seminarsControls; let i = index" 
+                 [formGroupName]="i" 
+                 class="admin-home-seminar-item">
+              <div class="admin-home-seminar-header">
+                <h4>Séminaire {{ i + 1 }}</h4>
+                <button mat-icon-button type="button" (click)="removeSeminar(i)" color="warn">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-full-width">
+                  <mat-label>Titre</mat-label>
+                  <input matInput formControlName="title">
+                </mat-form-field>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-half-width">
+                  <mat-label>Lien principal</mat-label>
+                  <input matInput formControlName="link" type="url">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="admin-home-half-width">
+                  <mat-label>Chaîne YouTube</mat-label>
+                  <input matInput formControlName="youtubeChannel" type="url">
+                </mat-form-field>
+              </div>
+              
+              <div class="admin-home-form-row">
+                <mat-form-field appearance="outline" class="admin-home-full-width admin-home-textarea">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput 
+                            formControlName="description" 
+                            rows="3" 
+                            placeholder="Description du séminaire..."
+                            maxlength="300"
+                            class="admin-home-description-textarea"></textarea>
+                  <mat-hint>Maximum 300 caractères</mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Submit Button -->
+      <div class="admin-home-submit-section">
+        <button mat-raised-button 
+                color="primary" 
+                type="submit" 
+                [disabled]="homeForm.invalid || saving">
+          <mat-spinner diameter="20" *ngIf="saving"></mat-spinner>
+          <span *ngIf="!saving">Sauvegarder les modifications</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div class="admin-home-loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

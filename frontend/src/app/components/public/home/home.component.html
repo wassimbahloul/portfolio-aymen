@@ -1,0 +1,85 @@
+<div class="home-container">
+  <!-- Hero Section -->
+<section class="hero-section" [style.background-image]="'url(' + (homeData?.backgroundImage ? 'http://localhost:5000' + homeData.backgroundImage : 'assets/default-bg.jpg') + ')'">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <div class="profile-section">
+          <img [src]="homeData?.profileImage ? ('http://localhost:5000' + homeData.profileImage) : 'assets/default-profile.jpg'" alt="Photo de profil" class="profile-image">
+
+          <h1 class="main-title">{{ homeData?.title || 'Dr. Nom Prénom' }}</h1>
+          <p class="subtitle">{{ homeData?.subtitle || 'Bienvenue sur mon portfolio' }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Description Section -->
+  <section class="description-section">
+    <div class="container">
+      <div class="description-content">
+        <p>{{ homeData?.description || 'Description professionnelle...' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section class="experience-section" *ngIf="homeData?.experience?.length">
+    <div class="container">
+      <h2>Expérience</h2>
+      <div class="experience-list">
+        <div class="experience-item" *ngFor="let exp of homeData.experience">
+          <h3>{{ exp.position }}</h3>
+          <p class="institution">
+            <a [href]="exp.link" target="_blank" *ngIf="exp.link">{{ exp.institution }}</a>
+            <span *ngIf="!exp.link">{{ exp.institution }}</span>
+          </p>
+          <p class="period">{{ exp.period }}</p>
+          <p class="description" *ngIf="exp.description">{{ exp.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming Events Section -->
+  <section class="events-section" *ngIf="homeData?.upcomingEvents?.length">
+    <div class="container">
+      <h2>Événements à venir</h2>
+      <div class="events-list">
+        <div class="event-item" *ngFor="let event of homeData.upcomingEvents">
+          <h3>
+            <a [href]="event.link" target="_blank" *ngIf="event.link">{{ event.title }}</a>
+            <span *ngIf="!event.link">{{ event.title }}</span>
+          </h3>
+          <p class="event-date">{{ event.date }}</p>
+          <p class="event-location">{{ event.location }}</p>
+          <p class="event-description" *ngIf="event.description">{{ event.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Online Seminars Section -->
+  <section class="seminars-section" *ngIf="homeData?.onlineSeminars?.length">
+    <div class="container">
+      <h2>Séminaires en ligne</h2>
+      <div class="seminars-list">
+        <div class="seminar-item" *ngFor="let seminar of homeData.onlineSeminars">
+          <h3>
+            <a [href]="seminar.link" target="_blank" *ngIf="seminar.link">{{ seminar.title }}</a>
+            <span *ngIf="!seminar.link">{{ seminar.title }}</span>
+          </h3>
+          <p class="seminar-description">{{ seminar.description }}</p>
+          <p class="youtube-channel" *ngIf="seminar.youtubeChannel">
+            <a [href]="seminar.youtubeChannel" target="_blank">Chaîne YouTube</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+

@@ -1,0 +1,367 @@
+<div class="admin-photos-container">
+  <div class="admin-header">
+    <h1>Gestion de la Galerie Photos</h1>
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
+      <mat-icon>add_photo_alternate</mat-icon>
+      Ajouter des photos
+    </button>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline">
+      <mat-label>Rechercher</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (input)="filterPhotos()" placeholder="Titre, description, tags...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par catégorie</mat-label>
+      <mat-select [(value)]="selectedCategory" (selectionChange)="filterPhotos()">
+        <mat-option value="">Toutes les catégories</mat-option>
+        <mat-option value="research">Recherche</mat-option>
+        <mat-option value="teaching">Enseignement</mat-option>
+        <mat-option value="conference">Conférences</mat-option>
+        <mat-option value="awards">Récompenses</mat-option>
+        <mat-option value="team">Équipe</mat-option>
+        <mat-option value="events">Événements</mat-option>
+        <mat-option value="personal">Personnel</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par année</mat-label>
+      <mat-select [(value)]="selectedYear" (selectionChange)="filterPhotos()">
+        <mat-option value="">Toutes les années</mat-option>
+        <mat-option *ngFor="let year of availableYears" [value]="year">{{ year }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="view-options">
+      <mat-button-toggle-group [(value)]="viewMode" (change)="onViewModeChange()">
+        <mat-button-toggle value="grid">
+          <mat-icon>grid_view</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="list">
+          <mat-icon>view_list</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+
+  <!-- Photos Grid View -->
+  <div class="photos-grid" *ngIf="viewMode === 'grid' && !loading">
+    <div *ngFor="let photo of filteredPhotos" class="photo-card">
+      <div class="photo-image" (click)="openPhotoModal(photo)">
+        <img [src]="'http://localhost:5000' + (photo.thumbnailUrl || photo.imageUrl)" [alt]="photo.altText || photo.title" loading="lazy">
+        <div class="photo-overlay">
+          <mat-icon>zoom_in</mat-icon>
+        </div>
+      </div>
+      
+      <div class="photo-info">
+        <h4>{{ photo.title }}</h4>
+        <p class="photo-description" *ngIf="photo.description">{{ photo.description | slice:0:100 }}{{ photo.description.length > 100 ? '...' : '' }}</p>
+        
+        <div class="photo-meta">
+          <span class="category-badge" [ngClass]="'category-' + photo.category">
+            {{ getCategoryLabel(photo.category) }}
+          </span>
+          <span class="date-badge" *ngIf="photo.date">{{ formatDate(photo.date) }}</span>
+        </div>
+
+        <div class="photo-tags" *ngIf="photo.tags?.length">
+          <span *ngFor="let tag of photo.tags" class="tag">{{ tag }}</span>
+        </div>
+
+        <div class="photo-actions">
+          <button mat-icon-button (click)="editPhoto(photo)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="downloadPhoto(photo)">
+            <mat-icon>download</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deletePhoto(photo._id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- No photos message -->
+    <div class="no-photos" *ngIf="filteredPhotos.length === 0">
+      <mat-icon>photo_library</mat-icon>
+      <h3>Aucune photo</h3>
+      <p>Commencez par ajouter vos premières photos</p>
+    </div>
+  </div>
+
+  <!-- Photos List View -->
+  <div class="photos-list" *ngIf="viewMode === 'list' && !loading">
+    <mat-card *ngFor="let photo of filteredPhotos" class="photo-list-card">
+      <div class="list-content">
+        <div class="list-image" (click)="openPhotoModal(photo)">
+          <img [src]="'http://localhost:5000' + (photo.thumbnailUrl || photo.imageUrl)" [alt]="photo.altText || photo.title" loading="lazy">
+        </div>
+        
+        <div class="list-info">
+          <h3>{{ photo.title }}</h3>
+          <p class="photo-description" *ngIf="photo.description">{{ photo.description }}</p>
+          
+          <div class="photo-details">
+            <div class="detail-item">
+              <mat-icon>category</mat-icon>
+              <span>{{ getCategoryLabel(photo.category) }}</span>
+            </div>
+            <div class="detail-item" *ngIf="photo.date">
+              <mat-icon>event</mat-icon>
+              <span>{{ formatDate(photo.date) }}</span>
+            </div>
+            <div class="detail-item" *ngIf="photo.location">
+              <mat-icon>place</mat-icon>
+              <span>{{ photo.location }}</span>
+            </div>
+            <div class="detail-item" *ngIf="photo.photographer">
+              <mat-icon>camera_alt</mat-icon>
+              <span>{{ photo.photographer }}</span>
+            </div>
+          </div>
+
+          <div class="photo-tags" *ngIf="photo.tags?.length">
+            <span *ngFor="let tag of photo.tags" class="tag">{{ tag }}</span>
+          </div>
+        </div>
+
+        <div class="list-actions">
+          <button mat-icon-button (click)="editPhoto(photo)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="downloadPhoto(photo)">
+            <mat-icon>download</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deletePhoto(photo._id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+
+<!-- Add/Edit Dialog -->
+<div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2>{{ editingPhoto ? 'Modifier la photo' : 'Ajouter des photos' }}</h2>
+      <button mat-icon-button (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="photoForm" (ngSubmit)="savePhoto()" class="dialog-form">
+      
+      <!-- File Upload Section -->
+      <div class="file-upload-section" *ngIf="!editingPhoto">
+        <h3>Sélectionner des images</h3>
+        <input type="file" #fileInput (change)="onFilesSelected($event)" accept="image/*" multiple style="display: none;">
+        <button type="button" mat-button (click)="fileInput.click()">
+          <mat-icon>add_photo_alternate</mat-icon>
+          Choisir des images
+        </button>
+        
+        <div class="selected-images" *ngIf="selectedFiles.length">
+          <h4>Images sélectionnées ({{ selectedFiles.length }}):</h4>
+          <div class="image-previews">
+            <div *ngFor="let file of selectedFiles; let i = index" class="image-preview">
+              <img [src]="getFilePreview(file)" [alt]="file.name">
+              <div class="preview-overlay">
+                <span>{{ file.name }}</span>
+                <button type="button" mat-icon-button color="warn" (click)="removeSelectedFile(i)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Image (for editing) -->
+      <div class="current-image-section" *ngIf="editingPhoto">
+        <h3>Image actuelle</h3>
+        <div class="current-image">
+          <img [src]="'http://localhost:5000' + (editingPhoto.thumbnailUrl || editingPhoto.imageUrl)" [alt]="editingPhoto.altText || editingPhoto.title">
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Titre *</mat-label>
+        <input matInput formControlName="title" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="3" placeholder="Description de la photo..."></textarea>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Catégorie</mat-label>
+          <mat-select formControlName="category">
+            <mat-option value="research">Recherche</mat-option>
+            <mat-option value="teaching">Enseignement</mat-option>
+            <mat-option value="conference">Conférences</mat-option>
+            <mat-option value="awards">Récompenses</mat-option>
+            <mat-option value="team">Équipe</mat-option>
+            <mat-option value="events">Événements</mat-option>
+            <mat-option value="personal">Personnel</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Date</mat-label>
+          <input matInput [matDatepicker]="datePicker" formControlName="date">
+          <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Lieu</mat-label>
+          <input matInput formControlName="location" placeholder="Lieu où la photo a été prise">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Photographe</mat-label>
+          <input matInput formControlName="photographer" placeholder="Nom du photographe">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tags (séparés par des virgules)</mat-label>
+        <input matInput formControlName="tagsInput" placeholder="conférence, équipe, laboratoire, ...">
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Texte alternatif (accessibilité)</mat-label>
+          <input matInput formControlName="altText" placeholder="Description pour les lecteurs d'écran">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Crédit/Copyright</mat-label>
+          <input matInput formControlName="credit" placeholder="© Nom du photographe">
+        </mat-form-field>
+      </div>
+
+      <!-- People in Photo Section -->
+      <div class="people-section">
+        <h3>Personnes sur la photo</h3>
+        <div formArrayName="people">
+          <div *ngFor="let person of people.controls; let i = index" [formGroupName]="i" class="person-item">
+            <mat-form-field appearance="outline">
+              <mat-label>Nom</mat-label>
+              <input matInput formControlName="name" placeholder="Prénom Nom">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Rôle/Titre</mat-label>
+              <input matInput formControlName="role" placeholder="Professeur, Étudiant, etc.">
+            </mat-form-field>
+            <button type="button" mat-icon-button color="warn" (click)="removePerson(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button type="button" mat-button (click)="addPerson()">
+          <mat-icon>add</mat-icon>
+          Ajouter une personne
+        </button>
+      </div>
+
+      <!-- Visibility Settings -->
+      <div class="visibility-section">
+        <h3>Paramètres de visibilité</h3>
+        <mat-checkbox formControlName="isPublic">
+          Visible sur le portfolio public
+        </mat-checkbox>
+        <mat-checkbox formControlName="isFeatured">
+          Photo mise en avant
+        </mat-checkbox>
+        <mat-checkbox formControlName="allowDownload">
+          Autoriser le téléchargement
+        </mat-checkbox>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" mat-button (click)="closeDialog()">Annuler</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="!photoForm.valid || saving">
+          {{ saving ? 'Enregistrement...' : (editingPhoto ? 'Modifier' : 'Ajouter') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Photo Modal -->
+<div class="photo-modal-overlay" *ngIf="showPhotoModal" (click)="closePhotoModal()">
+  <div class="photo-modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ selectedPhoto?.title }}</h3>
+      <button mat-icon-button (click)="closePhotoModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="modal-image">
+      <img [src]="'http://localhost:5000' + selectedPhoto?.imageUrl" [alt]="selectedPhoto?.altText || selectedPhoto?.title">
+    </div>
+    
+    <div class="modal-info" *ngIf="selectedPhoto">
+      <p *ngIf="selectedPhoto.description">{{ selectedPhoto.description }}</p>
+      
+      <div class="modal-details">
+        <div class="detail-row" *ngIf="selectedPhoto.date">
+          <strong>Date:</strong> {{ formatDate(selectedPhoto.date) }}
+        </div>
+        <div class="detail-row" *ngIf="selectedPhoto.location">
+          <strong>Lieu:</strong> {{ selectedPhoto.location }}
+        </div>
+        <div class="detail-row" *ngIf="selectedPhoto.photographer">
+          <strong>Photographe:</strong> {{ selectedPhoto.photographer }}
+        </div>
+        <div class="detail-row" *ngIf="selectedPhoto.credit">
+          <strong>Crédit:</strong> {{ selectedPhoto.credit }}
+        </div>
+      </div>
+
+      <div class="modal-people" *ngIf="selectedPhoto.people?.length">
+        <strong>Personnes:</strong>
+        <div class="people-list">
+          <span *ngFor="let person of selectedPhoto.people; let last = last">
+            {{ person.name }}{{ person.role ? ' (' + person.role + ')' : '' }}<span *ngIf="!last">, </span>
+          </span>
+        </div>
+      </div>
+
+      <div class="modal-tags" *ngIf="selectedPhoto.tags?.length">
+        <span *ngFor="let tag of selectedPhoto.tags" class="tag">{{ tag }}</span>
+      </div>
+
+      <div class="modal-actions">
+        <button mat-button (click)="editPhoto(selectedPhoto)">
+          <mat-icon>edit</mat-icon>
+          Modifier
+        </button>
+        <button mat-button (click)="downloadPhoto(selectedPhoto)">
+          <mat-icon>download</mat-icon>
+          Télécharger
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

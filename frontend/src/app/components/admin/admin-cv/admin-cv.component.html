@@ -1,0 +1,38 @@
+<div class="cv-container">
+  <div class="cv-card">
+    <h1 class="cv-title">
+      <mat-icon>upload_file</mat-icon>
+      Gestion du CV
+    </h1>
+
+    <div class="cv-form-group" *ngIf="!loading">
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" class="cv-hidden">
+      <button mat-raised-button color="primary" (click)="fileInput.click()">
+        <mat-icon>upload</mat-icon>
+        Choisir un CV (PDF)
+      </button>
+
+      <div class="cv-file-preview" *ngIf="selectedFile">
+        <mat-icon class="cv-pdf-icon">picture_as_pdf</mat-icon>
+        <span>{{ selectedFile.name }}</span>
+        <button mat-icon-button color="warn" (click)="removeSelectedFile()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <button mat-raised-button color="accent" (click)="uploadCV()" [disabled]="saving || !selectedFile">
+      <mat-icon>save</mat-icon>
+      {{ saving ? 'Enregistrement...' : 'Télécharger le CV' }}
+    </button>
+
+    <div class="cv-success-message" *ngIf="showSuccessMessage">
+      <mat-icon>check_circle</mat-icon>
+      CV téléchargé avec succès !
+    </div>
+
+    <div class="cv-loading" *ngIf="loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </div>
+</div>

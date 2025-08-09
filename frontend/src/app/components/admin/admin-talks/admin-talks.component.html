@@ -1,0 +1,144 @@
+<div class="talks-container">
+  <div class="talks-header">
+    <h2>🛠 Admin - Manage Talks</h2>
+    <button mat-raised-button color="primary" (click)="openModal()">
+      <mat-icon>add</mat-icon>
+      Add New Talk
+    </button>
+  </div>
+
+  <!-- Enhanced Filter Section -->
+  <div class="talks-filter-section">
+    <div class="talks-filter-header">
+      <h3>📊 Filter & Search</h3>
+      <span class="talks-results-count">{{ talks.length }} result(s)</span>
+    </div>
+    
+    <div class="talks-filter-controls">
+      <div class="talks-filter-group">
+        <label>Type</label>
+        <select [(ngModel)]="filterType" (change)="loadTalks()" class="talks-filter-select">
+          <option value="">All Types</option>
+          <option value="talk">🎤 Talk</option>
+          <option value="international seminar">🌍 International Seminar</option>
+          <option value="poster">📋 Poster</option>
+          <option value="organized seminar">🏛️ Organized Seminar</option>
+        </select>
+      </div>
+      
+      <div class="talks-filter-group">
+        <label>Search</label>
+        <input type="text" 
+               [(ngModel)]="searchTerm" 
+               (input)="onSearch()" 
+               placeholder="Search talks..."
+               class="talks-search-input">
+      </div>
+      
+      <div class="talks-filter-group">
+        <label>Sort by</label>
+        <select [(ngModel)]="sortBy" (change)="onSort()" class="talks-filter-select">
+          <option value="date-desc">📅 Date (Newest)</option>
+          <option value="date-asc">📅 Date (Oldest)</option>
+          <option value="name-asc">🔤 Name (A-Z)</option>
+          <option value="name-desc">🔤 Name (Z-A)</option>
+        </select>
+      </div>
+      
+      <button class="talks-clear-filters" (click)="clearFilters()">
+        🗑️ Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Talks List -->
+  <div class="talks-grid">
+    <div class="talks-card" *ngFor="let t of talks" [style.--card-bg]="getTypeColor(t.type)">
+      <div class="talks-card-header">
+        <span class="talks-type" [class]="'type-' + t.type.replace(' ', '-')">{{ t.type }}</span>
+        <div class="talks-actions">
+          <button mat-icon-button class="talks-action-btn talks-edit-btn" (click)="edit(t)" title="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button class="talks-action-btn talks-delete-btn" (click)="delete(t._id)" title="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      
+      <div class="talks-content">
+        <h4 class="talks-name">{{ t.name }}</h4>
+        <p class="talks-date">📅 {{ t.date }}</p>
+        
+        <div class="talks-links" *ngIf="t.link || t.slide">
+          <a *ngIf="t.link" [href]="t.link" target="_blank" class="talks-link talks-external-link">
+            🔗 External Link
+          </a>
+          <a *ngIf="t.slide" [href]="getSlideUrl(t.slide)" download target="_blank" class="talks-link talks-slide-link">
+            📎 Download Slide
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Popup -->
+  <div class="talks-modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="talks-modal-content" (click)="$event.stopPropagation()">
+      <div class="talks-modal-header">
+        <h3>{{ selectedTalk ? '✏️ Edit Talk' : '➕ Add New Talk' }}</h3>
+        <button mat-icon-button class="talks-close-btn" (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <form (ngSubmit)="submit()" enctype="multipart/form-data" class="talks-modal-form">
+        <div class="talks-form-group">
+          <label>Type *</label>
+          <select [(ngModel)]="formData.type" name="type" required (change)="onTypeChange()">
+            <option value="">-- Select Type --</option>
+            <option value="talk">🎤 Talk</option>
+            <option value="international seminar">🌍 International Seminar</option>
+            <option value="poster">📋 Poster</option>
+            <option value="organized seminar">🏛️ Organized Seminar</option>
+          </select>
+        </div>
+
+        <div class="talks-form-group">
+          <label>Date *</label>
+          <input [(ngModel)]="formData.date" name="date" placeholder="e.g., March 15, 2024" required />
+        </div>
+
+        <div class="talks-form-group">
+          <label>Conference/Event Name *</label>
+          <input [(ngModel)]="formData.name" name="name" placeholder="e.g., International Mathematics Conference" required />
+        </div>
+
+        <div class="talks-form-group">
+          <label>External Link</label>
+          <input [(ngModel)]="formData.link" name="link" placeholder="https://example.com" />
+        </div>
+        
+        <div class="talks-form-group" *ngIf="formData.type !== 'organized seminar'">
+          <label for="fileInput">Upload Slide (PDF only)</label>
+          <div class="talks-file-upload-area" [class.has-file]="slideFile || existingSlide">
+            <input type="file" (change)="onFileChange($event)" id="fileInput" accept=".pdf" />
+            <label for="fileInput" class="talks-file-upload-label">
+              <span *ngIf="!slideFile && !existingSlide">📎 Choose PDF File or Drag & Drop</span>
+              <span *ngIf="slideFile">📎 File Selected: {{ slideFile.name }}</span>
+              <span *ngIf="!slideFile && existingSlide">📎 Existing File: {{ existingSlide }}</span>
+            </label>
+          </div>
+          <p class="talks-error" *ngIf="fileError">{{ fileError }}</p>
+        </div>
+
+        <div class="talks-modal-actions">
+          <button type="button" class="talks-cancel-btn" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="talks-submit-btn" [disabled]="formData.type !== 'organized seminar' && slideFile && !isValidFileType(slideFile)">
+            {{ selectedTalk ? 'Update Talk' : 'Add Talk' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

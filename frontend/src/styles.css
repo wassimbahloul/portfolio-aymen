@@ -1,0 +1,91 @@
+/* ÉTAPE 1: Ajoutez ceci dans votre styles.css global */
+.cdk-overlay-pane:not(.mat-mdc-select-panel-above) div.mat-mdc-select-panel {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    transform-origin: top center;
+    background-color: whitesmoke;
+}
+
+/* Reset complet des overlays Material */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.cdk-overlay-container,
+.cdk-global-overlay-wrapper {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 1000 !important;
+}
+
+.cdk-overlay-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: auto !important;
+  background: transparent !important;
+}
+
+.cdk-overlay-pane {
+  pointer-events: auto !important;
+  position: absolute !important;
+}
+
+.mat-select-panel {
+  position: relative !important;
+  max-width: 280px !important;
+  min-width: 112px !important;
+  max-height: 256px !important;
+  min-height: 0 !important;
+  border-radius: 4px !important;
+  outline: 0 !important;
+  background: white !important;
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12) !important;
+  overflow: auto !important;
+  transform-origin: 50% 0 !important;
+}
+
+.mat-option {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: block !important;
+  line-height: 48px !important;
+  height: 48px !important;
+  padding: 0 16px !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  max-width: 100% !important;
+  position: relative !important;
+  cursor: pointer !important;
+  outline: none !important;
+  border: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  color: rgba(0,0,0,.87) !important;
+  font-size: 16px !important;
+  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+}
+
+.mat-option:hover:not(.mat-option-disabled) {
+  background: rgba(0,0,0,.04) !important;
+}
+
+.mat-option.mat-selected:not(.mat-option-disabled) {
+  color: #673ab7 !important;
+}
+
+.mat-option.mat-active {
+  background: rgba(30, 27, 27, 0.04) !important;
+  color: rgba(0,0,0,.87) !important;
+}

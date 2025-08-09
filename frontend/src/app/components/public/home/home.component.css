@@ -1,0 +1,431 @@
+/* Variables CSS pour la cohérence */
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --text-light: #bdc3c7;
+  --bg-light: #f8f9fa;
+  --bg-white: #ffffff;
+  --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.12);
+  --border-radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset et base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+}
+
+.home-container {
+  min-height: 100vh;
+  background-color: var(--bg-white);
+}
+
+/* Section commune */
+section {
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Hero Section */
+.hero-section {
+  height: 65vh;
+  min-height: 500px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(44, 62, 80, 0.8), rgba(52, 152, 219, 0.6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  text-align: center;
+  color: white;
+  z-index: 2;
+  animation: fadeInUp 1s ease-out;
+}
+
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.profile-image {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-medium);
+  transition: var(--transition);
+}
+
+.profile-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.main-title {
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 300;
+  margin: 0;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 300;
+  margin: 0;
+  opacity: 0.95;
+  letter-spacing: 0.02em;
+}
+
+/* Description Section */
+.description-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, var(--bg-light), var(--bg-white));
+}
+
+.description-content {
+  text-align: center;
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+  background: var(--bg-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  position: relative;
+}
+
+.description-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+/* Sections communes (Experience, Events, Seminars) */
+.experience-section,
+.events-section,
+.seminars-section {
+  padding: 80px 0;
+  position: relative;
+}
+
+.experience-section {
+  background-color: var(--bg-white);
+}
+
+.events-section {
+  background: linear-gradient(135deg, var(--bg-light), #ecf0f1);
+}
+
+.seminars-section {
+  background-color: var(--bg-white);
+}
+
+.experience-section h2,
+.events-section h2,
+.seminars-section h2 {
+  text-align: center;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  margin-bottom: 60px;
+  color: var(--text-primary);
+  font-weight: 300;
+  position: relative;
+  letter-spacing: -0.02em;
+}
+
+.experience-section h2::after,
+.events-section h2::after,
+.seminars-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+/* Listes */
+.experience-list,
+.events-list,
+.seminars-list {
+  display: grid;
+  gap: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Items */
+.experience-item,
+.event-item,
+.seminar-item {
+  padding: 32px;
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  transition: var(--transition);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.experience-item::before,
+.event-item::before,
+.seminar-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  transition: var(--transition);
+}
+
+.experience-item::before {
+  background: linear-gradient(180deg, var(--secondary-color), var(--primary-color));
+}
+
+.event-item::before {
+  background: linear-gradient(180deg, var(--success-color), #2ecc71);
+}
+
+.seminar-item::before {
+  background: linear-gradient(180deg, var(--warning-color), #e67e22);
+}
+
+.experience-item:hover,
+.event-item:hover,
+.seminar-item:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-medium);
+}
+
+.experience-item:hover::before,
+.event-item:hover::before,
+.seminar-item:hover::before {
+  width: 8px;
+}
+
+/* Titres des items */
+.experience-item h3,
+.event-item h3,
+.seminar-item h3 {
+  font-size: 1.4rem;
+  margin: 0 0 16px 0;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Liens */
+.institution a,
+.event-item h3 a,
+.seminar-item h3 a,
+.youtube-channel a {
+  text-decoration: none;
+  transition: var(--transition);
+  position: relative;
+}
+
+.institution a {
+  color: var(--secondary-color);
+  font-weight: 500;
+}
+
+.event-item h3 a {
+  color: var(--success-color);
+}
+
+.seminar-item h3 a {
+  color: var(--warning-color);
+}
+
+.youtube-channel a {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.institution a:hover,
+.event-item h3 a:hover,
+.seminar-item h3 a:hover,
+.youtube-channel a:hover {
+  opacity: 0.8;
+  transform: translateX(4px);
+}
+
+/* Informations spécifiques */
+.institution {
+  font-size: 1.2rem;
+  margin: 0 0 8px 0;
+  font-weight: 500;
+}
+
+.period {
+  font-size: 1rem;
+  margin: 0 0 16px 0;
+  color: var(--text-light);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.event-date {
+  font-size: 1rem;
+  margin: 0 0 8px 0;
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+.event-location {
+  font-size: 1rem;
+  margin: 0 0 16px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.description,
+.event-description,
+.seminar-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.seminar-description {
+  margin-bottom: 12px;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --border-radius: 8px;
+  }
+  
+  .container {
+    padding: 0 16px;
+  }
+  
+  .hero-section {
+    height: 55vh;
+    min-height: 400px;
+  }
+  
+  .profile-image {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .description-content {
+    padding: 32px 24px;
+    font-size: 1.1rem;
+  }
+  
+  .experience-section,
+  .events-section,
+  .seminars-section {
+    padding: 60px 0;
+  }
+  
+  .experience-section h2,
+  .events-section h2,
+  .seminars-section h2 {
+    margin-bottom: 40px;
+  }
+  
+  .experience-item,
+  .event-item,
+  .seminar-item {
+    padding: 24px 20px;
+  }
+  
+  .experience-list,
+  .events-list,
+  .seminars-list {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-section {
+    gap: 16px;
+  }
+  
+  .description-content {
+    padding: 24px 16px;
+  }
+  
+  .experience-item,
+  .event-item,
+  .seminar-item {
+    padding: 20px 16px;
+  }
+}

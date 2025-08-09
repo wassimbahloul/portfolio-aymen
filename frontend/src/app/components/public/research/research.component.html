@@ -1,0 +1,191 @@
+<div class="research-container">
+  <div class="research-header">
+    <h1>Projets de Recherche</h1>
+    <p>Mes travaux et projets de recherche actuels et passés</p>
+  </div>
+
+  <div class="research-content" *ngIf="!loading">
+    <!-- Filter Section -->
+    <div class="filter-section" *ngIf="researchProjects.length > 0">
+      <div class="filter-controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Filtrer par catégorie</mat-label>
+          <mat-select [(value)]="selectedCategory" (selectionChange)="filterProjects()">
+            <mat-option value="">Toutes les catégories</mat-option>
+            <mat-option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Filtrer par statut</mat-label>
+          <mat-select [(value)]="selectedStatus" (selectionChange)="filterProjects()">
+            <mat-option value="">Tous les statuts</mat-option>
+            <mat-option value="ongoing">En cours</mat-option>
+            <mat-option value="completed">Terminé</mat-option>
+            <mat-option value="planned">Planifié</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Rechercher</mat-label>
+          <input matInput 
+                 [(ngModel)]="searchTerm" 
+                 (input)="filterProjects()" 
+                 placeholder="Titre, description, tags, superviseurs...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Research Projects List -->
+    <div class="research-list" *ngIf="filteredProjects.length > 0">
+      <div class="research-item" *ngFor="let project of filteredProjects; let i = index">
+        <div class="project-header">
+          <h3 class="project-title">{{ project.title }}</h3>
+          <div class="project-badges">
+            <span class="category-badge" *ngIf="project.category">{{ project.category }}</span>
+            <span class="status-badge" [ngClass]="'status-' + project.status">
+              {{ getStatusLabel(project.status) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="project-period" *ngIf="project.startDate || project.endDate">
+          <mat-icon>date_range</mat-icon>
+          <span>
+            {{ formatDate(project.startDate) }}
+            <span *ngIf="project.endDate"> - {{ formatDate(project.endDate) }}</span>
+            <span *ngIf="!project.endDate && project.status === 'ongoing'"> - En cours</span>
+          </span>
+        </div>
+
+        <div class="project-description" *ngIf="project.description">
+          <p [class.expanded]="expandedDescriptions[i]">{{ project.description }}</p>
+          <button mat-button 
+                  *ngIf="project.description && project.description.length > 300"
+                  (click)="toggleDescription(i)">
+            {{ expandedDescriptions[i] ? 'Voir moins' : 'Voir plus' }}
+          </button>
+        </div>
+
+        <!-- Project Images -->
+        <div class="project-images" *ngIf="hasItems(project.images)">
+          <div class="images-gallery">
+            <img *ngFor="let image of project.images" 
+                 [src]="getImageUrl(image)" 
+                 [alt]="project.title"
+                 (click)="openImageModal(image)">
+          </div>
+        </div>
+
+        <!-- Supervisors -->
+        <div class="collaborators" *ngIf="hasItems(project.supervisor)">
+          <h4><mat-icon>supervisor_account</mat-icon> Superviseurs</h4>
+          <div class="collaborators-list">
+            <div class="collaborator" *ngFor="let supervisor of project.supervisor">
+              <strong *ngIf="supervisor?.name">{{ supervisor.name }}</strong>
+              <span class="institution" *ngIf="supervisor?.institution">{{ supervisor.institution }}</span>
+              <span class="role" *ngIf="supervisor?.role">{{ supervisor.role }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Collaborators -->
+        <div class="collaborators" *ngIf="hasItems(project.collaborators)">
+          <h4><mat-icon>people</mat-icon> Collaborateurs</h4>
+          <div class="collaborators-list">
+            <div class="collaborator" *ngFor="let collab of project.collaborators">
+              <strong *ngIf="collab?.name">{{ collab.name }}</strong>
+              <span class="institution" *ngIf="collab?.institution">{{ collab.institution }}</span>
+              <span class="role" *ngIf="collab?.role">{{ collab.role }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Funding -->
+        <div class="funding" *ngIf="hasItems(project.funding)">
+          <h4><mat-icon>account_balance</mat-icon> Financement</h4>
+          <div class="funding-list">
+            <div class="funding-item" *ngFor="let fund of project.funding">
+              <div class="funding-source" *ngIf="fund?.source">{{ fund.source }}</div>
+              <div class="funding-details">
+                <span *ngIf="fund?.amount">{{ fund.amount }}</span>
+                <span *ngIf="fund?.period"> - {{ fund.period }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Publications -->
+        <div class="related-publications" *ngIf="hasItems(project.publications)">
+          <h4><mat-icon>article</mat-icon> Publications liées</h4>
+          <div class="publications-list">
+            <div class="publication-item" *ngFor="let pub of project.publications">
+              <div class="publication-title" *ngIf="pub?.title">{{ pub.title }}</div>
+              <div class="publication-details">
+                <span *ngIf="pub?.journal">{{ pub.journal }}</span>
+                <span *ngIf="pub?.year"> ({{ pub.year }})</span>
+              </div>
+              <a *ngIf="pub?.link" [href]="pub.link" target="_blank" mat-button>
+                <mat-icon>link</mat-icon>
+                Voir la publication
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="project-tags" *ngIf="hasItems(project.tags)">
+          <mat-chip-listbox>
+            <mat-chip *ngFor="let tag of project.tags">{{ tag }}</mat-chip>
+          </mat-chip-listbox>
+        </div>
+
+        <!-- External Links -->
+        <div class="project-links" *ngIf="hasItems(project.externalLinks)">
+          <div class="links-list">
+            <ng-container *ngFor="let link of project.externalLinks">
+              <a *ngIf="link?.url" 
+                 [href]="link.url" 
+                 target="_blank" 
+                 mat-stroked-button>
+                <mat-icon>link</mat-icon>
+                {{ link.title || 'Lien externe' }}
+              </a>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Projects Message -->
+    <div class="no-projects" *ngIf="filteredProjects.length === 0 && researchProjects.length > 0">
+      <mat-icon>search_off</mat-icon>
+      <h3>Aucun projet trouvé</h3>
+      <p>Essayez de modifier vos critères de recherche</p>
+    </div>
+
+    <div class="no-projects" *ngIf="researchProjects.length === 0">
+      <mat-icon>science</mat-icon>
+      <h3>Aucun projet de recherche disponible</h3>
+      <p>Les projets de recherche seront affichés ici une fois ajoutés</p>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div class="image-modal" *ngIf="selectedImage" (click)="closeImageModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <img [src]="getImageUrl(selectedImage)" alt="Image du projet">
+    <button mat-icon-button class="close-button" (click)="closeImageModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>

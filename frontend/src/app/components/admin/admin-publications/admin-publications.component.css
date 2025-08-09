@@ -1,0 +1,489 @@
+.admin-publications-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 2rem;
+}
+
+/* Filter Section */
+.filter-section {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.filter-section mat-form-field {
+  margin-bottom: 0;
+}
+
+/* Publications List */
+.publications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.publication-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.publication-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.publication-card mat-card-header {
+  position: relative;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.publication-card mat-card-title {
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.publication-card mat-card-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.card-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 5px;
+}
+
+/* Type and Year Badges */
+.type-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.type-journal { background-color: #e3f2fd; color: #1976d2; }
+.type-conference { background-color: #f3e5f5; color: #7b1fa2; }
+.type-book { background-color: #e8f5e8; color: #388e3c; }
+.type-chapter { background-color: #fff3e0; color: #f57c00; }
+.type-thesis { background-color: #fce4ec; color: #c2185b; }
+.type-preprint { background-color: #f1f8e9; color: #689f38; }
+
+.year-badge {
+  padding: 4px 8px;
+  background-color: #e0e0e0;
+  color: #666;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Publication Content */
+.authors-list {
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.publication-venue {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.publication-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.detail-item {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.publication-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.publication-stats {
+  display: flex;
+  gap: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.stat-item mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* No Publications */
+.no-publications {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-publications mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.no-publications h3 {
+  margin: 0 0 10px 0;
+  color: #999;
+}
+
+.no-publications p {
+  margin: 0;
+  color: #bbb;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+/* Dialog Styles */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.dialog-form {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-row.three-cols {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* Links Section */
+.links-section {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fafafa;
+}
+
+.links-section h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.link-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.link-item mat-form-field {
+  margin-bottom: 0;
+}
+
+/* PDF Upload Section */
+.pdf-upload-section {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fafafa;
+}
+
+.pdf-upload-section h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.current-pdf,
+.selected-pdf {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  margin-top: 15px;
+}
+
+.current-pdf mat-icon,
+.selected-pdf mat-icon {
+  color: #f44336;
+  font-size: 24px;
+}
+
+.current-pdf span,
+.selected-pdf span {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Dialog Actions */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Button Styles */
+button[mat-raised-button] {
+  min-width: 120px;
+}
+
+button[mat-button] {
+  color: #3f51b5;
+}
+
+button[mat-icon-button][color="warn"] {
+  color: #f44336;
+}
+
+/* Form Field Styling */
+mat-form-field {
+  width: 100%;
+}
+
+mat-form-field.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #e0e0e0;
+}
+
+mat-form-field.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #3f51b5;
+}
+
+/* Textarea Styling */
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-publications-container {
+    padding: 15px;
+  }
+  
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .admin-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .filter-section {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .publication-card mat-card-header {
+    padding-right: 80px;
+  }
+  
+  .card-actions {
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .publication-details {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .publication-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .publication-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .dialog-content {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row.three-cols {
+    grid-template-columns: 1fr;
+  }
+  
+  .link-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .link-item button {
+    justify-self: flex-end;
+  }
+  
+  .dialog-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .dialog-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-publications-container {
+    padding: 10px;
+  }
+  
+  .admin-header h1 {
+    font-size: 1.3rem;
+  }
+  
+  .publication-card {
+    margin-bottom: 15px;
+  }
+  
+  .publication-card mat-card-content {
+    padding: 15px;
+  }
+  
+  .type-badge,
+  .year-badge {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+  
+  .dialog-header {
+    padding: 15px;
+  }
+  
+  .dialog-form {
+    padding: 15px;
+  }
+  
+  .links-section,
+  .pdf-upload-section {
+    padding: 15px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .admin-header button,
+  .card-actions,
+  .dialog-overlay {
+    display: none;
+  }
+  
+  .admin-publications-container {
+    padding: 0;
+  }
+  
+  .publication-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+  }
+  
+  .filter-section {
+    display: none;
+  }
+}
+

@@ -1,0 +1,118 @@
+<div class="app-container" *ngIf="!isAdminRoute()">
+  <!-- Navigation Header -->
+  <header class="main-header">
+    <nav class="main-nav">
+      <div class="nav-brand">
+        <a routerLink="/home" class="brand-link">Portfolio</a>
+      </div>
+      
+      <div class="nav-menu" [class.nav-open]="isMenuOpen">
+        <a routerLink="/home" routerLinkActive="active" class="nav-link">Accueil</a>
+        <a routerLink="/cv" routerLinkActive="active" class="nav-link">CV</a>
+        <a routerLink="/research" routerLinkActive="active" class="nav-link">Recherche</a>
+        <a routerLink="/publications" routerLinkActive="active" class="nav-link">Publications</a>
+        <a routerLink="/talks" routerLinkActive="active" class="nav-link">Conférences</a>
+        <a routerLink="/teaching" routerLinkActive="active" class="nav-link">Enseignement</a>
+        <a routerLink="/photos" routerLinkActive="active" class="nav-link">Photos</a>
+        <a routerLink="/contact" routerLinkActive="active" class="nav-link">Contact</a>
+      </div>
+      
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-content">
+      <p>&copy; 2024 Portfolio Dynamique. Développé par ingénieur Wassim Bahloul</p>
+    </div>
+  </footer>
+</div>
+
+<!-- Admin Layout -->
+<div class="admin-container" *ngIf="isAdminRoute() && !isLoginRoute()">
+  <mat-sidenav-container class="admin-sidenav-container">
+    <!-- Admin Sidebar -->
+    <mat-sidenav #sidenav mode="side" opened class="admin-sidenav">
+      <div class="admin-sidebar">
+        <div class="admin-header">
+          <h2>Panel d'Administration</h2>
+        </div>
+        
+        <mat-nav-list>
+          <a mat-list-item routerLink="/admin/dashboard" routerLinkActive="active">
+            <mat-icon matListItemIcon>dashboard</mat-icon>
+            <span matListItemTitle>Dashboard</span>
+          </a>
+          
+          <a mat-list-item routerLink="/admin/home" routerLinkActive="active">
+            <mat-icon matListItemIcon>home</mat-icon>
+            <span matListItemTitle>Accueil</span>
+          </a>
+          
+          <a mat-list-item routerLink="/admin/contact" routerLinkActive="active">
+            <mat-icon matListItemIcon>contact_mail</mat-icon>
+            <span matListItemTitle>Contact</span>
+          </a>
+          
+          <a mat-list-item routerLink="/admin/cv" routerLinkActive="active">
+            <mat-icon matListItemIcon>description</mat-icon>
+            <span matListItemTitle>CV</span>
+          </a>
+          
+          <a mat-list-item routerLink="/admin/research" routerLinkActive="active">
+            <mat-icon matListItemIcon>science</mat-icon>
+            <span matListItemTitle>Recherche</span>
+          </a>
+          
+          <a mat-list-item routerLink="/admin/publications" routerLinkActive="active">
+            <mat-icon matListItemIcon>article</mat-icon>
+            <span matListItemTitle>Publications</span>
+          </a>
+          
+          <a mat-list-item routerLink="/admin/talks" routerLinkActive="active">
+            <mat-icon matListItemIcon>mic</mat-icon>
+            <span matListItemTitle>Conférences</span>
+          </a>
+          
+          <a mat-list-item routerLink="/admin/teaching" routerLinkActive="active">
+            <mat-icon matListItemIcon>school</mat-icon>
+            <span matListItemTitle>Enseignement</span>
+          </a>
+          
+          <a mat-list-item routerLink="/admin/photos" routerLinkActive="active">
+            <mat-icon matListItemIcon>photo_library</mat-icon>
+            <span matListItemTitle>Photos</span>
+          </a>
+          
+          <mat-divider></mat-divider>
+          
+          <a mat-list-item (click)="logout()">
+            <mat-icon matListItemIcon>logout</mat-icon>
+            <span matListItemTitle>Déconnexion</span>
+          </a>
+        </mat-nav-list>
+      </div>
+    </mat-sidenav>
+
+    <!-- Admin Content -->
+    <mat-sidenav-content class="admin-content">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<!-- Login Layout -->
+<div class="login-container" *ngIf="isLoginRoute()">
+  <router-outlet></router-outlet>
+</div>
+

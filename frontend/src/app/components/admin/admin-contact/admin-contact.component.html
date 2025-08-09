@@ -1,0 +1,307 @@
+<div class="admin-contact-container">
+  <div class="admin-header">
+    <h1>Gestion des Informations de Contact</h1>
+    <button mat-raised-button color="primary" (click)="saveContact()" [disabled]="saving">
+      <mat-icon>save</mat-icon>
+      {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+    </button>
+  </div>
+
+  <div class="contact-form" *ngIf="!loading">
+    <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
+      
+      <!-- Personal Information Section -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Informations Personnelles</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Nom complet</mat-label>
+              <input matInput formControlName="fullName" placeholder="Dr. Nom Prénom">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Titre/Position</mat-label>
+              <input matInput formControlName="title" placeholder="Professeur, Chercheur, etc.">
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Bio courte</mat-label>
+            <textarea matInput formControlName="bio" rows="3" placeholder="Description professionnelle courte"></textarea>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Contact Information Section -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Coordonnées</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Email principal</mat-label>
+              <input matInput formControlName="email" type="email" placeholder="nom@institution.fr">
+              <mat-icon matSuffix>email</mat-icon>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Email secondaire</mat-label>
+              <input matInput formControlName="secondaryEmail" type="email" placeholder="nom@autre.fr">
+              <mat-icon matSuffix>email</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Téléphone bureau</mat-label>
+              <input matInput formControlName="phone" placeholder="+33 1 23 45 67 89">
+              <mat-icon matSuffix>phone</mat-icon>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Téléphone mobile</mat-label>
+              <input matInput formControlName="mobile" placeholder="+33 6 12 34 56 78">
+              <mat-icon matSuffix>smartphone</mat-icon>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Office Information Section -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Informations Bureau</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field appearance="outline">
+            <mat-label>Institution/Université</mat-label>
+            <input matInput formControlName="institution" placeholder="Université de...">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Département/Laboratoire</mat-label>
+            <input matInput formControlName="department" placeholder="Département de...">
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Numéro de bureau</mat-label>
+              <input matInput formControlName="officeNumber" placeholder="Bureau 123">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Bâtiment</mat-label>
+              <input matInput formControlName="building" placeholder="Bâtiment A">
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Adresse complète</mat-label>
+            <textarea matInput formControlName="address" rows="3" placeholder="Adresse postale complète"></textarea>
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Code postal</mat-label>
+              <input matInput formControlName="postalCode" placeholder="75000">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Ville</mat-label>
+              <input matInput formControlName="city" placeholder="Paris">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Pays</mat-label>
+              <input matInput formControlName="country" placeholder="France">
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Office Hours Section -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Heures de Bureau</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div formArrayName="officeHours">
+            <div *ngFor="let hour of officeHours.controls; let i = index" [formGroupName]="i" class="office-hour-item">
+              <mat-form-field appearance="outline">
+                <mat-label>Jour</mat-label>
+                <mat-select formControlName="day">
+                  <mat-option value="monday">Lundi</mat-option>
+                  <mat-option value="tuesday">Mardi</mat-option>
+                  <mat-option value="wednesday">Mercredi</mat-option>
+                  <mat-option value="thursday">Jeudi</mat-option>
+                  <mat-option value="friday">Vendredi</mat-option>
+                  <mat-option value="saturday">Samedi</mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Heure de début</mat-label>
+                <input matInput formControlName="startTime" type="time">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Heure de fin</mat-label>
+                <input matInput formControlName="endTime" type="time">
+              </mat-form-field>
+              
+              <button type="button" mat-icon-button color="warn" (click)="removeOfficeHour(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          
+          <button type="button" mat-button (click)="addOfficeHour()">
+            <mat-icon>add</mat-icon>
+            Ajouter des heures
+          </button>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Social Media Section -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Réseaux Sociaux et Liens Professionnels</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>LinkedIn</mat-label>
+              <input matInput formControlName="linkedin" placeholder="https://linkedin.com/in/...">
+              <mat-icon matSuffix>link</mat-icon>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>ORCID</mat-label>
+              <input matInput formControlName="orcid" placeholder="https://orcid.org/0000-0000-0000-0000">
+              <mat-icon matSuffix>link</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>ResearchGate</mat-label>
+              <input matInput formControlName="researchGate" placeholder="https://researchgate.net/profile/...">
+              <mat-icon matSuffix>link</mat-icon>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Google Scholar</mat-label>
+              <input matInput formControlName="googleScholar" placeholder="https://scholar.google.com/citations?user=...">
+              <mat-icon matSuffix>link</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Twitter</mat-label>
+              <input matInput formControlName="twitter" placeholder="https://twitter.com/...">
+              <mat-icon matSuffix>link</mat-icon>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Site web personnel</mat-label>
+              <input matInput formControlName="website" placeholder="https://monsite.com">
+              <mat-icon matSuffix>link</mat-icon>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Additional Links Section -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Liens Additionnels</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div formArrayName="additionalLinks">
+            <div *ngFor="let link of additionalLinks.controls; let i = index" [formGroupName]="i" class="additional-link-item">
+              <mat-form-field appearance="outline">
+                <mat-label>Titre du lien</mat-label>
+                <input matInput formControlName="title" placeholder="Mon blog, CV en ligne, etc.">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>URL</mat-label>
+                <input matInput formControlName="url" type="url" placeholder="https://...">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Description</mat-label>
+                <input matInput formControlName="description" placeholder="Description courte">
+              </mat-form-field>
+              
+              <button type="button" mat-icon-button color="warn" (click)="removeAdditionalLink(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          
+          <button type="button" mat-button (click)="addAdditionalLink()">
+            <mat-icon>add</mat-icon>
+            Ajouter un lien
+          </button>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Contact Preferences Section -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Préférences de Contact</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field appearance="outline">
+            <mat-label>Méthode de contact préférée</mat-label>
+            <mat-select formControlName="preferredContact">
+              <mat-option value="email">Email</mat-option>
+              <mat-option value="phone">Téléphone</mat-option>
+              <mat-option value="office">Visite au bureau</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Instructions spéciales</mat-label>
+            <textarea matInput formControlName="contactInstructions" rows="3" 
+                     placeholder="Instructions pour prendre rendez-vous, délais de réponse, etc."></textarea>
+          </mat-form-field>
+
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="availableForCollaboration">
+              Disponible pour collaborations
+            </mat-checkbox>
+            
+            <mat-checkbox formControlName="acceptingStudents">
+              Accepte de nouveaux étudiants
+            </mat-checkbox>
+            
+            <mat-checkbox formControlName="availableForReviews">
+              Disponible pour révisions d'articles
+            </mat-checkbox>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </form>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>Chargement des informations de contact...</p>
+  </div>
+
+  <!-- Success message -->
+  <div class="success-message" *ngIf="showSuccessMessage">
+    <mat-icon>check_circle</mat-icon>
+    <span>Informations de contact mises à jour avec succès !</span>
+  </div>
+</div>
+

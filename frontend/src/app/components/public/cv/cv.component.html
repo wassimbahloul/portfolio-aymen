@@ -1,0 +1,32 @@
+<div class="cv-container">
+  <div class="card">
+    <header class="header">
+      <h1 class="title">
+        <mat-icon class="title-icon">description</mat-icon>
+        Curriculum Vitae
+      </h1>
+      <p class="subtitle">Consultez ou téléchargez mon CV professionnel au format PDF.</p>
+    </header>
+
+    <div class="content">
+      <div class="pdf-viewer" *ngIf="cvData.cvFile">
+        <iframe [src]="pdfUrl" title="CV PDF" class="pdf-iframe"></iframe>
+        <div class="action-bar">
+          <button mat-raised-button color="primary" (click)="downloadCV()">
+            <mat-icon>download</mat-icon>
+            Télécharger le CV
+          </button>
+        </div>
+      </div>
+
+      <div class="no-cv" *ngIf="!cvData.cvFile && !loading">
+        <mat-icon class="no-cv-icon">description</mat-icon>
+        <p>Aucun CV disponible actuellement.</p>
+      </div>
+
+      <div class="loading" *ngIf="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    </div>
+  </div>
+</div>

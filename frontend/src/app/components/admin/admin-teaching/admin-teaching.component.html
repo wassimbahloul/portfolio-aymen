@@ -1,0 +1,209 @@
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+<div class="admin-teaching-container">
+  <div class="admin-header">
+    <h1>Gestion de l'Enseignement</h1>
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      Ajouter un cours
+    </button>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline">
+      <mat-label>Rechercher</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (input)="filterCourses()" placeholder="Titre, institution...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par niveau</mat-label>
+      <mat-select [(value)]="selectedLevel" (selectionChange)="filterCourses()">
+        <mat-option value="">Tous les niveaux</mat-option>
+        <mat-option value="undergraduate">Licence</mat-option>
+        <mat-option value="graduate">Master</mat-option>
+        <mat-option value="phd">Doctorat</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par année</mat-label>
+      <mat-select [(value)]="selectedYear" (selectionChange)="filterCourses()">
+        <mat-option value="">Toutes les années</mat-option>
+        <mat-option *ngFor="let year of availableYears" [value]="year">{{ year }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Courses List -->
+  <div class="courses-list" *ngIf="!loading">
+    <mat-card *ngFor="let course of filteredCourses" class="course-card">
+      <mat-card-header>
+        <mat-card-title>{{ course.title }}</mat-card-title>
+        <mat-card-subtitle>
+          <span class="level-badge" [ngClass]="'level-' + course.level">
+            {{ getLevelLabel(course.level) }}
+          </span>
+          <span class="year-badge">{{ course.academicYear }}</span>
+          <span class="semester-badge" *ngIf="course.semester">{{ getSemesterLabel(course.semester) }}</span>
+        </mat-card-subtitle>
+        <div class="card-actions">
+          <button mat-icon-button (click)="editCourse(course)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteCourse(course._id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="course-info">
+          <div class="institution-info">
+            <mat-icon>school</mat-icon>
+            <strong>{{ course.institution }}</strong>
+          </div>
+          <div class="department-info" *ngIf="course.department">
+            <mat-icon>domain</mat-icon>
+            <span>{{ course.department }}</span>
+          </div>
+        </div>
+
+        <div class="course-description" *ngIf="course.description">
+          <p>{{ course.description }}</p>
+        </div>
+
+        <div class="course-files" *ngIf="course.files?.length">
+          <h4>Fichiers PDF:</h4>
+          <div class="files-list">
+            <div *ngFor="let file of course.files" class="file-item">
+              <mat-icon>picture_as_pdf</mat-icon>
+              <span>{{ file.name }}</span>
+              <button mat-button color="primary" (click)="openLink('http://localhost:5000' + file.path)">
+                <mat-icon>open_in_new</mat-icon>
+                Ouvrir
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- No courses message -->
+    <div class="no-courses" *ngIf="filteredCourses.length === 0">
+      <mat-icon>school</mat-icon>
+      <h3>Aucun cours</h3>
+      <p>Commencez par ajouter votre premier cours</p>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+
+<!-- Add/Edit Dialog -->
+<div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2>{{ editingCourse ? 'Modifier le cours' : 'Ajouter un cours' }}</h2>
+      <button mat-icon-button (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="courseForm" (ngSubmit)="saveCourse()" class="dialog-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Titre du cours *</mat-label>
+        <input matInput formControlName="title" required>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Niveau</mat-label>
+          <mat-select formControlName="level">
+            <mat-option value="undergraduate">Licence</mat-option>
+            <mat-option value="graduate">Master</mat-option>
+            <mat-option value="phd">Doctorat</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Institution *</mat-label>
+          <input matInput formControlName="institution" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Département</mat-label>
+          <input matInput formControlName="department">
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Année académique</mat-label>
+          <input matInput formControlName="academicYear" placeholder="2023-2024">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Semestre</mat-label>
+          <mat-select formControlName="semester">
+            <mat-option value="semester 1">semester 1</mat-option>
+            <mat-option value="semester 2">semester 2</mat-option>
+
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="4" placeholder="Description du cours..."></textarea>
+      </mat-form-field>
+
+      <!-- File Upload Section -->
+      <div class="file-upload-section">
+        <h3>Fichiers PDF</h3>
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" multiple style="display: none;">
+        <button type="button" mat-button (click)="fileInput.click()">
+          <mat-icon>upload_file</mat-icon>
+          Télécharger des PDF
+        </button>
+        
+        <div class="current-files" *ngIf="editingCourse?.files?.length">
+          <h4>Fichiers actuels:</h4>
+          <div *ngFor="let file of editingCourse.files" class="file-item">
+            <mat-icon>picture_as_pdf</mat-icon>
+            <span>{{ file.name }}</span>
+            <button type="button" mat-button color="primary" (click)="openLink('http://localhost:5000' + file.path)">
+              <mat-icon>open_in_new</mat-icon>
+              Ouvrir
+            </button>
+          </div>
+        </div>
+        
+        <div class="selected-files" *ngIf="selectedFiles.length">
+          <h4>Fichiers sélectionnés:</h4>
+          <div *ngFor="let file of selectedFiles; let i = index" class="file-item">
+            <mat-icon>picture_as_pdf</mat-icon>
+            <span>{{ file.name }}</span>
+            <button type="button" mat-icon-button color="warn" (click)="removeSelectedFile(i)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" mat-button (click)="closeDialog()">Annuler</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="!courseForm.valid || saving">
+          {{ saving ? 'Enregistrement...' : (editingCourse ? 'Modifier' : 'Ajouter') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,251 @@
+<div class="contact-container">
+  <div class="contact-header">
+    <h1>Contact</h1>
+    <p>N'hésitez pas à me contacter pour toute collaboration ou question</p>
+  </div>
+
+  <div class="contact-content" *ngIf="contactData && !loading">
+    
+    <!-- Personal Information Section -->
+    <div class="personal-section" *ngIf="contactData.fullName || contactData.title || contactData.bio">
+      <div class="personal-info">
+        <h2 *ngIf="contactData.fullName">{{ contactData.fullName }}</h2>
+        <h3 *ngIf="contactData.title" class="title">{{ contactData.title }}</h3>
+        <p *ngIf="contactData.bio" class="bio">{{ contactData.bio }}</p>
+      </div>
+    </div>
+
+    <div class="contact-grid">
+      
+      <!-- Contact Information -->
+      <div class="contact-info">
+        <h2>Informations de contact</h2>
+        
+        <div class="contact-item" *ngIf="contactData.email">
+          <mat-icon>email</mat-icon>
+          <div class="contact-details">
+            <h3>Email principal</h3>
+            <a [href]="'mailto:' + contactData.email">{{ contactData.email }}</a>
+          </div>
+        </div>
+
+        <div class="contact-item" *ngIf="contactData.secondaryEmail">
+          <mat-icon>email</mat-icon>
+          <div class="contact-details">
+            <h3>Email secondaire</h3>
+            <a [href]="'mailto:' + contactData.secondaryEmail">{{ contactData.secondaryEmail }}</a>
+          </div>
+        </div>
+
+        <div class="contact-item" *ngIf="contactData.phone">
+          <mat-icon>phone</mat-icon>
+          <div class="contact-details">
+            <h3>Téléphone bureau</h3>
+            <a [href]="'tel:' + contactData.phone">{{ contactData.phone }}</a>
+          </div>
+        </div>
+
+        <div class="contact-item" *ngIf="contactData.mobile">
+          <mat-icon>smartphone</mat-icon>
+          <div class="contact-details">
+            <h3>Téléphone mobile</h3>
+            <a [href]="'tel:' + contactData.mobile">{{ contactData.mobile }}</a>
+          </div>
+        </div>
+
+        <!-- Preferred Contact Method -->
+        <div class="contact-item" *ngIf="contactData.preferredContact">
+          <mat-icon>star</mat-icon>
+          <div class="contact-details">
+            <h3>Méthode de contact préférée</h3>
+            <p>{{ getPreferredContactLabel(contactData.preferredContact) }}</p>
+          </div>
+        </div>
+
+        <!-- Contact Instructions -->
+        <div class="contact-item" *ngIf="contactData.contactInstructions">
+          <mat-icon>info</mat-icon>
+          <div class="contact-details">
+            <h3>Instructions de contact</h3>
+            <p>{{ contactData.contactInstructions }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Office Information -->
+      <div class="office-info" *ngIf="hasOfficeInfo()">
+        <h2>Informations bureau</h2>
+        
+        <div class="contact-item" *ngIf="contactData.institution">
+          <mat-icon>school</mat-icon>
+          <div class="contact-details">
+            <h3>Institution</h3>
+            <p>{{ contactData.institution }}</p>
+          </div>
+        </div>
+
+        <div class="contact-item" *ngIf="contactData.department">
+          <mat-icon>business</mat-icon>
+          <div class="contact-details">
+            <h3>Département</h3>
+            <p>{{ contactData.department }}</p>
+          </div>
+        </div>
+
+        <div class="contact-item" *ngIf="contactData.officeNumber || contactData.building">
+          <mat-icon>room</mat-icon>
+          <div class="contact-details">
+            <h3>Bureau</h3>
+            <p>
+              <span *ngIf="contactData.building">{{ contactData.building }}</span>
+              <span *ngIf="contactData.building && contactData.officeNumber"> - </span>
+              <span *ngIf="contactData.officeNumber">{{ contactData.officeNumber }}</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Legacy office field -->
+        <div class="contact-item" *ngIf="contactData.office && !contactData.officeNumber">
+          <mat-icon>business</mat-icon>
+          <div class="contact-details">
+            <h3>Bureau</h3>
+            <p>{{ contactData.office }}</p>
+          </div>
+        </div>
+
+        <div class="contact-item" *ngIf="hasAddressInfo()">
+          <mat-icon>location_on</mat-icon>
+          <div class="contact-details">
+            <h3>Adresse complète</h3>
+            <div class="address">
+              <ng-container *ngIf="getAddressDisplay().full; else structuredAddress">
+                <p>{{ getAddressDisplay().full }}</p>
+              </ng-container>
+              <ng-template #structuredAddress>
+                <p *ngIf="getAddressDisplay().street">{{ getAddressDisplay().street }}</p>
+                <p *ngIf="getAddressDisplay().city">
+                  {{ getAddressDisplay().city }}
+                  <span *ngIf="getAddressDisplay().postalCode">, {{ getAddressDisplay().postalCode }}</span>
+                </p>
+                <p *ngIf="getAddressDisplay().country">{{ getAddressDisplay().country }}</p>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Office Hours -->
+    <div class="office-hours-section" *ngIf="contactData.officeHours && contactData.officeHours.length > 0">
+      <h2>Heures de bureau</h2>
+      <div class="office-hours-grid">
+        <div class="office-hour-item" *ngFor="let hour of contactData.officeHours">
+          <div class="day">{{ getDayLabel(hour.day) }}</div>
+          <div class="time">{{ formatTime(hour.startTime) }} - {{ formatTime(hour.endTime) }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Availability Status -->
+    <div class="availability-section" *ngIf="hasAvailabilityInfo()">
+      <h2>Disponibilités</h2>
+      <div class="availability-grid">
+        <div class="availability-item" *ngIf="contactData.availableForCollaboration">
+          <mat-icon class="available">check_circle</mat-icon>
+          <span>Disponible pour collaborations</span>
+        </div>
+        <div class="availability-item" *ngIf="contactData.acceptingStudents">
+          <mat-icon class="available">check_circle</mat-icon>
+          <span>Accepte de nouveaux étudiants</span>
+        </div>
+        <div class="availability-item" *ngIf="contactData.availableForReviews">
+          <mat-icon class="available">check_circle</mat-icon>
+          <span>Disponible pour révisions d'articles</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Professional Links -->
+    <div class="professional-links-section" *ngIf="hasSocialLinks()">
+      <h2>Liens professionnels</h2>
+      <div class="social-grid">
+        <a [href]="contactData.socialLinks.linkedin" 
+           target="_blank" 
+           class="social-link linkedin"
+           *ngIf="contactData.socialLinks?.linkedin">
+          <mat-icon>link</mat-icon>
+          <span>LinkedIn</span>
+        </a>
+
+        <a [href]="contactData.socialLinks.orcid" 
+           target="_blank" 
+           class="social-link orcid"
+           *ngIf="contactData.socialLinks?.orcid">
+          <mat-icon>link</mat-icon>
+          <span>ORCID</span>
+        </a>
+
+        <a [href]="contactData.socialLinks.researchgate" 
+           target="_blank" 
+           class="social-link researchgate"
+           *ngIf="contactData.socialLinks?.researchgate">
+          <mat-icon>link</mat-icon>
+          <span>ResearchGate</span>
+        </a>
+
+        <a [href]="contactData.socialLinks.googleScholar" 
+           target="_blank" 
+           class="social-link scholar"
+           *ngIf="contactData.socialLinks?.googleScholar">
+          <mat-icon>link</mat-icon>
+          <span>Google Scholar</span>
+        </a>
+
+        <a [href]="contactData.socialLinks.twitter" 
+           target="_blank" 
+           class="social-link twitter"
+           *ngIf="contactData.socialLinks?.twitter">
+          <mat-icon>link</mat-icon>
+          <span>Twitter</span>
+        </a>
+
+        <a [href]="contactData.socialLinks.website" 
+           target="_blank" 
+           class="social-link website"
+           *ngIf="contactData.socialLinks?.website">
+          <mat-icon>language</mat-icon>
+          <span>Site web personnel</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Additional Links -->
+    <div class="additional-links-section" *ngIf="contactData.additionalLinks && contactData.additionalLinks.length > 0">
+      <h2>Liens additionnels</h2>
+      <div class="additional-links-grid">
+        <div class="additional-link-item" *ngFor="let link of contactData.additionalLinks">
+          <a [href]="link.url" target="_blank" class="additional-link">
+            <div class="link-header">
+              <mat-icon>link</mat-icon>
+              <h3>{{ link.title }}</h3>
+            </div>
+            <p *ngIf="link.description" class="link-description">{{ link.description }}</p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>Chargement des informations de contact...</p>
+  </div>
+
+  <!-- No data message -->
+  <div class="no-data" *ngIf="!loading && (!contactData || !contactData.email)">
+    <mat-icon>contact_mail</mat-icon>
+    <p>Aucune information de contact disponible pour le moment.</p>
+  </div>
+</div>

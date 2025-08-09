@@ -1,0 +1,321 @@
+<div class="admin-publications-container">
+  <div class="admin-header">
+    <h1>Gestion des Publications</h1>
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      Ajouter une publication
+    </button>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline">
+      <mat-label>Rechercher</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (input)="filterPublications()" placeholder="Titre, auteurs, journal...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par type</mat-label>
+      <mat-select [(value)]="selectedType" (selectionChange)="filterPublications()">
+        <mat-option value="">Tous les types</mat-option>
+        <mat-option value="journal">Article de journal</mat-option>
+        <mat-option value="conference">Conférence</mat-option>
+        <mat-option value="book">Livre</mat-option>
+        <mat-option value="chapter">Chapitre de livre</mat-option>
+        <mat-option value="thesis">Thèse</mat-option>
+        <mat-option value="preprint">Preprint</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par année</mat-label>
+      <mat-select [(value)]="selectedYear" (selectionChange)="filterPublications()">
+        <mat-option value="">Toutes les années</mat-option>
+        <mat-option *ngFor="let year of availableYears" [value]="year">{{ year }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Publications List -->
+  <div class="publications-list" *ngIf="!loading">
+    <mat-card *ngFor="let publication of filteredPublications" class="publication-card">
+      <mat-card-header>
+        <mat-card-title>{{ publication.title }}</mat-card-title>
+        <mat-card-subtitle>
+          <span class="type-badge" [ngClass]="'type-' + publication.type">
+            {{ getTypeLabel(publication.type) }}
+          </span>
+          <span class="year-badge">{{ publication.year }}</span>
+        </mat-card-subtitle>
+        <div class="card-actions">
+          <button mat-icon-button (click)="editPublication(publication)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deletePublication(publication._id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="authors-list">
+          <strong>Auteurs:</strong> {{ publication.authors?.join(', ') }}
+        </div>
+        
+        <div class="publication-venue" *ngIf="publication.journal || publication.conference">
+          <strong>{{ publication.type === 'journal' ? 'Journal:' : 'Conférence:' }}</strong>
+          {{ publication.journal || publication.conference }}
+        </div>
+
+        <div class="publication-details">
+          <div *ngIf="publication.volume" class="detail-item">
+            <span>Volume {{ publication.volume }}</span>
+          </div>
+          <div *ngIf="publication.pages" class="detail-item">
+            <span>Pages {{ publication.pages }}</span>
+          </div>
+          <div *ngIf="publication.doi" class="detail-item">
+            <span>DOI: {{ publication.doi }}</span>
+          </div>
+        </div>
+
+        <div class="publication-links" *ngIf="publication.pdfUrl || publication.externalLinks?.length">
+          <button mat-button color="primary" *ngIf="publication.pdfUrl" (click)="openPDF(publication.pdfUrl)">
+            <mat-icon>picture_as_pdf</mat-icon>
+            PDF
+          </button>
+          <button mat-button *ngFor="let link of publication.externalLinks" (click)="openLink(link.url)">
+            <mat-icon>link</mat-icon>
+            {{ link.title }}
+          </button>
+        </div>
+
+        <div class="publication-stats" *ngIf="publication.citations || publication.downloads">
+          <div *ngIf="publication.citations" class="stat-item">
+            <mat-icon>format_quote</mat-icon>
+            <span>{{ publication.citations }} citations</span>
+          </div>
+          <div *ngIf="publication.downloads" class="stat-item">
+            <mat-icon>download</mat-icon>
+            <span>{{ publication.downloads }} téléchargements</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- No publications message -->
+    <div class="no-publications" *ngIf="filteredPublications.length === 0">
+      <mat-icon>article</mat-icon>
+      <h3>Aucune publication</h3>
+      <p>Commencez par ajouter votre première publication</p>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+
+<!-- Add/Edit Dialog -->
+<div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2>{{ editingPublication ? 'Modifier la publication' : 'Ajouter une publication' }}</h2>
+      <button mat-icon-button (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="publicationForm" (ngSubmit)="savePublication()" class="dialog-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Titre *</mat-label>
+        <input matInput formControlName="title" required>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Type de publication</mat-label>
+          <mat-select formControlName="type">
+            <mat-option value="journal">Article de journal</mat-option>
+            <mat-option value="conference">Conférence</mat-option>
+            <mat-option value="book">Livre</mat-option>
+            <mat-option value="chapter">Chapitre de livre</mat-option>
+            <mat-option value="thesis">Thèse</mat-option>
+            <mat-option value="preprint">Preprint</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Année</mat-label>
+          <input matInput formControlName="year" type="number" min="1900" max="2030">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Auteurs (séparés par des virgules)</mat-label>
+        <input matInput formControlName="authorsInput" placeholder="Nom1 Prénom1, Nom2 Prénom2, ...">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Résumé</mat-label>
+        <textarea matInput formControlName="abstract" rows="4"></textarea>
+      </mat-form-field>
+
+      <!-- Journal/Conference specific fields -->
+      <div *ngIf="publicationForm.get('type')?.value === 'journal'">
+        <mat-form-field appearance="outline">
+          <mat-label>Journal</mat-label>
+          <input matInput formControlName="journal">
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Volume</mat-label>
+            <input matInput formControlName="volume">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Numéro</mat-label>
+            <input matInput formControlName="issue">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Pages</mat-label>
+            <input matInput formControlName="pages" placeholder="1-10">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="publicationForm.get('type')?.value === 'conference'">
+        <mat-form-field appearance="outline">
+          <mat-label>Nom de la conférence</mat-label>
+          <input matInput formControlName="conference">
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Lieu</mat-label>
+            <input matInput formControlName="location">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Pages</mat-label>
+            <input matInput formControlName="pages" placeholder="1-10">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="publicationForm.get('type')?.value === 'book' || publicationForm.get('type')?.value === 'chapter'">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ publicationForm.get('type')?.value === 'book' ? 'Éditeur' : 'Titre du livre' }}</mat-label>
+          <input matInput formControlName="publisher">
+        </mat-form-field>
+
+        <div class="form-row" *ngIf="publicationForm.get('type')?.value === 'chapter'">
+          <mat-form-field appearance="outline">
+            <mat-label>Éditeurs du livre</mat-label>
+            <input matInput formControlName="editors">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Pages</mat-label>
+            <input matInput formControlName="pages" placeholder="1-10">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Common fields -->
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>DOI</mat-label>
+          <input matInput formControlName="doi" placeholder="10.1000/182">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>ISBN/ISSN</mat-label>
+          <input matInput formControlName="isbn">
+        </mat-form-field>
+      </div>
+
+      <!-- Statistics -->
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre de citations</mat-label>
+          <input matInput formControlName="citations" type="number" min="0">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre de téléchargements</mat-label>
+          <input matInput formControlName="downloads" type="number" min="0">
+        </mat-form-field>
+      </div>
+
+      <!-- Keywords -->
+      <mat-form-field appearance="outline">
+        <mat-label>Mots-clés (séparés par des virgules)</mat-label>
+        <input matInput formControlName="keywordsInput" placeholder="machine learning, intelligence artificielle, ...">
+      </mat-form-field>
+
+      <!-- External Links Section -->
+      <div class="links-section">
+        <h3>Liens externes</h3>
+        <div formArrayName="externalLinks">
+          <div *ngFor="let link of externalLinks.controls; let i = index" [formGroupName]="i" class="link-item">
+            <mat-form-field appearance="outline">
+              <mat-label>Titre</mat-label>
+              <input matInput formControlName="title" placeholder="ArXiv, HAL, ResearchGate, etc.">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>URL</mat-label>
+              <input matInput formControlName="url" type="url">
+            </mat-form-field>
+            <button type="button" mat-icon-button color="warn" (click)="removeExternalLink(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button type="button" mat-button (click)="addExternalLink()">
+          <mat-icon>add</mat-icon>
+          Ajouter un lien
+        </button>
+      </div>
+
+      <!-- PDF Upload Section -->
+      <div class="pdf-upload-section">
+        <h3>Fichier PDF</h3>
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none;">
+        <button type="button" mat-button (click)="fileInput.click()">
+          <mat-icon>upload_file</mat-icon>
+          Télécharger un PDF
+        </button>
+        
+        <div class="current-pdf" *ngIf="editingPublication?.pdfUrl">
+          <mat-icon>picture_as_pdf</mat-icon>
+          <span>PDF actuel disponible</span>
+          <button type="button" mat-button color="primary" (click)="openPDF(editingPublication.pdfUrl)">
+            <mat-icon>open_in_new</mat-icon>
+            Ouvrir
+          </button>
+        </div>
+        
+        <div class="selected-pdf" *ngIf="selectedFile">
+          <mat-icon>picture_as_pdf</mat-icon>
+          <span>{{ selectedFile.name }}</span>
+          <button type="button" mat-icon-button color="warn" (click)="removeSelectedFile()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" mat-button (click)="closeDialog()">Annuler</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="!publicationForm.valid || saving">
+          {{ saving ? 'Enregistrement...' : (editingPublication ? 'Modifier' : 'Ajouter') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+

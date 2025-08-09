@@ -1,0 +1,127 @@
+<div class="teaching-container">
+  <div class="teaching-header">
+    <h1>Enseignement</h1>
+    <p>Mes activités pédagogiques et cours dispensés</p>
+  </div>
+
+  <div class="teaching-content" *ngIf="!loading">
+    <!-- Filter Section -->
+    <div class="filter-section" *ngIf="courses.length > 0">
+      <div class="filter-controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Filtrer par niveau</mat-label>
+          <mat-select [(value)]="selectedLevel" (selectionChange)="filterCourses()">
+            <mat-option value="">Tous les niveaux</mat-option>
+            <mat-option value="undergraduate">Licence</mat-option>
+            <mat-option value="graduate">Master</mat-option>
+            <mat-option value="phd">Doctorat</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Filtrer par institution</mat-label>
+          <mat-select [(value)]="selectedInstitution" (selectionChange)="filterCourses()">
+            <mat-option value="">Toutes les institutions</mat-option>
+            <mat-option *ngFor="let institution of institutions" [value]="institution">
+              {{ institution }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Rechercher</mat-label>
+          <input matInput 
+                 [(ngModel)]="searchTerm" 
+                 (input)="filterCourses()" 
+                 placeholder="Titre, département, description...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Courses List -->
+    <div class="courses-list" *ngIf="filteredCourses.length > 0">
+      <div class="course-item" *ngFor="let course of filteredCourses; let i = index">
+        <div class="course-header">
+          <div class="course-title-section">
+            <h3 class="course-title">{{ course.title }}</h3>
+          </div>
+          <div class="course-badges">
+            <span class="level-badge" [ngClass]="'level-' + course.level">
+              {{ getLevelLabel(course.level) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="course-details">
+          <div class="course-institution">
+            <mat-icon>school</mat-icon>
+            <span>{{ course.institution }}</span>
+          </div>
+
+          <div class="course-department" *ngIf="course.department">
+            <mat-icon>domain</mat-icon>
+            <span>{{ course.department }}</span>
+          </div>
+
+          <div class="course-period" *ngIf="course.semester || course.academicYear">
+            <mat-icon>calendar_today</mat-icon>
+            <span>
+              <span *ngIf="course.semester">{{ getSemesterLabel(course.semester) }}</span>
+              <span *ngIf="course.semester && course.academicYear"> - </span>
+              <span *ngIf="course.academicYear">{{ course.academicYear }}</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="course-description" *ngIf="course.description">
+          <h4>Description</h4>
+          <p [class.expanded]="expandedDescriptions[i]">{{ course.description }}</p>
+          <button mat-button 
+                  *ngIf="course.description.length > 300"
+                  (click)="toggleDescription(i)">
+            {{ expandedDescriptions[i] ? 'Voir moins' : 'Voir plus' }}
+          </button>
+        </div>
+
+        <!-- Course PDF Files -->
+        <div class="course-files" *ngIf="course.files?.length">
+          <h4><mat-icon>picture_as_pdf</mat-icon> Documents PDF</h4>
+          <div class="files-list">
+            <div class="file-item" *ngFor="let file of course.files">
+              <div class="file-info">
+                <div class="file-name">{{ file.name }}</div>
+                <div class="file-date">{{ file.uploadedAt | date:'short' }}</div>
+              </div>
+              <a *ngIf="file.path" 
+                 [href]="'http://localhost:5000' + file.path" 
+                 target="_blank" 
+                 mat-icon-button
+                 matTooltip="Ouvrir le PDF">
+                <mat-icon>open_in_new</mat-icon>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Courses Message -->
+    <div class="no-courses" *ngIf="filteredCourses.length === 0 && courses.length > 0">
+      <mat-icon>search_off</mat-icon>
+      <h3>Aucun cours trouvé</h3>
+      <p>Essayez de modifier vos critères de recherche</p>
+    </div>
+
+    <div class="no-courses" *ngIf="courses.length === 0">
+      <mat-icon>school</mat-icon>
+      <h3>Aucun cours disponible</h3>
+      <p>Les activités d'enseignement seront affichées ici une fois ajoutées</p>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

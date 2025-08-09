@@ -1,0 +1,304 @@
+.admin-home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #f4f6f8;
+  min-height: 100vh;
+}
+
+.admin-home-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.admin-home-header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a237e;
+  margin-bottom: 8px;
+}
+
+.admin-home-header p {
+  font-size: 16px;
+  color: #666;
+}
+
+.admin-home-section {
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+}
+
+mat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+}
+
+mat-card-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #1a237e;
+}
+
+mat-card-content {
+  padding: 24px;
+}
+
+.admin-home-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.admin-home-full-width {
+  flex: 1 1 100%;
+}
+
+.admin-home-half-width {
+  flex: 1 1 calc(50% - 8px);
+}
+
+.admin-home-image-upload-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.admin-home-image-upload-item {
+  flex: 1 1 45%;
+  min-width: 280px;
+}
+
+.admin-home-image-upload-item h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.admin-home-current-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+button[mat-stroked-button] {
+  border-color: #3f51b5;
+  color: #3f51b5;
+  margin-top: 8px;
+}
+
+button[mat-stroked-button]:hover {
+  background-color: rgba(63, 81, 181, 0.04);
+}
+
+.admin-home-experience-item,
+.admin-home-event-item,
+.admin-home-seminar-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #fafafa;
+}
+
+.admin-home-experience-header,
+.admin-home-event-header,
+.admin-home-seminar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.admin-home-experience-header h4,
+.admin-home-event-header h4,
+.admin-home-seminar-header h4 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+button[mat-icon-button] {
+  color: #3f51b5;
+}
+
+button[color="warn"] {
+  color: #d32f2f;
+}
+
+.admin-home-submit-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+button[mat-raised-button] {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  background-color: #3f51b5;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+button[mat-raised-button]:hover:not(:disabled) {
+  background-color: #303f9f;
+}
+
+button[mat-raised-button][disabled] {
+  background-color: #e0e0e0;
+  color: #9e9e9e;
+}
+
+mat-spinner {
+  margin: 0 auto;
+}
+
+.admin-home-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-home-container {
+    padding: 16px;
+  }
+
+  .admin-home-half-width {
+    flex: 1 1 100%;
+  }
+
+  .admin-home-image-upload-item {
+    flex: 1 1 100%;
+  }
+
+  .admin-home-header h1 {
+    font-size: 24px;
+  }
+
+  .admin-home-header p {
+    font-size: 14px;
+  }
+}
+/* Styles existants inchangés... */
+
+.admin-home-textarea {
+  margin-top: 16px; /* Plus d'espace pour éviter le chevauchement */
+}
+
+.admin-home-description-textarea {
+  resize: vertical; /* Redimensionnement vertical uniquement */
+  min-height: 100px; /* Hauteur minimale augmentée pour éviter le débordement */
+  max-height: 200px;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.6; /* Amélioration de la lisibilité */
+  width: 100%; /* Assure que la largeur est complète */
+}
+
+.admin-home-description-textarea:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 4px rgba(63, 81, 181, 0.3);
+}
+
+mat-form-field .mat-form-field-wrapper {
+  padding-bottom: 1.5em; /* Plus d'espace pour le hint */
+}
+
+mat-hint[align="end"] {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px; /* Espacement avec la textarea */
+  text-align: right;
+}
+
+/* Harmonisation des hauteurs des champs */
+mat-form-field .mat-input-element {
+  height: auto; /* Permet une hauteur dynamique */
+  padding: 12px; /* Uniformisation avec la textarea */
+}
+
+mat-form-field .mat-form-field-label {
+  color: #666;
+  font-weight: 500;
+  transform: translateY(-10px) scale(0.75); /* Ajustement du label flottant */
+  top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-home-description-textarea {
+    min-height: 120px; /* Hauteur minimale ajustée pour mobile */
+  }
+}
+
+
+/* Styles existants inchangés... */
+
+.admin-home-textarea {
+  margin-top: 16px; /* Plus d'espace pour éviter le chevauchement */
+}
+
+.admin-home-description-textarea {
+  resize: vertical; /* Redimensionnement vertical uniquement */
+  min-height: 100px; /* Hauteur minimale augmentée pour éviter le débordement */
+  max-height: 200px;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.6; /* Amélioration de la lisibilité */
+  width: 100%; /* Assure que la largeur est complète */
+}
+
+.admin-home-description-textarea:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 4px rgba(63, 81, 181, 0.3);
+}
+
+mat-form-field .mat-form-field-wrapper {
+  padding-bottom: 1.5em; /* Plus d'espace pour le hint */
+}
+
+mat-hint[align="end"] {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px; /* Espacement avec la textarea */
+  text-align: right;
+}
+
+/* Harmonisation des hauteurs des champs */
+mat-form-field .mat-input-element {
+  height: auto; /* Permet une hauteur dynamique */
+  padding: 12px; /* Uniformisation avec la textarea */
+}
+
+mat-form-field .mat-form-field-label {
+  color: #666;
+  font-weight: 500;
+  transform: translateY(-10px) scale(0.75); /* Ajustement du label flottant */
+  top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-home-description-textarea {
+    min-height: 120px; /* Hauteur minimale ajustée pour mobile */
+  }
+}
+.aa {
+  color: #222121;
+  font-weight: 400;
+  transform: translateY(-3%) scale(0.82);
+}

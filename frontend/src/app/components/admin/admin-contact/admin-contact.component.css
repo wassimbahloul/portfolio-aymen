@@ -1,0 +1,286 @@
+.admin-contact-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 2rem;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 25px;
+}
+
+.form-section mat-card-header {
+  margin-bottom: 20px;
+}
+
+.form-section mat-card-title {
+  color: #3f51b5;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Form Layout */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-row.three-cols {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+/* Office Hours */
+.office-hour-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.office-hour-item mat-form-field {
+  margin-bottom: 0;
+}
+
+/* Additional Links */
+.additional-link-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.additional-link-item mat-form-field {
+  margin-bottom: 0;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.checkbox-group mat-checkbox {
+  font-size: 0.95rem;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  gap: 20px;
+}
+
+.loading p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Success Message */
+.success-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.success-message mat-icon {
+  font-size: 20px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Button Styles */
+button[mat-raised-button] {
+  min-width: 120px;
+}
+
+button[mat-button] {
+  color: #3f51b5;
+}
+
+button[mat-icon-button][color="warn"] {
+  color: #f44336;
+}
+
+/* Card Styling */
+mat-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+mat-card-header {
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+/* Form Field Styling */
+mat-form-field {
+  margin-bottom: 15px;
+}
+
+mat-form-field.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #e0e0e0;
+}
+
+mat-form-field.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #3f51b5;
+}
+
+/* Textarea Styling */
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Select Styling */
+mat-select {
+  font-size: 0.95rem;
+}
+
+/* Icon Styling */
+mat-icon[matSuffix] {
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-contact-container {
+    padding: 15px;
+  }
+  
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .admin-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .form-row.three-cols {
+    grid-template-columns: 1fr;
+  }
+  
+  .office-hour-item,
+  .additional-link-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .office-hour-item button,
+  .additional-link-item button {
+    justify-self: flex-end;
+    margin-top: 10px;
+  }
+  
+  .success-message {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-contact-container {
+    padding: 10px;
+  }
+  
+  .admin-header h1 {
+    font-size: 1.3rem;
+  }
+  
+  mat-card {
+    margin-bottom: 15px;
+  }
+  
+  mat-card-content {
+    padding: 15px;
+  }
+  
+  .checkbox-group {
+    gap: 10px;
+  }
+  
+  button[mat-raised-button] {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .admin-header button,
+  .success-message {
+    display: none;
+  }
+  
+  .admin-contact-container {
+    padding: 0;
+  }
+  
+  mat-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+}
+

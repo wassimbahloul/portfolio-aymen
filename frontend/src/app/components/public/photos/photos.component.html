@@ -1,0 +1,169 @@
+<div class="photos-container">
+  <div class="photos-header">
+    <h1>Galerie Photos</h1>
+    <p>Moments marquants de ma carrière académique et professionnelle</p>
+  </div>
+
+  <div class="photos-content" *ngIf="!loading">
+    <!-- Filter Section -->
+    <div class="filter-section" *ngIf="photos.length > 0">
+      <div class="filter-controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Filtrer par catégorie</mat-label>
+          <mat-select [(value)]="selectedCategory" (selectionChange)="filterPhotos()">
+            <mat-option value="">Toutes les catégories</mat-option>
+            <mat-option value="conference">Conférences</mat-option>
+            <mat-option value="research">Recherche</mat-option>
+            <mat-option value="teaching">Enseignement</mat-option>
+            <mat-option value="awards">Récompenses</mat-option>
+            <mat-option value="personal">Personnel</mat-option>
+            <mat-option value="team">Équipe</mat-option>
+            <mat-option value="events">Événements</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Rechercher</mat-label>
+          <input matInput 
+                 [(ngModel)]="searchTerm" 
+                 (input)="filterPhotos()" 
+                 placeholder="Titre, description, tags...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Photos Grid -->
+    <div class="photos-grid" *ngIf="filteredPhotos.length > 0">
+      <div class="photo-item" 
+           *ngFor="let photo of filteredPhotos; let i = index"
+           (click)="openPhotoModal(photo, i)">
+        <div class="photo-wrapper">
+          <img [src]="'http://localhost:5000' + (photo.thumbnailUrl || photo.imageUrl)" 
+               [alt]="photo.altText || photo.title"
+               loading="lazy">
+          <div class="photo-overlay">
+            <div class="photo-info">
+              <h3>{{ photo.title }}</h3>
+              <p *ngIf="photo.description">{{ photo.description }}</p>
+              <div class="photo-meta">
+                <span class="category-badge" [ngClass]="'category-' + photo.category">
+                  {{ getCategoryLabel(photo.category) }}
+                </span>
+                <span *ngIf="photo.event" class="event-info">
+                  <mat-icon>event</mat-icon>
+                  {{ photo.event }}
+                </span>
+                <span *ngIf="photo.location" class="location-info">
+                  <mat-icon>location_on</mat-icon>
+                  {{ photo.location }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Photos Message -->
+    <div class="no-photos" *ngIf="filteredPhotos.length === 0 && photos.length > 0">
+      <mat-icon>search_off</mat-icon>
+      <h3>Aucune photo trouvée</h3>
+      <p>Essayez de modifier vos critères de recherche</p>
+    </div>
+
+    <div class="no-photos" *ngIf="photos.length === 0">
+      <mat-icon>photo_library</mat-icon>
+      <h3>Aucune photo disponible</h3>
+      <p>Les photos seront affichées ici une fois ajoutées</p>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+
+<!-- Photo Modal -->
+<div class="photo-modal" *ngIf="selectedPhoto" (click)="closePhotoModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ selectedPhoto.title }}</h2>
+      <button mat-icon-button class="close-button" (click)="closePhotoModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="modal-image">
+        <img [src]="'http://localhost:5000' + selectedPhoto.imageUrl" 
+             [alt]="selectedPhoto.altText || selectedPhoto.title">
+      </div>
+      
+      <div class="modal-info">
+        <p *ngIf="selectedPhoto.description" class="photo-description">
+          {{ selectedPhoto.description }}
+        </p>
+        
+        <div class="photo-details">
+          <div class="detail-item" *ngIf="selectedPhoto.category">
+            <mat-icon>category</mat-icon>
+            <span>{{ getCategoryLabel(selectedPhoto.category) }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="selectedPhoto.event">
+            <mat-icon>event</mat-icon>
+            <span>{{ selectedPhoto.event }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="selectedPhoto.location">
+            <mat-icon>location_on</mat-icon>
+            <span>{{ selectedPhoto.location }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="selectedPhoto.photographer">
+            <mat-icon>camera_alt</mat-icon>
+            <span>{{ selectedPhoto.photographer }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="selectedPhoto.people?.length">
+            <mat-icon>people</mat-icon>
+            <span>
+              <span *ngFor="let person of selectedPhoto.people; let last = last">
+                {{ person.name }}{{ person.role ? ' (' + person.role + ')' : '' }}<span *ngIf="!last">, </span>
+              </span>
+            </span>
+          </div>
+        </div>
+        
+        <div class="photo-tags" *ngIf="selectedPhoto.tags?.length">
+          <mat-chip-listbox>
+            <mat-chip *ngFor="let tag of selectedPhoto.tags">{{ tag }}</mat-chip>
+          </mat-chip-listbox>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="modal-navigation" *ngIf="filteredPhotos.length > 1">
+      <button mat-icon-button 
+              class="nav-button prev-button" 
+              (click)="previousPhoto()" 
+              [disabled]="currentPhotoIndex === 0">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      
+      <span class="photo-counter">
+        {{ currentPhotoIndex + 1 }} / {{ filteredPhotos.length }}
+      </span>
+      
+      <button mat-icon-button 
+              class="nav-button next-button" 
+              (click)="nextPhoto()" 
+              [disabled]="currentPhotoIndex === filteredPhotos.length - 1">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

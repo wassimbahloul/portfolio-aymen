@@ -1,0 +1,350 @@
+<div class="admin-research-container">
+  <div class="admin-header">
+    <h1>Gestion des Projets de Recherche</h1>
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      Ajouter un projet
+    </button>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filters-wrapper">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Rechercher</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (input)="filterProjects()" placeholder="Titre, description...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filtrer par statut</mat-label>
+        <mat-select [(value)]="selectedStatus" (selectionChange)="filterProjects()">
+          <mat-option value="">Tous les statuts</mat-option>
+          <mat-option value="ongoing">En cours</mat-option>
+          <mat-option value="completed">Terminé</mat-option>
+          <mat-option value="planned">Planifié</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Research Projects List -->
+  <div class="projects-list" *ngIf="!loading">
+    <mat-card *ngFor="let project of filteredProjects" class="project-card">
+      <mat-card-header>
+        <mat-card-title>{{ project.title }}</mat-card-title>
+        <mat-card-subtitle>
+          <span class="status-badge" [ngClass]="'status-' + project.status">
+            {{ getStatusLabel(project.status) }}
+          </span>
+          <span *ngIf="project.category" class="category-badge">{{ project.category }}</span>
+        </mat-card-subtitle>
+        <div class="card-actions">
+          <button mat-icon-button (click)="editProject(project)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteProject(project._id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p class="project-description" [title]="project.description">
+    {{ project.description | slice:0:700 }}{{ project.description?.length > 5000 ? '...' : '' }}
+    <span *ngIf="project.description?.length > 3000" class="read-more" (click)="toggleDescription(project)">Voir plus</span>
+  </p>
+        
+        <div class="project-details">
+          <div *ngIf="project.startDate" class="detail-item">
+            <mat-icon>date_range</mat-icon>
+            <span>{{ formatDate(project.startDate) }} - {{ project.endDate ? formatDate(project.endDate) : 'En cours' }}</span>
+          </div>
+          
+          <div *ngIf="project.collaborators?.length" class="detail-item">
+            <mat-icon>people</mat-icon>
+            <span>{{ project.collaborators.length }} collaborateur(s)</span>
+          </div>
+          
+          <div *ngIf="project.supervisor?.length" class="detail-item">
+            <mat-icon>supervisor_account</mat-icon>
+            <span>{{ project.supervisor.length }} superviseur(s)</span>
+          </div>
+          
+          <div *ngIf="project.images?.length" class="detail-item">
+            <mat-icon>image</mat-icon>
+            <span>{{ project.images.length }} image(s)</span>
+          </div>
+
+          <div *ngIf="project.funding?.length" class="detail-item">
+            <mat-icon>account_balance</mat-icon>
+            <span>{{ project.funding.length }} financement(s)</span>
+          </div>
+
+          <div *ngIf="project.externalLinks?.length" class="detail-item">
+            <mat-icon>link</mat-icon>
+            <span>{{ project.externalLinks.length }} lien(s) externe(s)</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- No projects message -->
+    <div class="no-projects" *ngIf="filteredProjects.length === 0">
+      <mat-icon>science</mat-icon>
+      <h3>Aucun projet de recherche</h3>
+      <p>Commencez par ajouter votre premier projet de recherche</p>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+
+<!-- Add/Edit Dialog -->
+<div class="dialog-overlay" *ngIf="showDialog" (click)="closeDialog()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2>{{ editingProject ? 'Modifier le projet' : 'Ajouter un projet' }}</h2>
+      <button mat-icon-button (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <form [formGroup]="projectForm" (ngSubmit)="saveProject()" class="dialog-form">
+      <!-- Basic Information -->
+      <div class="form-section">
+        <h3>Informations générales</h3>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Titre *</mat-label>
+          <input matInput formControlName="title" required>
+          <mat-error *ngIf="projectForm.get('title')?.hasError('required')">
+            Le titre est requis
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Catégorie</mat-label>
+          <input matInput formControlName="category">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Statut</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="ongoing">En cours</mat-option>
+            <mat-option value="completed">Terminé</mat-option>
+            <mat-option value="planned">Planifié</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="date-fields">
+          <mat-form-field appearance="outline">
+            <mat-label>Date de début</mat-label>
+            <input matInput type="date" formControlName="startDate">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Date de fin</mat-label>
+            <input matInput type="date" formControlName="endDate">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Tags (séparés par des virgules)</mat-label>
+          <input matInput formControlName="tagsInput" placeholder="recherche, innovation, technologie">
+        </mat-form-field>
+      </div>
+
+      <!-- Collaborators Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3>Collaborateurs</h3>
+          <button type="button" mat-button (click)="addCollaborator()">
+            <mat-icon>add</mat-icon>
+            Ajouter un collaborateur
+          </button>
+        </div>
+        
+        <div formArrayName="collaborators">
+          <div *ngFor="let collab of collaborators.controls; let i = index" [formGroupName]="i" class="collaborator-item">
+            <div class="collaborator-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>Nom</mat-label>
+                <input matInput formControlName="name">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Institution</mat-label>
+                <input matInput formControlName="institution">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Rôle</mat-label>
+                <input matInput formControlName="role">
+              </mat-form-field>
+              
+              <button type="button" mat-icon-button color="warn" (click)="removeCollaborator(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supervisors Section -->
+      <!-- Supervisors Section -->
+<div class="form-section">
+  <div class="section-header">
+    <h3>Superviseurs</h3>
+    <button type="button" mat-button (click)="addSupervisor()">
+      <mat-icon>add</mat-icon>
+      Ajouter un superviseur
+    </button>
+  </div>
+  
+  <div formArrayName="supervisor">
+    <div *ngFor="let supervisorCtrl of supervisor.controls; let i = index" [formGroupName]="i" class="supervisor-item">
+      <div class="supervisor-fields">
+        <mat-form-field appearance="outline">
+          <mat-label>Nom</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Institution</mat-label>
+          <input matInput formControlName="institution">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Rôle</mat-label>
+          <input matInput formControlName="role">
+        </mat-form-field>
+        
+        <button type="button" mat-icon-button color="warn" (click)="removeSupervisor(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Funding Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3>Financement</h3>
+          <button type="button" mat-button (click)="addFunding()">
+            <mat-icon>add</mat-icon>
+            Ajouter un financement
+          </button>
+        </div>
+        
+        <div formArrayName="funding">
+          <div *ngFor="let fund of funding.controls; let i = index" [formGroupName]="i" class="funding-item">
+            <div class="funding-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>Source</mat-label>
+                <input matInput formControlName="source">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Montant</mat-label>
+                <input matInput formControlName="amount">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Période</mat-label>
+                <input matInput formControlName="period">
+              </mat-form-field>
+              
+              <button type="button" mat-icon-button color="warn" (click)="removeFunding(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- External Links Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3>Liens externes</h3>
+          <button type="button" mat-button (click)="addExternalLink()">
+            <mat-icon>add</mat-icon>
+            Ajouter un lien
+          </button>
+        </div>
+        
+        <div formArrayName="externalLinks">
+          <div *ngFor="let link of externalLinks.controls; let i = index" [formGroupName]="i" class="link-item">
+            <div class="link-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>Titre</mat-label>
+                <input matInput formControlName="title">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>URL</mat-label>
+                <input matInput formControlName="url" type="url">
+              </mat-form-field>
+              
+              <button type="button" mat-icon-button color="warn" (click)="removeExternalLink(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Upload Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3>Images</h3>
+          <input type="file" #fileInput (change)="onImageSelected($event)" accept="image/*" multiple style="display: none;">
+          <button type="button" mat-button (click)="fileInput.click()">
+            <mat-icon>upload</mat-icon>
+            Ajouter des images
+          </button>
+        </div>
+        
+        <div class="uploaded-images" *ngIf="selectedImages.length > 0">
+          <div *ngFor="let image of selectedImages; let i = index" class="image-preview">
+            <img [src]="image.preview" [alt]="image.name">
+            <div class="image-info">
+              <span class="image-name">{{ image.name }}</span>
+              <button type="button" mat-icon-button color="warn" (click)="removeImage(i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Display existing images when editing -->
+        <div class="existing-images" *ngIf="editingProject && editingProject.images?.length > 0">
+          <h4>Images existantes</h4>
+          <div class="image-grid">
+            <div *ngFor="let image of editingProject.images" class="existing-image">
+              <img [src]="'http://localhost:5000' + image" [alt]="editingProject.title">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="dialog-actions">
+        <button type="button" mat-button (click)="closeDialog()">Annuler</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="!projectForm.valid || saving">
+          <mat-spinner *ngIf="saving" diameter="20"></mat-spinner>
+          {{ saving ? 'Enregistrement...' : (editingProject ? 'Modifier' : 'Ajouter') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
