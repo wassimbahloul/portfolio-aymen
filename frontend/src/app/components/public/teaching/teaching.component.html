@@ -1,73 +1,120 @@
-<div class="teaching-container">
+<div class="modern-teaching-container">
+  <!-- Header Section -->
   <div class="teaching-header">
-    <h1>Enseignement</h1>
-    <p>Mes activités pédagogiques et cours dispensés</p>
+    <div class="container">
+      <div class="header-content">
+        <div class="header-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+            <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1 class="page-title">Enseignement Mathématique</h1>
+          <p class="page-description">Cours et activités pédagogiques en mathématiques et domaines connexes</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="teaching-content" *ngIf="!loading">
-    <!-- Filter Section -->
-    <div class="filter-section" *ngIf="courses.length > 0">
-      <div class="filter-controls">
-        <mat-form-field appearance="outline">
-          <mat-label>Filtrer par niveau</mat-label>
-          <mat-select [(value)]="selectedLevel" (selectionChange)="filterCourses()">
-            <mat-option value="">Tous les niveaux</mat-option>
-            <mat-option value="undergraduate">Licence</mat-option>
-            <mat-option value="graduate">Master</mat-option>
-            <mat-option value="phd">Doctorat</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Filtrer par institution</mat-label>
-          <mat-select [(value)]="selectedInstitution" (selectionChange)="filterCourses()">
-            <mat-option value="">Toutes les institutions</mat-option>
-            <mat-option *ngFor="let institution of institutions" [value]="institution">
-              {{ institution }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Rechercher</mat-label>
-          <input matInput 
-                 [(ngModel)]="searchTerm" 
-                 (input)="filterCourses()" 
-                 placeholder="Titre, département, description...">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- Courses List -->
-    <div class="courses-list" *ngIf="filteredCourses.length > 0">
-      <div class="course-item" *ngFor="let course of filteredCourses; let i = index">
-        <div class="course-header">
-          <div class="course-title-section">
-            <h3 class="course-title">{{ course.title }}</h3>
+    <div class="container">
+      <!-- Filter Section -->
+      <div class="filter-section" *ngIf="courses.length > 0">
+        <div class="filter-header">
+          <h2>Course Catalog</h2>
+          <p>Filter by academic level and mathematical subject area</p>
+        </div>
+        
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label class="filter-label">Academic Level</label>
+            <select class="modern-select" [(ngModel)]="selectedLevel" (change)="filterCourses()">
+              <option value="">All Levels</option>
+              <option value="undergraduate">Undergraduate</option>
+              <option value="graduate">Graduate</option>
+              <option value="phd">Doctoral</option>
+              <option value="postdoc">Postdoctoral</option>
+            </select>
           </div>
-          <div class="course-badges">
-            <span class="level-badge" [ngClass]="'level-' + course.level">
-              {{ getLevelLabel(course.level) }}
-            </span>
+
+          <div class="filter-group">
+            <label class="filter-label">Institution</label>
+            <select class="modern-select" [(ngModel)]="selectedInstitution" (change)="filterCourses()">
+              <option value="">All Institutions</option>
+              <option *ngFor="let institution of institutions" [value]="institution">
+                {{ institution }}
+              </option>
+            </select>
+          </div>
+
+          <div class="filter-group search-group">
+            <label class="filter-label">Search Courses</label>
+            <div class="search-input-wrapper">
+              <input 
+                type="text"
+                class="search-input"
+                [(ngModel)]="searchTerm" 
+                (input)="filterCourses()" 
+                placeholder="Search by title, subject, description...">
+              <div class="search-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div class="course-details">
-          <div class="course-institution">
-            <mat-icon>school</mat-icon>
-            <span>{{ course.institution }}</span>
+      <!-- Courses Grid -->
+      <div class="courses-grid" *ngIf="filteredCourses.length > 0">
+        <div class="course-card" *ngFor="let course of filteredCourses; let i = index">
+          <div class="card-header">
+            <div class="course-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 3h18v18H3zM12 8v8M8 12h8"/>
+              </svg>
+            </div>
+            <div class="course-badges">
+              <span class="level-badge" [ngClass]="'level-' + course.level">
+                {{ getLevelLabel(course.level) }}
+              </span>
+            </div>
           </div>
 
-          <div class="course-department" *ngIf="course.department">
-            <mat-icon>domain</mat-icon>
-            <span>{{ course.department }}</span>
-          </div>
+          <div class="card-content">
+            <h3 class="course-title">{{ course.title }}</h3>
 
-          <div class="course-period" *ngIf="course.semester || course.academicYear">
-            <mat-icon>calendar_today</mat-icon>
-            <span>
-              <span *ngIf="course.semester">{{ getSemesterLabel(course.semester) }}</span>
+            <div class="course-meta">
+              <div class="course-institution" *ngIf="course.institution">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21h18"/>
+                  <path d="M5 21V7l8-4v18"/>
+                  <path d="M19 21V11l-6-4"/>
+                </svg>
+                <span>{{ course.institution }}</span>
+              </div>
+
+              <div class="course-department" *ngIf="course.department">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  <path d="M2 17l10 5 10-5"/>
+                  <path d="M2 12l10 5 10-5"/>
+                </svg>
+                <span>{{ course.department }}</span>
+              </div>
+
+              <div class="course-period" *ngIf="course.semester || course.academicYear">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <span>
+                  <span *ngIf="course.semester">{{ getSemesterLabel(course.semester) }}</span>
               <span *ngIf="course.semester && course.academicYear"> - </span>
               <span *ngIf="course.academicYear">{{ course.academicYear }}</span>
             </span>

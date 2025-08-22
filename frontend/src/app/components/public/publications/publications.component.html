@@ -1,143 +1,234 @@
-<div class="publications-container">
+<div class="modern-publications-container">
+  <!-- Header Section -->
   <div class="publications-header">
-    <h1>Publications</h1>
-    <p>Mes travaux de recherche et publications scientifiques</p>
+    <div class="container">
+      <div class="header-content">
+        <div class="header-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1 class="page-title">Mathematical Publications</h1>
+          <p class="page-description">Research contributions to mathematical literature and peer-reviewed journals</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="publications-content" *ngIf="!loading">
-    <!-- Filter Section -->
-    <div class="filter-section" *ngIf="publications.length > 0">
-      <div class="filter-controls">
-        <mat-form-field appearance="outline">
-          <mat-label>Filtrer par type</mat-label>
-          <mat-select [(value)]="selectedType" (selectionChange)="filterPublications()">
-            <mat-option value="">Tous les types</mat-option>
-            <mat-option value="journal">Articles de journal</mat-option>
-            <mat-option value="conference">Conférences</mat-option>
-            <mat-option value="book">Livres</mat-option>
-            <mat-option value="chapter">Chapitres</mat-option>
-            <mat-option value="preprint">Prépublications</mat-option>
-          </mat-select>
-        </mat-form-field>
+    <div class="container">
+      <!-- Filter Section -->
+      <div class="filter-section" *ngIf="publications.length > 0">
+        <div class="filter-header">
+          <h2>Filter Publications</h2>
+          <p>Refine your search using the filters below</p>
+        </div>
+        
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label class="filter-label">Publication Type</label>
+            <select class="modern-select" [(ngModel)]="selectedType" (change)="filterPublications()">
+              <option value="">All Types</option>
+              <option value="journal">Journal Articles</option>
+              <option value="conference">Conference Papers</option>
+              <option value="book">Books</option>
+              <option value="chapter">Book Chapters</option>
+              <option value="preprint">Preprints & ArXiv</option>
+              <option value="theorem">Theorems & Proofs</option>
+              <option value="review">Review Articles</option>
+            </select>
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Filtrer par statut</mat-label>
-          <mat-select [(value)]="selectedStatus" (selectionChange)="filterPublications()">
-            <mat-option value="">Tous les statuts</mat-option>
-            <mat-option value="published">Publié</mat-option>
-            <mat-option value="accepted">Accepté</mat-option>
-            <mat-option value="submitted">Soumis</mat-option>
-            <mat-option value="in_preparation">En préparation</mat-option>
-          </mat-select>
-        </mat-form-field>
+          <div class="filter-group">
+            <label class="filter-label">Status</label>
+            <select class="modern-select" [(ngModel)]="selectedStatus" (change)="filterPublications()">
+              <option value="">All Status</option>
+              <option value="published">Published</option>
+              <option value="accepted">Accepted</option>
+              <option value="submitted">Submitted</option>
+              <option value="in_preparation">In Preparation</option>
+            </select>
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Rechercher</mat-label>
-          <input matInput 
-                 [(ngModel)]="searchTerm" 
-                 (input)="filterPublications()" 
-                 placeholder="Titre, auteur, journal...">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
+          <div class="filter-group search-group">
+            <label class="filter-label">Search</label>
+            <div class="search-input-wrapper">
+              <input 
+                type="text"
+                class="search-input"
+                [(ngModel)]="searchTerm" 
+                (input)="filterPublications()" 
+                placeholder="Search by title, author, journal, mathematical topic...">
+              <div class="search-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- Publications List -->
-    <div class="publications-list" *ngIf="filteredPublications.length > 0">
-      <div class="publication-item" *ngFor="let publication of filteredPublications; let i = index">
-        <div class="publication-header">
-          <h3 class="publication-title">{{ publication.title }}</h3>
-          <div class="publication-badges">
-            <span class="type-badge" [ngClass]="'type-' + publication.type">
-              {{ getTypeLabel(publication.type) }}
-            </span>
-            <span class="status-badge" [ngClass]="'status-' + publication.status">
-              {{ getStatusLabel(publication.status) }}
-            </span>
-          </div>
-        </div>
+      <!-- Publications List -->
+      <div class="publications-list" *ngIf="filteredPublications.length > 0">
+        <div class="publications-grid">
+          <div class="publication-card" *ngFor="let publication of filteredPublications; let i = index">
+            <!-- Publication Header -->
+            <div class="publication-header">
+              <div class="publication-badges">
+                <span class="type-badge" [ngClass]="'type-' + publication.type">
+                  {{ getTypeLabel(publication.type) }}
+                </span>
+                <span class="status-badge" [ngClass]="'status-' + publication.status">
+                  {{ getStatusLabel(publication.status) }}
+                </span>
+              </div>
+              
+              <div class="publication-year" *ngIf="publication.year">
+                {{ publication.year }}
+              </div>
+            </div>
 
-        <div class="publication-authors" *ngIf="publication.authors?.length">
-          <span *ngFor="let author of publication.authors; let last = last">
-            <strong *ngIf="author.isMainAuthor">{{ author.name }}</strong>
-            <span *ngIf="!author.isMainAuthor">{{ author.name }}</span>
-            <span *ngIf="!last">, </span>
-          </span>
-        </div>
+            <!-- Publication Content -->
+            <div class="publication-content">
+              <h3 class="publication-title">{{ publication.title }}</h3>
 
-        <div class="publication-details">
-          <div class="journal-info">
-            <strong>{{ publication.journal }}</strong>
-            <span *ngIf="publication.volume"> - Vol. {{ publication.volume }}</span>
-            <span *ngIf="publication.issue">({{ publication.issue }})</span>
-            <span *ngIf="publication.pages">, pp. {{ publication.pages }}</span>
-            <span class="year"> ({{ publication.year }})</span>
-          </div>
-        </div>
+              <div class="publication-authors" *ngIf="publication.authors?.length">
+                <div class="authors-list">
+                  <span *ngFor="let author of publication.authors; let last = last" class="author-name">
+                    <strong *ngIf="author.isMainAuthor">{{ author.name }}</strong>
+                    <span *ngIf="!author.isMainAuthor">{{ author.name }}</span>
+                    <span *ngIf="!last" class="author-separator">, </span>
+                  </span>
+                </div>
+              </div>
 
-        <div class="publication-abstract" *ngIf="publication.abstract">
-          <p [class.expanded]="expandedAbstracts[i]">{{ publication.abstract }}</p>
-          <button mat-button 
+              <div class="publication-details">
+                <div class="journal-info" *ngIf="publication.journal">
+                  <strong class="journal-name">{{ publication.journal }}</strong>
+                  <span class="publication-meta">
+                    <span *ngIf="publication.volume"> - Vol. {{ publication.volume }}</span>
+                    <span *ngIf="publication.issue">({{ publication.issue }})</span>
+                    <span *ngIf="publication.pages">, pp. {{ publication.pages }}</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Abstract -->
+              <div class="publication-abstract" *ngIf="publication.abstract">
+                <div class="abstract-content" [class.expanded]="expandedAbstracts[i]">
+                  <p>{{ publication.abstract }}</p>
+                </div>
+                <button 
+                  class="abstract-toggle"
                   *ngIf="publication.abstract.length > 200"
                   (click)="toggleAbstract(i)">
-            {{ expandedAbstracts[i] ? 'Voir moins' : 'Voir plus' }}
-          </button>
-        </div>
+                  {{ expandedAbstracts[i] ? 'Show Less' : 'Read More' }}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline [attr.points]="expandedAbstracts[i] ? '18 15 12 9 6 15' : '6 9 12 15 18 9'"/>
+                  </svg>
+                </button>
+              </div>
 
-        <div class="publication-keywords" *ngIf="publication.keywords?.length">
-          <mat-chip-listbox>
-            <mat-chip *ngFor="let keyword of publication.keywords">{{ keyword }}</mat-chip>
-          </mat-chip-listbox>
-        </div>
+              <!-- Keywords -->
+              <div class="publication-keywords" *ngIf="publication.keywords?.length">
+                <div class="keywords-container">
+                  <span class="keyword-tag" *ngFor="let keyword of publication.keywords">
+                    {{ keyword }}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-        <div class="publication-actions">
-          <div class="publication-links">
-            <a [href]="link.url" 
-               target="_blank" 
-               mat-stroked-button 
-               *ngFor="let link of publication.links">
-              <mat-icon>link</mat-icon>
-              {{ link.title }}
-            </a>
-            
-            <a [href]="'http://localhost:5000' + publication.file" 
-               target="_blank" 
-               mat-stroked-button 
-               *ngIf="publication.file">
-              <mat-icon>description</mat-icon>
-              PDF
-            </a>
-          </div>
+            <!-- Publication Footer -->
+            <div class="publication-footer">
+              <div class="publication-links">
+                <a 
+                  *ngFor="let link of publication.links" 
+                  [href]="link.url" 
+                  target="_blank" 
+                  class="publication-link">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                  </svg>
+                  {{ link.title }}
+                </a>
+                
+                <a 
+                  *ngIf="publication.file"
+                  [href]="'http://localhost:5000' + publication.file" 
+                  target="_blank" 
+                  class="publication-link pdf-link">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                  </svg>
+                  PDF
+                </a>
+              </div>
 
-          <div class="publication-meta">
-            <span *ngIf="publication.doi" class="doi">
-              DOI: <a [href]="'https://doi.org/' + publication.doi" target="_blank">{{ publication.doi }}</a>
-            </span>
-            <span *ngIf="publication.citationCount" class="citations">
-              {{ publication.citationCount }} citations
-            </span>
+              <div class="publication-meta-info">
+                <span *ngIf="publication.doi" class="doi-info">
+                  DOI: <a [href]="'https://doi.org/' + publication.doi" target="_blank" class="doi-link">
+                    {{ publication.doi }}
+                  </a>
+                </span>
+                <span *ngIf="publication.citationCount" class="citations-info">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
+                    <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
+                  </svg>
+                  {{ publication.citationCount }} citations
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- No Publications Message -->
-    <div class="no-publications" *ngIf="filteredPublications.length === 0 && publications.length > 0">
-      <mat-icon>search_off</mat-icon>
-      <h3>Aucune publication trouvée</h3>
-      <p>Essayez de modifier vos critères de recherche</p>
-    </div>
+      <!-- No Publications Message -->
+      <div class="no-publications" *ngIf="filteredPublications.length === 0 && publications.length > 0">
+        <div class="no-content-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+            <line x1="11" y1="8" x2="11" y2="12"/>
+            <line x1="11" y1="16" x2="11.01" y2="16"/>
+          </svg>
+        </div>
+        <h3>No Publications Found</h3>
+        <p>Try adjusting your search criteria or filters to find what you're looking for.</p>
+        <button class="reset-btn" (click)="resetFilters()">Reset Filters</button>
+      </div>
 
-    <div class="no-publications" *ngIf="publications.length === 0">
-      <mat-icon>article</mat-icon>
-      <h3>Aucune publication disponible</h3>
-      <p>Les publications seront affichées ici une fois ajoutées</p>
+      <div class="no-publications" *ngIf="publications.length === 0">
+        <div class="no-content-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            <line x1="10" y1="8" x2="10" y2="16"/>
+            <line x1="14" y1="8" x2="14" y2="16"/>
+          </svg>
+        </div>
+        <h3>No Publications Available</h3>
+        <p>Publications will be displayed here once they are added to the portfolio.</p>
+      </div>
     </div>
   </div>
 
-  <!-- Loading indicator -->
-  <div class="loading" *ngIf="loading">
-    <mat-spinner></mat-spinner>
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-content">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+      </div>
+      <h3>Loading Publications...</h3>
+      <p>Please wait while we fetch the latest research publications.</p>
+    </div>
   </div>
 </div>
 

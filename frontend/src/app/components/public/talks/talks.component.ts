@@ -23,10 +23,16 @@ export class TalksComponent implements OnInit {
 
   loadTalks() {
     const filters = this.filterType ? { type: this.filterType } : {};
-    this.api.getTalks(filters).subscribe(data => {
-      this.allTalks = data;
-      this.applyFiltersAndSort();
-    });
+    this.api.getTalks(filters).subscribe(
+      data => {
+        console.log('Talks received:', data); // Debug log
+        this.allTalks = data;
+        this.applyFiltersAndSort();
+      },
+      error => {
+        console.error('Error loading talks:', error); // Error log
+      }
+    );
   }
 
   applyFiltersAndSort() {
@@ -87,6 +93,34 @@ export class TalksComponent implements OnInit {
 
   getSlideUrl(slide: string): string {
     return `${environment.apiUrl}/Uploads/${slide}`;
+  }
+
+  getTalkTypeLabel(type: string): string {
+    const typeLabels: { [key: string]: string } = {
+      'talk': 'Conférence Plénière',
+      'international seminar': 'Séminaire International',
+      'poster': 'Poster Scientifique',
+      'organized seminar': 'Séminaire Organisé',
+      'workshop': 'Atelier de Recherche'
+    };
+    return typeLabels[type] || type;
+  }
+
+  formatDate(dateString: string): string {
+    console.log('Formatting date:', dateString); // Debug log
+    if (!dateString) return 'Date non spécifiée';
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid date format:', dateString);
+      return dateString; // Return original string if date is invalid
+    }
+    
+    return date.toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 
   // Getter for template to access filtered talks

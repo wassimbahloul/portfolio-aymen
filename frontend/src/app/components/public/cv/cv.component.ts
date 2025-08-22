@@ -50,4 +50,18 @@ export class CvComponent implements OnInit {
       document.body.removeChild(link);
     }
   }
+
+  openInNewTab(): void {
+    if (this.cvData.cvFile) {
+      window.open(`http://localhost:5000${this.cvData.cvFile}`, '_blank');
+    }
+  }
+
+  getCurrentDate(): string {
+    return new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  }
 }

@@ -44,12 +44,19 @@ export class PublicationsComponent implements OnInit {
     this.filteredPublications = this.publications.filter(publication => {
       const matchesType = !this.selectedType || publication.type === this.selectedType;
       const matchesStatus = !this.selectedStatus || publication.status === this.selectedStatus;
-      const matchesSearch = !this.searchTerm || 
-        publication.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        publication.journal.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        publication.authors.some((author: any) => 
-          author.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-        );
+      
+      if (!this.searchTerm) {
+        return matchesType && matchesStatus;
+      }
+      
+      const searchLower = this.searchTerm.toLowerCase();
+      const matchesTitle = publication.title?.toLowerCase().includes(searchLower) || false;
+      const matchesJournal = publication.journal?.toLowerCase().includes(searchLower) || false;
+      const matchesAuthors = publication.authors?.some((author: any) => 
+        author.name?.toLowerCase().includes(searchLower)
+      ) || false;
+      
+      const matchesSearch = matchesTitle || matchesJournal || matchesAuthors;
       
       return matchesType && matchesStatus && matchesSearch;
     });
@@ -59,23 +66,30 @@ export class PublicationsComponent implements OnInit {
     this.expandedAbstracts[index] = !this.expandedAbstracts[index];
   }
 
+  resetFilters(): void {
+    this.selectedType = '';
+    this.selectedStatus = '';
+    this.searchTerm = '';
+    this.filterPublications();
+  }
+
   getTypeLabel(type: string): string {
     const labels: { [key: string]: string } = {
-      'journal': 'Journal',
-      'conference': 'Conférence',
-      'book': 'Livre',
-      'chapter': 'Chapitre',
-      'preprint': 'Prépublication'
+      'journal': 'Journal Articles',
+      'conference': 'Conference Papers',
+      'book': 'Books',
+      'chapter': 'Book Chapters',
+      'preprint': 'Preprints'
     };
     return labels[type] || type;
   }
 
   getStatusLabel(status: string): string {
     const labels: { [key: string]: string } = {
-      'published': 'Publié',
-      'accepted': 'Accepté',
-      'submitted': 'Soumis',
-      'in_preparation': 'En préparation'
+      'published': 'Published',
+      'accepted': 'Accepted',
+      'submitted': 'Submitted',
+      'in_preparation': 'In Preparation'
     };
     return labels[status] || status;
   }

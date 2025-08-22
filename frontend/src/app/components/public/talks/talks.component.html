@@ -1,78 +1,175 @@
-<div class="portfolio-container">
-  <div class="header-section">
-    <h2>🎤 Talks & Seminars</h2>
-    <p class="subtitle">Explore my presentations and contributions at mathematical conferences and seminars worldwide.</p>
-  </div>
-
-  <!-- Filter Section -->
-  <div class="filter-section">
-    <div class="filter-header">
-      <h3>Filter & Search</h3>
-      <span class="results-count">{{ talks.length }} presentation(s)</span>
-    </div>
-    
-    <div class="filter-controls">
-      <div class="filter-group">
-        <label>Type</label>
-        <select [(ngModel)]="filterType" (change)="loadTalks()" class="filter-select">
-          <option value="">All Types</option>
-          <option value="talk">🎤 Talk</option>
-          <option value="international seminar">🌍 International Seminar</option>
-          <option value="poster">📋 Poster</option>
-          <option value="organized seminar">🏛️ Organized Seminar</option>
-        </select>
-      </div>
-      
-      <div class="filter-group">
-        <label>Search</label>
-        <input type="text" 
-               [(ngModel)]="searchTerm" 
-               (input)="onSearch()" 
-               placeholder="Search by name, date, or type..."
-               class="search-input">
-      </div>
-      
-      <div class="filter-group">
-        <label>Sort by</label>
-        <select [(ngModel)]="sortBy" (change)="onSort()" class="filter-select">
-          <option value="date-desc">📅 Date (Newest)</option>
-          <option value="date-asc">📅 Date (Oldest)</option>
-          <option value="name-asc">🔤 Name (A-Z)</option>
-          <option value="name-desc">🔤 Name (Z-A)</option>
-        </select>
-      </div>
-      
-      <button class="clear-filters" (click)="clearFilters()">
-        🗑️ Clear Filters
-      </button>
-    </div>
-  </div>
-
-  <!-- Talks List -->
-  <div class="talks-grid">
-    <div class="talk-card" *ngFor="let talk of talks">
-      <div class="talk-header">
-        <span class="talk-type" [class]="'type-' + talk.type.replace(' ', '-')">{{ talk.type }}</span>
-      </div>
-      
-      <div class="talk-content">
-        <h3 class="talk-name">{{ talk.name }}</h3>
-        <p class="talk-date"><span class="icon">📅</span> {{ talk.date }}</p>
-        
-        <div class="talk-links" *ngIf="talk.link || talk.slide">
-          <a *ngIf="talk.link" [href]="talk.link" target="_blank" class="talk-link external-link">
-            <span class="icon">🔗</span> Conference Website
-          </a>
-          <a *ngIf="talk.slide" [href]="getSlideUrl(talk.slide)" download target="_blank" class="talk-link slide-link">
-            <span class="icon">📄</span> Download Slides
-          </a>
+<div class="modern-talks-container">
+  <!-- Header Section -->
+  <div class="talks-header">
+    <div class="container">
+      <div class="header-content">
+        <div class="header-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1 class="page-title">Conférences & Séminaires</h1>
+          <p class="page-description">Présentations et contributions dans les conférences mathématiques internationales</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- No Results Message -->
-  <div class="no-results" *ngIf="talks.length === 0">
-    <p>No talks found matching your criteria. Try adjusting the filters or search term.</p>
+  <!-- Content Section -->
+  <div class="talks-content">
+    <div class="container">
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-header">
+          <h2>Rechercher & Filtrer</h2>
+          <p>Explorez mes {{ talks.length }} présentation(s) mathématiques</p>
+        </div>
+        
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label class="filter-label">Type de Présentation</label>
+            <select [(ngModel)]="filterType" (change)="loadTalks()" class="modern-select">
+              <option value="">Tous les Types</option>
+              <option value="talk">Conférence Plénière</option>
+              <option value="international seminar">Séminaire International</option>
+              <option value="poster">Poster Scientifique</option>
+              <option value="organized seminar">Séminaire Organisé</option>
+              <option value="workshop">Atelier de Recherche</option>
+            </select>
+          </div>
+          
+          <div class="search-group">
+            <label class="filter-label">Recherche</label>
+            <div class="search-input-wrapper">
+              <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="21 21l-4.35-4.35"/>
+              </svg>
+              <input type="text" 
+                     [(ngModel)]="searchTerm" 
+                     (input)="onSearch()" 
+                     placeholder="Rechercher par titre, date, domaine mathématique..."
+                     class="search-input">
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Trier par</label>
+            <select [(ngModel)]="sortBy" (change)="onSort()" class="modern-select">
+              <option value="date-desc">Date (Plus Récent)</option>
+              <option value="date-asc">Date (Plus Ancien)</option>
+              <option value="name-asc">Titre (A-Z)</option>
+              <option value="name-desc">Titre (Z-A)</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">&nbsp;</label>
+            <button class="clear-filters-btn" (click)="clearFilters()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+              Effacer Filtres
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Talks Grid -->
+      <div class="talks-grid">
+        <div class="talk-card" *ngFor="let talk of talks">
+          <div class="card-header">
+            <div class="talk-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3L16.25 15H8.75l-2.25-1.8v5.3h12.5Z"/>
+              </svg>
+            </div>
+            
+            <div class="talk-badges">
+              <span class="type-badge" [class]="'type-' + talk.type.replace(' ', '-')">
+                {{ getTalkTypeLabel(talk.type) }}
+              </span>
+              <span class="status-badge status-completed">Présenté</span>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <h3 class="talk-title">{{ talk.name }}</h3>
+            
+            <div class="talk-meta">
+              <div class="talk-date">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                {{ formatDate(talk.date) }}
+              </div>
+              
+              <div class="talk-venue" *ngIf="talk.venue">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                {{ talk.venue }}
+              </div>
+              
+              <div class="talk-duration" *ngIf="talk.duration">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12,6 12,12 16,14"/>
+                </svg>
+                {{ talk.duration }} min
+              </div>
+            </div>
+            
+            <p class="talk-description" *ngIf="talk.description">
+              {{ talk.description }}
+            </p>
+            
+            <div class="talk-actions" *ngIf="talk.link || talk.slide">
+              <a *ngIf="talk.link" 
+                 [href]="talk.link" 
+                 target="_blank" 
+                 class="action-btn primary-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                Site de la Conférence
+              </a>
+              
+              <a *ngIf="talk.slide" 
+                 [href]="getSlideUrl(talk.slide)" 
+                 download 
+                 target="_blank" 
+                 class="action-btn secondary-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10,9 9,9 8,9"/>
+                </svg>
+                Télécharger Slides
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results Message -->
+      <div class="no-talks-section" *ngIf="talks.length === 0">
+        <div class="no-talks-icon">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3L16.25 15H8.75l-2.25-1.8v5.3h12.5Z"/>
+          </svg>
+        </div>
+        <h2>Aucune présentation trouvée</h2>
+        <p>Aucune conférence ne correspond aux critères de recherche. Essayez d'ajuster les filtres ou le terme de recherche.</p>
+      </div>
+    </div>
   </div>
 </div>

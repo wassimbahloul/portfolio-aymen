@@ -12,6 +12,8 @@ export class AppComponent implements OnInit {
   title = 'portfolio-app';
   isMenuOpen = false;
   currentRoute = '';
+  logoSrc = 'assets/images/aymen(1).png';
+  showDefaultLogo = false;
 
   constructor(
     private router: Router,
@@ -28,6 +30,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentRoute = this.router.url;
+  }
+
+  onImageError(): void {
+    this.showDefaultLogo = true;
   }
 
   toggleMenu(): void {

@@ -30,5 +30,12 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+
+  getYear(period: string): string {
+    if (!period) return '';
+    // Extract the year from the period string (e.g., "2020-2023" -> "2020")
+    const match = period.match(/\d{4}/);
+    return match ? match[0] : period.substring(0, 4);
+  }
 }
 

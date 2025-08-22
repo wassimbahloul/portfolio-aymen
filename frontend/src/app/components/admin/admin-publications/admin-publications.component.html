@@ -24,7 +24,7 @@
         <mat-option value="book">Livre</mat-option>
         <mat-option value="chapter">Chapitre de livre</mat-option>
         <mat-option value="thesis">Thèse</mat-option>
-        <mat-option value="preprint">Preprint</mat-option>
+        <mat-option value="preprint">Prépublication</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -62,10 +62,14 @@
         <div class="authors-list">
           <strong>Auteurs:</strong> {{ publication.authors?.join(', ') }}
         </div>
-        
-        <div class="publication-venue" *ngIf="publication.journal || publication.conference">
-          <strong>{{ publication.type === 'journal' ? 'Journal:' : 'Conférence:' }}</strong>
-          {{ publication.journal || publication.conference }}
+
+        <div class="publication-venue" *ngIf="publication.journal || publication.conference || publication.institution">
+          <strong>
+            {{ publication.type === 'journal' ? 'Journal:' :
+            publication.type === 'conference' ? 'Conférence:' :
+            publication.type === 'thesis' ? 'Institution:' : '' }}
+          </strong>
+          {{ publication.journal || publication.conference || publication.institution }}
         </div>
 
         <div class="publication-details">
@@ -78,10 +82,13 @@
           <div *ngIf="publication.doi" class="detail-item">
             <span>DOI: {{ publication.doi }}</span>
           </div>
+          <div *ngIf="publication.degree" class="detail-item">
+            <span>Degré: {{ publication.degree }}</span>
+          </div>
         </div>
 
-        <div class="publication-links" *ngIf="publication.pdfUrl || publication.externalLinks?.length">
-          <button mat-button color="primary" *ngIf="publication.pdfUrl" (click)="openPDF(publication.pdfUrl)">
+        <div class="publication-links" *ngIf="publication.file || publication.externalLinks?.length">
+          <button mat-button color="primary" *ngIf="publication.file" (click)="openPDF(publication.file)">
             <mat-icon>picture_as_pdf</mat-icon>
             PDF
           </button>
@@ -132,26 +139,54 @@
       <mat-form-field appearance="outline">
         <mat-label>Titre *</mat-label>
         <input matInput formControlName="title" required>
+        <mat-error *ngIf="publicationForm.get('title')?.hasError('required')">
+          Le titre est requis
+        </mat-error>
       </mat-form-field>
 
       <div class="form-row">
         <mat-form-field appearance="outline">
-          <mat-label>Type de publication</mat-label>
-          <mat-select formControlName="type">
+          <mat-label>Type de publication *</mat-label>
+          <mat-select formControlName="type" required>
             <mat-option value="journal">Article de journal</mat-option>
             <mat-option value="conference">Conférence</mat-option>
             <mat-option value="book">Livre</mat-option>
             <mat-option value="chapter">Chapitre de livre</mat-option>
             <mat-option value="thesis">Thèse</mat-option>
-            <mat-option value="preprint">Preprint</mat-option>
+            <mat-option value="preprint">Prépublication</mat-option>
           </mat-select>
+          <mat-error *ngIf="publicationForm.get('type')?.hasError('required')">
+            Le type est requis
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Année</mat-label>
-          <input matInput formControlName="year" type="number" min="1900" max="2030">
+          <mat-label>Année *</mat-label>
+          <input matInput formControlName="year" type="number" min="1900" [max]="maxYear" required>
+          <mat-error *ngIf="publicationForm.get('year')?.hasError('required')">
+            L'année est requise
+          </mat-error>
+          <mat-error *ngIf="publicationForm.get('year')?.hasError('min')">
+            L'année doit être supérieure ou égale à 1900
+          </mat-error>
+          <mat-error *ngIf="publicationForm.get('year')?.hasError('max')">
+            L'année ne peut pas dépasser {{ maxYear }}
+          </mat-error>
         </mat-form-field>
       </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Statut *</mat-label>
+        <mat-select formControlName="status" required>
+          <mat-option value="published">Publié</mat-option>
+          <mat-option value="accepted">Accepté</mat-option>
+          <mat-option value="submitted">Soumis</mat-option>
+          <mat-option value="in_preparation">En préparation</mat-option>
+        </mat-select>
+        <mat-error *ngIf="publicationForm.get('status')?.hasError('required')">
+          Le statut est requis
+        </mat-error>
+      </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Auteurs (séparés par des virgules)</mat-label>
@@ -163,11 +198,14 @@
         <textarea matInput formControlName="abstract" rows="4"></textarea>
       </mat-form-field>
 
-      <!-- Journal/Conference specific fields -->
+      <!-- Journal-specific fields -->
       <div *ngIf="publicationForm.get('type')?.value === 'journal'">
         <mat-form-field appearance="outline">
-          <mat-label>Journal</mat-label>
-          <input matInput formControlName="journal">
+          <mat-label>Journal *</mat-label>
+          <input matInput formControlName="journal" required>
+          <mat-error *ngIf="publicationForm.get('journal')?.hasError('required')">
+            Le journal est requis
+          </mat-error>
         </mat-form-field>
 
         <div class="form-row">
@@ -188,10 +226,14 @@
         </div>
       </div>
 
+      <!-- Conference-specific fields -->
       <div *ngIf="publicationForm.get('type')?.value === 'conference'">
         <mat-form-field appearance="outline">
-          <mat-label>Nom de la conférence</mat-label>
-          <input matInput formControlName="conference">
+          <mat-label>Nom de la conférence *</mat-label>
+          <input matInput formControlName="conference" required>
+          <mat-error *ngIf="publicationForm.get('conference')?.hasError('required')">
+            Le nom de la conférence est requis
+          </mat-error>
         </mat-form-field>
 
         <div class="form-row">
@@ -207,10 +249,15 @@
         </div>
       </div>
 
+      <!-- Book/Chapter-specific fields -->
       <div *ngIf="publicationForm.get('type')?.value === 'book' || publicationForm.get('type')?.value === 'chapter'">
         <mat-form-field appearance="outline">
-          <mat-label>{{ publicationForm.get('type')?.value === 'book' ? 'Éditeur' : 'Titre du livre' }}</mat-label>
-          <input matInput formControlName="publisher">
+          <mat-label>{{ publicationForm.get('type')?.value === 'book' ? 'Éditeur *' : 'Titre du livre *' }}</mat-label>
+          <input matInput formControlName="publisher" required>
+          <mat-error *ngIf="publicationForm.get('publisher')?.hasError('required')">
+            {{ publicationForm.get('type')?.value === 'book' ? 'L\'éditeur est requis' : 'Le titre du livre est requis'
+            }}
+          </mat-error>
         </mat-form-field>
 
         <div class="form-row" *ngIf="publicationForm.get('type')?.value === 'chapter'">
@@ -224,6 +271,32 @@
             <input matInput formControlName="pages" placeholder="1-10">
           </mat-form-field>
         </div>
+      </div>
+
+      <!-- Thesis-specific fields -->
+      <div *ngIf="publicationForm.get('type')?.value === 'thesis'">
+        <mat-form-field appearance="outline">
+          <mat-label>Institution *</mat-label>
+          <input matInput formControlName="institution" required>
+          <mat-error *ngIf="publicationForm.get('institution')?.hasError('required')">
+            L'institution est requise
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Degré *</mat-label>
+          <mat-select formControlName="degree" required>
+            <mat-option value="PhD">PhD</mat-option>
+            <mat-option value="Master">Master</mat-option>
+            <mat-option value="Bachelor">Bachelor</mat-option>
+          </mat-select>
+          <mat-error *ngIf="publicationForm.get('degree')?.hasError('required')">
+            Le degré est requis
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Conseiller</mat-label>
+          <input matInput formControlName="advisor">
+        </mat-form-field>
       </div>
 
       <!-- Common fields -->
@@ -244,11 +317,17 @@
         <mat-form-field appearance="outline">
           <mat-label>Nombre de citations</mat-label>
           <input matInput formControlName="citations" type="number" min="0">
+          <mat-error *ngIf="publicationForm.get('citations')?.hasError('min')">
+            Le nombre de citations doit être positif
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Nombre de téléchargements</mat-label>
           <input matInput formControlName="downloads" type="number" min="0">
+          <mat-error *ngIf="publicationForm.get('downloads')?.hasError('min')">
+            Le nombre de téléchargements doit être positif
+          </mat-error>
         </mat-form-field>
       </div>
 
@@ -269,7 +348,10 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>URL</mat-label>
-              <input matInput formControlName="url" type="url">
+              <input matInput formControlName="url" type="url" placeholder="https://example.com">
+              <mat-error *ngIf="link.get('url')?.hasError('pattern')">
+                L'URL doit commencer par http:// ou https://
+              </mat-error>
             </mat-form-field>
             <button type="button" mat-icon-button color="warn" (click)="removeExternalLink(i)">
               <mat-icon>delete</mat-icon>
@@ -290,16 +372,16 @@
           <mat-icon>upload_file</mat-icon>
           Télécharger un PDF
         </button>
-        
-        <div class="current-pdf" *ngIf="editingPublication?.pdfUrl">
+
+        <div class="current-pdf" *ngIf="editingPublication?.file">
           <mat-icon>picture_as_pdf</mat-icon>
           <span>PDF actuel disponible</span>
-          <button type="button" mat-button color="primary" (click)="openPDF(editingPublication.pdfUrl)">
+          <button type="button" mat-button color="primary" (click)="openPDF(editingPublication.file)">
             <mat-icon>open_in_new</mat-icon>
             Ouvrir
           </button>
         </div>
-        
+
         <div class="selected-pdf" *ngIf="selectedFile">
           <mat-icon>picture_as_pdf</mat-icon>
           <span>{{ selectedFile.name }}</span>
@@ -318,4 +400,3 @@
     </form>
   </div>
 </div>
-

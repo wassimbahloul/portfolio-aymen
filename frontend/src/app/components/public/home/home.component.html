@@ -1,85 +1,156 @@
-<div class="home-container">
-  <!-- Hero Section -->
-<section class="hero-section" [style.background-image]="'url(' + (homeData?.backgroundImage ? 'http://localhost:5000' + homeData.backgroundImage : 'assets/default-bg.jpg') + ')'">
-    <div class="hero-overlay">
-      <div class="hero-content">
-        <div class="profile-section">
-          <img [src]="homeData?.profileImage ? ('http://localhost:5000' + homeData.profileImage) : 'assets/default-profile.jpg'" alt="Photo de profil" class="profile-image">
+<div class="innovative-home">
+  <!-- Enhanced Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background">
+      <div class="animated-gradient"></div>
+      <div class="geometric-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+      </div>
+      <div class="floating-elements">
+        <div class="element el-1">∫</div>
+        <div class="element el-2">∞</div>
+        <div class="element el-3">π</div>
+        <div class="element el-4">∑</div>
+        <div class="element el-5">∇</div>
+        <div class="element el-6">α</div>
+        <div class="element el-7">β</div>
+        <div class="element el-8">∆</div>
+      </div>
+      <div class="particle-field">
+        <div class="particle" *ngFor="let i of [].constructor(10); let idx = index"></div>
+      </div>
+    </div>
 
-          <h1 class="main-title">{{ homeData?.title || 'Dr. Nom Prénom' }}</h1>
-          <p class="subtitle">{{ homeData?.subtitle || 'Bienvenue sur mon portfolio' }}</p>
+    <div class="hero-content">
+      <div class="profile-container">
+        <div class="profile-card" *ngIf="homeData?.profileImage">
+          <div class="profile-ring"></div>
+          <img [src]="'http://localhost:5000' + homeData.profileImage" 
+               alt="Profile" 
+               class="profile-img">
+          <div class="profile-glow"></div>
+          <div class="profile-dots">
+            <div class="dot dot-1"></div>
+            <div class="dot dot-2"></div>
+            <div class="dot dot-3"></div>
+          </div>
+        </div>
+        
+        <div class="profile-placeholder" *ngIf="!homeData?.profileImage">
+          <div class="avatar-icon">👤</div>
+          <div class="placeholder-ring"></div>
+        </div>
+      </div>
+
+      <div class="intro-section">
+        <div class="name-wrapper">
+          <h1 class="name-title">{{ homeData?.title || 'Dr. Aymen Wassim' }}</h1>
+          <div class="title-underline"></div>
+        </div>
+        <p class="profession">{{ homeData?.subtitle || 'Mathematician & Researcher' }}</p>
+        <div class="specialty-tags">
+          <span class="tag">Analysis</span>
+          <span class="tag">Research</span>
+          <span class="tag">Teaching</span>
+        </div>
+        
+        <div class="quick-actions">
+          <a routerLink="/research" class="action-btn primary">
+            <div class="btn-bg"></div>
+            <span>Research</span>
+            <div class="btn-arrow">→</div>
+          </a>
+          <a routerLink="/publications" class="action-btn secondary">
+            <div class="btn-bg"></div>
+            <span>Publications</span>
+            <div class="btn-arrow">→</div>
+          </a>
+          <a routerLink="/contact" class="action-btn tertiary">
+            <div class="btn-bg"></div>
+            <span>Contact</span>
+            <div class="btn-arrow">→</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-text">Discover More</div>
+      <div class="scroll-icon">
+        <div class="scroll-wheel"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enhanced About Section -->
+  <section class="about-section">
+    <div class="container">
+      <div class="about-content">
+        <div class="section-header">
+          <div class="section-number">01</div>
+          <h2 class="section-title">About Me</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="about-text-wrapper">
+          <p class="about-text">{{ homeData?.description || 'Passionate mathematician dedicated to exploring the beauty of mathematical structures and their applications in solving real-world problems. My research focuses on advanced mathematical theories and their practical implementations.' }}</p>
+          <div class="about-stats">
+            <div class="stat-item">
+              <div class="stat-number">5+</div>
+              <div class="stat-label">Years Experience</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">20+</div>
+              <div class="stat-label">Publications</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">10+</div>
+              <div class="stat-label">Projects</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Description Section -->
-  <section class="description-section">
+  <!-- Enhanced Timeline -->
+  <section class="timeline-section" *ngIf="homeData?.experience?.length">
     <div class="container">
-      <div class="description-content">
-        <p>{{ homeData?.description || 'Description professionnelle...' }}</p>
+      <div class="section-header">
+        <div class="section-number">02</div>
+        <h2 class="section-title">Academic Journey</h2>
+        <div class="section-line"></div>
       </div>
-    </div>
-  </section>
-
-  <!-- Experience Section -->
-  <section class="experience-section" *ngIf="homeData?.experience?.length">
-    <div class="container">
-      <h2>Expérience</h2>
-      <div class="experience-list">
-        <div class="experience-item" *ngFor="let exp of homeData.experience">
-          <h3>{{ exp.position }}</h3>
-          <p class="institution">
-            <a [href]="exp.link" target="_blank" *ngIf="exp.link">{{ exp.institution }}</a>
-            <span *ngIf="!exp.link">{{ exp.institution }}</span>
-          </p>
-          <p class="period">{{ exp.period }}</p>
-          <p class="description" *ngIf="exp.description">{{ exp.description }}</p>
+      
+      <div class="timeline-container">
+        <div class="timeline-list">
+          <div class="timeline-item" *ngFor="let exp of homeData.experience; let i = index">
+            <div class="timeline-marker">
+              <div class="timeline-dot"></div>
+              <div class="timeline-connector" *ngIf="i < homeData.experience.length - 1"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-card">
+                <div class="card-header">
+                  <div class="timeline-year">{{ getYear(exp.period) }}</div>
+                  <div class="timeline-duration">{{ exp.period }}</div>
+                </div>
+                <h3 class="timeline-title">{{ exp.position }}</h3>
+                <p class="timeline-place">{{ exp.institution }}</p>
+                <p class="timeline-description" *ngIf="exp.description">{{ exp.description }}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Upcoming Events Section -->
-  <section class="events-section" *ngIf="homeData?.upcomingEvents?.length">
-    <div class="container">
-      <h2>Événements à venir</h2>
-      <div class="events-list">
-        <div class="event-item" *ngFor="let event of homeData.upcomingEvents">
-          <h3>
-            <a [href]="event.link" target="_blank" *ngIf="event.link">{{ event.title }}</a>
-            <span *ngIf="!event.link">{{ event.title }}</span>
-          </h3>
-          <p class="event-date">{{ event.date }}</p>
-          <p class="event-location">{{ event.location }}</p>
-          <p class="event-description" *ngIf="event.description">{{ event.description }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Online Seminars Section -->
-  <section class="seminars-section" *ngIf="homeData?.onlineSeminars?.length">
-    <div class="container">
-      <h2>Séminaires en ligne</h2>
-      <div class="seminars-list">
-        <div class="seminar-item" *ngFor="let seminar of homeData.onlineSeminars">
-          <h3>
-            <a [href]="seminar.link" target="_blank" *ngIf="seminar.link">{{ seminar.title }}</a>
-            <span *ngIf="!seminar.link">{{ seminar.title }}</span>
-          </h3>
-          <p class="seminar-description">{{ seminar.description }}</p>
-          <p class="youtube-channel" *ngIf="seminar.youtubeChannel">
-            <a [href]="seminar.youtubeChannel" target="_blank">Chaîne YouTube</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Loading indicator -->
-  <div class="loading" *ngIf="loading">
-    <mat-spinner></mat-spinner>
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="loading-icon">⟳</div>
+    <p>Loading...</p>
   </div>
 </div>
 

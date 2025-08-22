@@ -1,86 +1,170 @@
-<div class="contact-container">
+<div class="modern-contact-container">
+  <!-- Header Section -->
   <div class="contact-header">
-    <h1>Contact</h1>
-    <p>N'hésitez pas à me contacter pour toute collaboration ou question</p>
+    <div class="container">
+      <div class="header-content">
+        <div class="header-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1 class="page-title">Contact & Collaboration</h1>
+          <p class="page-description">Let's discuss mathematical research, academic collaborations, or educational opportunities</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="contact-content" *ngIf="contactData && !loading">
-    
-    <!-- Personal Information Section -->
-    <div class="personal-section" *ngIf="contactData.fullName || contactData.title || contactData.bio">
-      <div class="personal-info">
-        <h2 *ngIf="contactData.fullName">{{ contactData.fullName }}</h2>
-        <h3 *ngIf="contactData.title" class="title">{{ contactData.title }}</h3>
-        <p *ngIf="contactData.bio" class="bio">{{ contactData.bio }}</p>
-      </div>
-    </div>
-
-    <div class="contact-grid">
+    <div class="container">
       
-      <!-- Contact Information -->
-      <div class="contact-info">
-        <h2>Informations de contact</h2>
-        
-        <div class="contact-item" *ngIf="contactData.email">
-          <mat-icon>email</mat-icon>
-          <div class="contact-details">
-            <h3>Email principal</h3>
-            <a [href]="'mailto:' + contactData.email">{{ contactData.email }}</a>
-          </div>
-        </div>
-
-        <div class="contact-item" *ngIf="contactData.secondaryEmail">
-          <mat-icon>email</mat-icon>
-          <div class="contact-details">
-            <h3>Email secondaire</h3>
-            <a [href]="'mailto:' + contactData.secondaryEmail">{{ contactData.secondaryEmail }}</a>
-          </div>
-        </div>
-
-        <div class="contact-item" *ngIf="contactData.phone">
-          <mat-icon>phone</mat-icon>
-          <div class="contact-details">
-            <h3>Téléphone bureau</h3>
-            <a [href]="'tel:' + contactData.phone">{{ contactData.phone }}</a>
-          </div>
-        </div>
-
-        <div class="contact-item" *ngIf="contactData.mobile">
-          <mat-icon>smartphone</mat-icon>
-          <div class="contact-details">
-            <h3>Téléphone mobile</h3>
-            <a [href]="'tel:' + contactData.mobile">{{ contactData.mobile }}</a>
-          </div>
-        </div>
-
-        <!-- Preferred Contact Method -->
-        <div class="contact-item" *ngIf="contactData.preferredContact">
-          <mat-icon>star</mat-icon>
-          <div class="contact-details">
-            <h3>Méthode de contact préférée</h3>
-            <p>{{ getPreferredContactLabel(contactData.preferredContact) }}</p>
-          </div>
-        </div>
-
-        <!-- Contact Instructions -->
-        <div class="contact-item" *ngIf="contactData.contactInstructions">
-          <mat-icon>info</mat-icon>
-          <div class="contact-details">
-            <h3>Instructions de contact</h3>
-            <p>{{ contactData.contactInstructions }}</p>
+      <!-- Enhanced Academic Profile Section with Mathematical Quote -->
+      <div class="academic-profile-section" *ngIf="contactData.fullName || contactData.title || contactData.bio">
+        <div class="profile-card">
+          <div class="profile-header-enhanced">
+            <div class="mathematical-quote">
+              <div class="quote-decoration">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
+                  <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
+                </svg>
+              </div>
+              <div class="quote-content">
+                <p class="quote-text">"Mathematics is the language with which God has written the universe."</p>
+                <p class="quote-author">— Galileo Galilei</p>
+              </div>
+              <div class="mathematical-symbols">
+                <span>∫</span>
+                <span>∑</span>
+                <span>π</span>
+                <span>∞</span>
+              </div>
+            </div>
+            <div class="profile-info-enhanced">
+              <div class="name-title-wrapper">
+                <h2 *ngIf="contactData.fullName" class="enhanced-name">{{ contactData.fullName }}</h2>
+                <h3 *ngIf="contactData.title" class="enhanced-academic-title">{{ contactData.title }}</h3>
+              </div>
+              <div class="bio-wrapper" *ngIf="contactData.bio">
+                <p class="enhanced-bio">{{ contactData.bio }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Office Information -->
-      <div class="office-info" *ngIf="hasOfficeInfo()">
-        <h2>Informations bureau</h2>
+      <div class="contact-grid">
         
-        <div class="contact-item" *ngIf="contactData.institution">
-          <mat-icon>school</mat-icon>
-          <div class="contact-details">
-            <h3>Institution</h3>
-            <p>{{ contactData.institution }}</p>
+        <!-- Contact Information -->
+        <div class="contact-info-card">
+          <div class="card-header">
+            <h2>Academic Contact Information</h2>
+            <p>Reach out for research collaboration and academic inquiries</p>
+          </div>
+          
+          <div class="contact-methods">
+            <div class="contact-item" *ngIf="contactData.email">
+              <div class="contact-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div class="contact-details">
+                <h3>Primary Email</h3>
+                <a [href]="'mailto:' + contactData.email" class="contact-link">{{ contactData.email }}</a>
+              </div>
+            </div>
+
+            <div class="contact-item" *ngIf="contactData.secondaryEmail">
+              <div class="contact-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div class="contact-details">
+                <h3>Secondary Email</h3>
+                <a [href]="'mailto:' + contactData.secondaryEmail" class="contact-link">{{ contactData.secondaryEmail }}</a>
+              </div>
+            </div>
+
+            <div class="contact-item" *ngIf="contactData.phone">
+              <div class="contact-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </div>
+              <div class="contact-details">
+                <h3>Office Phone</h3>
+                <a [href]="'tel:' + contactData.phone" class="contact-link">{{ contactData.phone }}</a>
+              </div>
+            </div>
+
+            <div class="contact-item" *ngIf="contactData.mobile">
+              <div class="contact-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                  <line x1="12" y1="18" x2="12.01" y2="18"/>
+                </svg>
+              </div>
+              <div class="contact-details">
+                <h3>Mobile Phone</h3>
+                <a [href]="'tel:' + contactData.mobile" class="contact-link">{{ contactData.mobile }}</a>
+              </div>
+            </div>
+
+            <!-- Preferred Contact Method -->
+            <div class="contact-item" *ngIf="contactData.preferredContact">
+              <div class="contact-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                </svg>
+              </div>
+              <div class="contact-details">
+                <h3>Preferred Contact Method</h3>
+                <p>{{ getPreferredContactLabel(contactData.preferredContact) }}</p>
+              </div>
+            </div>
+
+            <!-- Contact Instructions -->
+            <div class="contact-item" *ngIf="contactData.contactInstructions">
+              <div class="contact-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12,16v-4"/>
+                  <path d="M12,8h.01"/>
+                </svg>
+              </div>
+              <div class="contact-details">
+                <h3>Contact Instructions</h3>
+                <p>{{ contactData.contactInstructions }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Academic Office Information -->
+        <div class="office-info-card" *ngIf="hasOfficeInfo()">
+          <div class="card-header">
+            <h2>Academic Office Information</h2>
+            <p>Visit me during office hours for academic consultations</p>
+          </div>
+          
+          <div class="office-details">
+            <div class="contact-item" *ngIf="contactData.institution">
+              <div class="contact-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21h18"/>
+                  <path d="M5 21V7l8-4v18"/>
+                  <path d="M19 21V11l-6-4"/>
+                </svg>
+              </div>
+              <div class="contact-details">
+                <h3>Institution</h3>
+                <p>{{ contactData.institution }}</p>
           </div>
         </div>
 

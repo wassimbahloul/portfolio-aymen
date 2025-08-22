@@ -135,7 +135,7 @@ uploadResearchImage(projectId: string, imageFile: File): Observable<any> {
     url += `?type=${encodeURIComponent(filters.type)}`;
   }
 
-  return this.http.get(url, { headers: this.getAuthHeaders() });
+  return this.http.get(url);
 }
 
   

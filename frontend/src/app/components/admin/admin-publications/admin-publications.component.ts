@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-admin-publications',
@@ -18,7 +19,7 @@ export class AdminPublicationsComponent implements OnInit {
   showDialog = false;
   editingPublication: any = null;
   selectedFile: File | null = null;
-
+  maxYear: number; // Add maxYear property
   // Filter properties
   searchTerm = '';
   selectedType = '';
@@ -29,57 +30,128 @@ export class AdminPublicationsComponent implements OnInit {
     private fb: FormBuilder,
     private apiService: ApiService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
+    this.maxYear = new Date().getFullYear() + 5; // Compute maxYear
     this.publicationForm = this.createPublicationForm();
   }
 
   ngOnInit(): void {
-    // Check authentication
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/admin/login']);
       return;
     }
-
     this.loadPublications();
   }
 
   createPublicationForm(): FormGroup {
-    return this.fb.group({
+    const form = this.fb.group({
       title: ['', Validators.required],
-      type: ['journal'],
-      year: [new Date().getFullYear()],
+      type: ['journal', Validators.required],
+      year: [new Date().getFullYear(), [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear() + 5)]],
       authorsInput: [''],
       abstract: [''],
-      
-      // Journal specific
       journal: [''],
       volume: [''],
       issue: [''],
       pages: [''],
-      
-      // Conference specific
       conference: [''],
       location: [''],
-      
-      // Book/Chapter specific
       publisher: [''],
       editors: [''],
-      
-      // Common fields
+      institution: [''],
+      degree: [''],
+      advisor: [''],
       doi: [''],
       isbn: [''],
-      citations: [0],
-      downloads: [0],
+      citations: [0, [Validators.min(0)]],
+      downloads: [0, [Validators.min(0)]],
       keywordsInput: [''],
-      
-      // External links
+      status: ['published', Validators.required],
       externalLinks: this.fb.array([])
     });
+
+    // Dynamically update validators based on type
+    form.get('type')?.valueChanges.subscribe(type => {
+      form.get('journal')?.clearValidators();
+      form.get('conference')?.clearValidators();
+      form.get('publisher')?.clearValidators();
+      form.get('institution')?.clearValidators();
+      form.get('degree')?.clearValidators();
+
+      if (type === 'journal') {
+        form.get('journal')?.setValidators(Validators.required);
+      } else if (type === 'conference') {
+        form.get('conference')?.setValidators(Validators.required);
+      } else if (type === 'book' || type === 'chapter') {
+        form.get('publisher')?.setValidators(Validators.required);
+      } else if (type === 'thesis') {
+        form.get('institution')?.setValidators(Validators.required);
+        form.get('degree')?.setValidators(Validators.required);
+      }
+
+      form.get('journal')?.updateValueAndValidity();
+      form.get('conference')?.updateValueAndValidity();
+      form.get('publisher')?.updateValueAndValidity();
+      form.get('institution')?.updateValueAndValidity();
+      form.get('degree')?.updateValueAndValidity();
+    });
+
+    return form;
   }
 
   get externalLinks(): FormArray {
     return this.publicationForm.get('externalLinks') as FormArray;
+  }
+
+  addExternalLink(): void {
+    this.externalLinks.push(this.fb.group({
+      title: [''],
+      url: ['', [Validators.pattern(/^https?:\/\/.+/)]]
+    }));
+  }
+
+  removeExternalLink(index: number): void {
+    this.externalLinks.removeAt(index);
+  }
+
+  populateForm(publication: any): void {
+    this.publicationForm.patchValue({
+      title: publication.title || '',
+      type: publication.type || 'journal',
+      year: publication.year || new Date().getFullYear(),
+      authorsInput: publication.authors ? publication.authors.join(', ') : '',
+      abstract: publication.abstract || '',
+      journal: publication.journal || '',
+      volume: publication.volume || '',
+      issue: publication.issue || '',
+      pages: publication.pages || '',
+      conference: publication.conference || '',
+      location: publication.location || '',
+      publisher: publication.publisher || '',
+      editors: publication.editors || '',
+      institution: publication.institution || '',
+      degree: publication.degree || '',
+      advisor: publication.advisor || '',
+      doi: publication.doi || '',
+      isbn: publication.isbn || '',
+      citations: publication.citations || 0,
+      downloads: publication.downloads || 0,
+      keywordsInput: publication.keywords ? publication.keywords.join(', ') : '',
+      status: publication.status || 'published'
+    });
+
+    const linksArray = this.externalLinks;
+    linksArray.clear();
+    if (publication.externalLinks && publication.externalLinks.length > 0) {
+      publication.externalLinks.forEach((link: any) => {
+        linksArray.push(this.fb.group({
+          title: [link.title || ''],
+          url: [link.url || '', [Validators.pattern(/^https?:\/\/.+/)]]
+        }));
+      });
+    }
   }
 
   loadPublications(): void {
@@ -93,6 +165,7 @@ export class AdminPublicationsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading publications:', error);
+        this.snackBar.open('Erreur lors du chargement des publications', 'Fermer', { duration: 5000 });
         this.loading = false;
       }
     });
@@ -105,9 +178,9 @@ export class AdminPublicationsComponent implements OnInit {
 
   filterPublications(): void {
     this.filteredPublications = this.publications.filter(publication => {
-      const matchesSearch = !this.searchTerm || 
+      const matchesSearch = !this.searchTerm ||
         publication.title?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        publication.authors?.some((author: string) => 
+        publication.authors?.some((author: string) =>
           author.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
         publication.journal?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         publication.conference?.toLowerCase().includes(this.searchTerm.toLowerCase());
@@ -126,7 +199,8 @@ export class AdminPublicationsComponent implements OnInit {
       type: 'journal',
       year: new Date().getFullYear(),
       citations: 0,
-      downloads: 0
+      downloads: 0,
+      status: 'published'
     });
     this.externalLinks.clear();
     this.selectedFile = null;
@@ -139,58 +213,12 @@ export class AdminPublicationsComponent implements OnInit {
     this.showDialog = true;
   }
 
-  populateForm(publication: any): void {
-    this.publicationForm.patchValue({
-      title: publication.title || '',
-      type: publication.type || 'journal',
-      year: publication.year || new Date().getFullYear(),
-      authorsInput: publication.authors ? publication.authors.join(', ') : '',
-      abstract: publication.abstract || '',
-      journal: publication.journal || '',
-      volume: publication.volume || '',
-      issue: publication.issue || '',
-      pages: publication.pages || '',
-      conference: publication.conference || '',
-      location: publication.location || '',
-      publisher: publication.publisher || '',
-      editors: publication.editors || '',
-      doi: publication.doi || '',
-      isbn: publication.isbn || '',
-      citations: publication.citations || 0,
-      downloads: publication.downloads || 0,
-      keywordsInput: publication.keywords ? publication.keywords.join(', ') : ''
-    });
-
-    // Populate external links
-    const linksArray = this.externalLinks;
-    linksArray.clear();
-    if (publication.externalLinks && publication.externalLinks.length > 0) {
-      publication.externalLinks.forEach((link: any) => {
-        linksArray.push(this.fb.group({
-          title: [link.title || ''],
-          url: [link.url || '']
-        }));
-      });
-    }
-  }
-
-  addExternalLink(): void {
-    this.externalLinks.push(this.fb.group({
-      title: [''],
-      url: ['']
-    }));
-  }
-
-  removeExternalLink(index: number): void {
-    this.externalLinks.removeAt(index);
-  }
-
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file && file.type === 'application/pdf') {
       this.selectedFile = file;
     } else {
-      alert('Veuillez sélectionner un fichier PDF valide.');
+      this.snackBar.open('Veuillez sélectionner un fichier PDF valide.', 'Fermer', { duration: 5000 });
     }
   }
 
@@ -209,6 +237,7 @@ export class AdminPublicationsComponent implements OnInit {
   savePublication(): void {
     if (!this.publicationForm.valid) {
       this.markFormGroupTouched(this.publicationForm);
+      this.snackBar.open('Veuillez remplir tous les champs obligatoires correctement.', 'Fermer', { duration: 5000 });
       return;
     }
 
@@ -221,18 +250,25 @@ export class AdminPublicationsComponent implements OnInit {
 
     saveOperation.subscribe({
       next: (response) => {
-        // Upload PDF file if selected
         if (this.selectedFile) {
           this.uploadPublicationFile(response._id || this.editingPublication?._id);
         } else {
           this.saving = false;
           this.closeDialog();
           this.loadPublications();
+          this.snackBar.open('Publication enregistrée avec succès', 'Fermer', { duration: 3000 });
         }
       },
       error: (error) => {
         console.error('Error saving publication:', error);
         this.saving = false;
+        let errorMessage = 'Erreur lors de l\'enregistrement de la publication';
+        if (error.error?.errors) {
+          errorMessage = Object.values(error.error.errors)
+            .map((err: any) => err.message)
+            .join('; ');
+        }
+        this.snackBar.open(errorMessage, 'Fermer', { duration: 5000 });
       }
     });
   }
@@ -245,10 +281,12 @@ export class AdminPublicationsComponent implements OnInit {
         this.saving = false;
         this.closeDialog();
         this.loadPublications();
+        this.snackBar.open('Fichier téléchargé avec succès', 'Fermer', { duration: 3000 });
       },
       error: (error) => {
         console.error('Error uploading publication file:', error);
         this.saving = false;
+        this.snackBar.open(error.error?.message || 'Erreur lors du téléchargement du fichier', 'Fermer', { duration: 5000 });
       }
     });
   }
@@ -258,9 +296,11 @@ export class AdminPublicationsComponent implements OnInit {
       this.apiService.deletePublication(id).subscribe({
         next: () => {
           this.loadPublications();
+          this.snackBar.open('Publication supprimée avec succès', 'Fermer', { duration: 3000 });
         },
         error: (error) => {
           console.error('Error deleting publication:', error);
+          this.snackBar.open('Erreur lors de la suppression de la publication', 'Fermer', { duration: 5000 });
         }
       });
     }
@@ -276,18 +316,15 @@ export class AdminPublicationsComponent implements OnInit {
 
   prepareFormData(): any {
     const formValue = this.publicationForm.value;
-    
-    // Process authors
-    const authors = formValue.authorsInput 
+
+    const authors = formValue.authorsInput
       ? formValue.authorsInput.split(',').map((author: string) => author.trim()).filter((author: string) => author)
       : [];
 
-    // Process keywords
-    const keywords = formValue.keywordsInput 
+    const keywords = formValue.keywordsInput
       ? formValue.keywordsInput.split(',').map((keyword: string) => keyword.trim()).filter((keyword: string) => keyword)
       : [];
 
-    // Filter out empty external links
     const externalLinks = formValue.externalLinks.filter((link: any) => link.title || link.url);
 
     return {
@@ -304,12 +341,16 @@ export class AdminPublicationsComponent implements OnInit {
       location: formValue.location,
       publisher: formValue.publisher,
       editors: formValue.editors,
+      institution: formValue.institution,
+      degree: formValue.degree,
+      advisor: formValue.advisor,
       doi: formValue.doi,
       isbn: formValue.isbn,
       citations: formValue.citations || 0,
       downloads: formValue.downloads || 0,
       keywords: keywords,
-      externalLinks: externalLinks
+      externalLinks: externalLinks,
+      status: formValue.status
     };
   }
 

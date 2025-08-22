@@ -1,87 +1,193 @@
-<div class="photos-container">
+<div class="modern-photos-container">
+  <!-- Header Section -->
   <div class="photos-header">
-    <h1>Galerie Photos</h1>
-    <p>Moments marquants de ma carrière académique et professionnelle</p>
-  </div>
-
-  <div class="photos-content" *ngIf="!loading">
-    <!-- Filter Section -->
-    <div class="filter-section" *ngIf="photos.length > 0">
-      <div class="filter-controls">
-        <mat-form-field appearance="outline">
-          <mat-label>Filtrer par catégorie</mat-label>
-          <mat-select [(value)]="selectedCategory" (selectionChange)="filterPhotos()">
-            <mat-option value="">Toutes les catégories</mat-option>
-            <mat-option value="conference">Conférences</mat-option>
-            <mat-option value="research">Recherche</mat-option>
-            <mat-option value="teaching">Enseignement</mat-option>
-            <mat-option value="awards">Récompenses</mat-option>
-            <mat-option value="personal">Personnel</mat-option>
-            <mat-option value="team">Équipe</mat-option>
-            <mat-option value="events">Événements</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Rechercher</mat-label>
-          <input matInput 
-                 [(ngModel)]="searchTerm" 
-                 (input)="filterPhotos()" 
-                 placeholder="Titre, description, tags...">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
+    <div class="container">
+      <div class="header-content">
+        <div class="header-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 2l3 3h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l3-3h0z"/>
+            <circle cx="12" cy="13" r="3"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1 class="page-title">Galerie Académique</h1>
+          <p class="page-description">Moments marquants de ma carrière en mathématiques et recherche académique</p>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Photos Grid -->
-    <div class="photos-grid" *ngIf="filteredPhotos.length > 0">
-      <div class="photo-item" 
-           *ngFor="let photo of filteredPhotos; let i = index"
-           (click)="openPhotoModal(photo, i)">
-        <div class="photo-wrapper">
-          <img [src]="'http://localhost:5000' + (photo.thumbnailUrl || photo.imageUrl)" 
-               [alt]="photo.altText || photo.title"
-               loading="lazy">
-          <div class="photo-overlay">
-            <div class="photo-info">
-              <h3>{{ photo.title }}</h3>
-              <p *ngIf="photo.description">{{ photo.description }}</p>
-              <div class="photo-meta">
-                <span class="category-badge" [ngClass]="'category-' + photo.category">
-                  {{ getCategoryLabel(photo.category) }}
-                </span>
-                <span *ngIf="photo.event" class="event-info">
-                  <mat-icon>event</mat-icon>
-                  {{ photo.event }}
-                </span>
-                <span *ngIf="photo.location" class="location-info">
-                  <mat-icon>location_on</mat-icon>
-                  {{ photo.location }}
-                </span>
+  <!-- Content Section -->
+  <div class="photos-content">
+    <div class="container">
+      <!-- Filter Section -->
+      <div class="filter-section" *ngIf="photos.length > 0">
+        <div class="filter-header">
+          <h2>Explorer la Galerie</h2>
+          <p>{{ filteredPhotos.length }} photo(s) disponible(s)</p>
+        </div>
+        
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label class="filter-label">Catégorie</label>
+            <select [(ngModel)]="selectedCategory" (change)="filterPhotos()" class="modern-select">
+              <option value="">Toutes les Catégories</option>
+              <option value="conference">Conférences Mathématiques</option>
+              <option value="research">Recherche & Laboratoire</option>
+              <option value="teaching">Enseignement</option>
+              <option value="awards">Prix & Distinctions</option>
+              <option value="collaboration">Collaborations</option>
+              <option value="seminar">Séminaires</option>
+              <option value="workshop">Ateliers</option>
+            </select>
+          </div>
+          
+          <div class="search-group">
+            <label class="filter-label">Recherche</label>
+            <div class="search-input-wrapper">
+              <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="21 21l-4.35-4.35"/>
+              </svg>
+              <input type="text" 
+                     [(ngModel)]="searchTerm" 
+                     (input)="filterPhotos()" 
+                     placeholder="Rechercher par titre, description, lieu..."
+                     class="search-input">
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">&nbsp;</label>
+            <button class="clear-filters-btn" (click)="clearFilters()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+              Effacer Filtres
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photos organized by Location with Auto-Carousel -->
+      <div class="photos-by-location" *ngIf="photosByLocation.length > 0">
+        <div class="location-section" *ngFor="let locationGroup of photosByLocation">
+          <!-- Location Title -->
+          <div class="country-title">
+            <h2>{{ locationGroup.location || 'Lieu non spécifié' }}</h2>
+          </div>
+          
+          <!-- Carousel Container -->
+          <div class="carousel-container">
+            <!-- Main Photo Container -->
+            <div class="main-photo-container">
+              <button class="carousel-btn prev-btn" 
+                      (click)="previousPhoto(locationGroup)"
+                      [disabled]="locationGroup.photos.length <= 1">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15,18 9,12 15,6"/>
+                </svg>
+              </button>
+              
+              <div class="main-photo" (click)="openPhotoModal(locationGroup.photos[locationGroup.currentIndex])">
+                <img [src]="'http://localhost:5000' + locationGroup.photos[locationGroup.currentIndex].imageUrl" 
+                     [alt]="locationGroup.photos[locationGroup.currentIndex].altText || locationGroup.photos[locationGroup.currentIndex].title"
+                     loading="lazy">
+                
+                <div class="photo-overlay">
+                  <div class="photo-info">
+                    <h3>{{ locationGroup.photos[locationGroup.currentIndex].title }}</h3>
+                    <p *ngIf="locationGroup.photos[locationGroup.currentIndex].description">
+                      {{ locationGroup.photos[locationGroup.currentIndex].description }}
+                    </p>
+                    
+                    <div class="photo-meta">
+                      <span class="category-badge" 
+                            [class]="'category-' + locationGroup.photos[locationGroup.currentIndex].category">
+                        {{ getCategoryLabel(locationGroup.photos[locationGroup.currentIndex].category) }}
+                      </span>
+                      
+                      <span class="event-info" *ngIf="locationGroup.photos[locationGroup.currentIndex].event">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                          <line x1="16" y1="2" x2="16" y2="6"/>
+                          <line x1="8" y1="2" x2="8" y2="6"/>
+                          <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        {{ locationGroup.photos[locationGroup.currentIndex].event }}
+                      </span>
+                      
+                      <span class="location-info">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                          <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        {{ locationGroup.location }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <button class="carousel-btn next-btn" 
+                      (click)="nextPhoto(locationGroup)"
+                      [disabled]="locationGroup.photos.length <= 1">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9,18 15,12 9,6"/>
+                </svg>
+              </button>
+            </div>
+            
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators" *ngIf="locationGroup.photos.length > 1">
+              <div class="indicators-container">
+                <button class="indicator" 
+                        *ngFor="let photo of locationGroup.photos; let i = index"
+                        [class.active]="i === locationGroup.currentIndex"
+                        (click)="goToPhoto(locationGroup, i)">
+                </button>
+              </div>
+              <div class="photo-counter">
+                {{ locationGroup.currentIndex + 1 }} / {{ locationGroup.photos.length }}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- No Photos Message -->
-    <div class="no-photos" *ngIf="filteredPhotos.length === 0 && photos.length > 0">
-      <mat-icon>search_off</mat-icon>
-      <h3>Aucune photo trouvée</h3>
-      <p>Essayez de modifier vos critères de recherche</p>
-    </div>
+      <!-- No Photos Message -->
+      <div class="no-photos-section" *ngIf="photosByLocation.length === 0 && filteredPhotos.length === 0 && photos.length > 0">
+        <div class="no-photos-icon">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="21 21l-4.35-4.35"/>
+          </svg>
+        </div>
+        <h2>Aucune photo trouvée</h2>
+        <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
+      </div>
 
-    <div class="no-photos" *ngIf="photos.length === 0">
-      <mat-icon>photo_library</mat-icon>
-      <h3>Aucune photo disponible</h3>
-      <p>Les photos seront affichées ici une fois ajoutées</p>
-    </div>
-  </div>
+      <div class="no-photos-section" *ngIf="photos.length === 0 && !loading">
+        <div class="no-photos-icon">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M9 2l3 3h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l3-3h0z"/>
+            <circle cx="12" cy="13" r="3"/>
+          </svg>
+        </div>
+        <h2>Galerie en préparation</h2>
+        <p>Les photos de mes activités académiques et recherches seront bientôt disponibles.</p>
+      </div>
 
-  <!-- Loading indicator -->
-  <div class="loading" *ngIf="loading">
-    <mat-spinner></mat-spinner>
+      <!-- Loading Section -->
+      <div class="loading-section" *ngIf="loading">
+        <div class="loading-content">
+          <div class="loading-spinner">
+            <div class="spinner"></div>
+          </div>
+          <p>Chargement de la galerie...</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -90,8 +196,11 @@
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>{{ selectedPhoto.title }}</h2>
-      <button mat-icon-button class="close-button" (click)="closePhotoModal()">
-        <mat-icon>close</mat-icon>
+      <button class="close-button" (click)="closePhotoModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
       </button>
     </div>
     
@@ -108,61 +217,70 @@
         
         <div class="photo-details">
           <div class="detail-item" *ngIf="selectedPhoto.category">
-            <mat-icon>category</mat-icon>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
             <span>{{ getCategoryLabel(selectedPhoto.category) }}</span>
           </div>
           
           <div class="detail-item" *ngIf="selectedPhoto.event">
-            <mat-icon>event</mat-icon>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
             <span>{{ selectedPhoto.event }}</span>
           </div>
           
           <div class="detail-item" *ngIf="selectedPhoto.location">
-            <mat-icon>location_on</mat-icon>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
             <span>{{ selectedPhoto.location }}</span>
           </div>
           
           <div class="detail-item" *ngIf="selectedPhoto.photographer">
-            <mat-icon>camera_alt</mat-icon>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
             <span>{{ selectedPhoto.photographer }}</span>
-          </div>
-          
-          <div class="detail-item" *ngIf="selectedPhoto.people?.length">
-            <mat-icon>people</mat-icon>
-            <span>
-              <span *ngFor="let person of selectedPhoto.people; let last = last">
-                {{ person.name }}{{ person.role ? ' (' + person.role + ')' : '' }}<span *ngIf="!last">, </span>
-              </span>
-            </span>
           </div>
         </div>
         
         <div class="photo-tags" *ngIf="selectedPhoto.tags?.length">
-          <mat-chip-listbox>
-            <mat-chip *ngFor="let tag of selectedPhoto.tags">{{ tag }}</mat-chip>
-          </mat-chip-listbox>
+          <div class="tags-container">
+            <span class="tag" *ngFor="let tag of selectedPhoto.tags">{{ tag }}</span>
+          </div>
         </div>
       </div>
     </div>
     
-    <!-- Navigation -->
+    <!-- Modal Navigation -->
     <div class="modal-navigation" *ngIf="filteredPhotos.length > 1">
-      <button mat-icon-button 
-              class="nav-button prev-button" 
-              (click)="previousPhoto()" 
+      <button class="nav-button prev-button" 
+              (click)="previousPhotoModal()" 
               [disabled]="currentPhotoIndex === 0">
-        <mat-icon>chevron_left</mat-icon>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15,18 9,12 15,6"/>
+        </svg>
       </button>
       
       <span class="photo-counter">
         {{ currentPhotoIndex + 1 }} / {{ filteredPhotos.length }}
       </span>
       
-      <button mat-icon-button 
-              class="nav-button next-button" 
-              (click)="nextPhoto()" 
+      <button class="nav-button next-button" 
+              (click)="nextPhotoModal()" 
               [disabled]="currentPhotoIndex === filteredPhotos.length - 1">
-        <mat-icon>chevron_right</mat-icon>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9,18 15,12 9,6"/>
+        </svg>
       </button>
     </div>
   </div>
