@@ -1,102 +1,302 @@
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Login styles - Clean and modern design */
+
+.admin-auth-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
   padding: 20px;
 }
 
-.login-card {
-  max-width: 400px;
+.admin-auth-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   width: 100%;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  background: #ffffff;
+  max-width: 420px;
+  overflow: hidden;
+  animation: slideUp 0.6s ease-out;
 }
 
-mat-card-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 16px;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-mat-card-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #1a237e;
-  margin-bottom: 8px;
-}
-
-mat-card-subtitle {
-  font-size: 16px;
-  color: #666;
-}
-
-.full-width {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-mat-form-field {
-  margin-bottom: 16px;
-}
-
-mat-form-field .mat-form-field-wrapper {
-  padding-bottom: 0;
-}
-
-.error-message {
-  color: #d32f2f;
-  font-size: 14px;
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-.login-actions {
-  display: flex;
-  justify-content: center;
-}
-
-button[mat-raised-button] {
-  padding: 12px 0;
-  font-size: 16px;
-  font-weight: 500;
-  text-transform: uppercase;
-  background-color: #3f51b5;
+.admin-auth-header {
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
   color: white;
-  transition: background-color 0.3s ease;
+  padding: 40px 32px;
+  text-align: center;
+  position: relative;
 }
 
-button[mat-raised-button]:hover:not(:disabled) {
-  background-color: #303f9f;
+.admin-auth-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
 }
 
-button[mat-raised-button][disabled] {
-  background-color: #e0e0e0;
-  color: #9e9e9e;
+.admin-auth-title {
+  margin: 0 0 8px 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
 }
 
-mat-spinner {
-  display: inline-block;
-  vertical-align: middle;
+.admin-auth-subtitle {
+  margin: 0;
+  opacity: 0.95;
+  font-size: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-auth-content {
+  padding: 40px 32px;
+}
+
+.admin-form-field {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.admin-input {
+  width: 100%;
+}
+
+/* Material Design input styling */
+.admin-input .mat-mdc-form-field {
+  width: 100%;
+}
+
+.admin-input .mat-mdc-text-field-wrapper {
+  background-color: #f8fafc;
+  border-radius: 12px;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.admin-input .mat-mdc-form-field-focus-overlay {
+  background-color: transparent;
+}
+
+.admin-input .mdc-text-field {
+  background-color: transparent;
+  border-radius: 12px;
+}
+
+.admin-input .mdc-text-field--outlined {
+  background-color: #f8fafc;
+}
+
+.admin-input .mdc-text-field--outlined .mdc-notched-outline {
+  border-color: #e2e8f0;
+  border-width: 2px;
+  border-radius: 12px;
+}
+
+.admin-input .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__leading,
+.admin-input .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__notch,
+.admin-input .mdc-text-field--outlined .mdc-notched-outline .mdc-notched-outline__trailing {
+  border-color: #cbd5e1;
+  border-width: 2px;
+  border-radius: 12px;
+}
+
+.admin-input .mdc-text-field--outlined:hover .mdc-notched-outline .mdc-notched-outline__leading,
+.admin-input .mdc-text-field--outlined:hover .mdc-notched-outline .mdc-notched-outline__notch,
+.admin-input .mdc-text-field--outlined:hover .mdc-notched-outline .mdc-notched-outline__trailing {
+  border-color: #94a3b8;
+  border-width: 2px;
+}
+
+.admin-input .mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__leading,
+.admin-input .mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__notch,
+.admin-input .mdc-text-field--focused .mdc-notched-outline .mdc-notched-outline__trailing {
+  border-color: #1976d2;
+  border-width: 3px;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.admin-input .mdc-text-field input {
+  padding: 16px 14px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #334155;
+  caret-color: #1976d2;
+}
+
+.admin-input .mat-mdc-form-field-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.admin-input .mat-mdc-form-field-label.mdc-floating-label--float-above {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+/* Input icons styling */
+.admin-input .mat-mdc-form-field-prefix mat-icon {
+  color: #64748b;
+  margin-right: 8px;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.admin-input.mat-focused .mat-mdc-form-field-prefix mat-icon {
+  color: #1976d2;
+}
+
+/* Password visibility button */
+.admin-btn-icon {
+  color: #64748b;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+}
+
+.admin-btn-icon:hover {
+  color: #1976d2;
+  background-color: rgba(25, 118, 210, 0.1);
+  transform: scale(1.1);
+}
+
+/* Input animations */
+.admin-input .mdc-text-field--outlined .mdc-notched-outline {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-input .mdc-text-field input {
+  transition: all 0.3s ease;
+}
+
+.admin-error {
+  background: linear-gradient(135deg, #ffebee, #fce4ec);
+  border: 1px solid #f48fb1;
+  color: #c62828;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  position: relative;
+}
+
+.admin-error::before {
+  content: '⚠️';
   margin-right: 8px;
 }
 
-/* Responsive Design */
-@media (max-width: 600px) {
-  .login-card {
+.admin-form-actions {
+  margin-top: 32px;
+}
+
+.admin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  min-height: 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s;
+}
+
+.admin-btn:hover::before {
+  left: 100%;
+}
+
+.admin-btn-primary {
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  color: white;
+  box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+}
+
+.admin-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1565c0, #1976d2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(25, 118, 210, 0.4);
+}
+
+.admin-btn-primary:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.admin-btn-full {
+  width: 100%;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .admin-auth-container {
     padding: 16px;
-    margin: 0 16px;
   }
   
-  mat-card-title {
-    font-size: 20px;
+  .admin-auth-card {
+    max-width: 100%;
+    border-radius: 12px;
   }
   
-  mat-card-subtitle {
-    font-size: 14px;
+  .admin-auth-header {
+    padding: 32px 24px;
+  }
+  
+  .admin-auth-title {
+    font-size: 1.4rem;
+  }
+  
+  .admin-auth-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .admin-auth-content {
+    padding: 32px 24px;
+  }
+  
+  .admin-form-field {
+    margin-bottom: 20px;
+  }
+  
+  .admin-btn {
+    min-height: 52px;
+    font-size: 0.95rem;
   }
 }

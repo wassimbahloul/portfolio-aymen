@@ -15,6 +15,10 @@ export class AdminHomeComponent implements OnInit {
   homeData: any = {};
   loading = true;
   saving = false;
+  selectedImageName = '';
+  currentProfileImage = '';
+  imagePreview: string | null = null;
+  selectedProfileImage: File | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,7 +31,6 @@ export class AdminHomeComponent implements OnInit {
       title: [''],
       subtitle: [''],
       description: [''],
-      experience: this.formBuilder.array([]),
       upcomingEvents: this.formBuilder.array([]),
       onlineSeminars: this.formBuilder.array([])
     });
@@ -40,10 +43,6 @@ export class AdminHomeComponent implements OnInit {
     }
     
     this.loadHomeData();
-  }
-
-  get experienceControls() {
-    return (this.homeForm.get('experience') as FormArray).controls;
   }
 
   get eventsControls() {
@@ -59,6 +58,7 @@ export class AdminHomeComponent implements OnInit {
     this.apiService.getHome().subscribe({
       next: (data) => {
         this.homeData = data;
+        this.currentProfileImage = data.profileImage || '';
         this.populateForm(data);
         this.loading = false;
       },
@@ -76,15 +76,6 @@ export class AdminHomeComponent implements OnInit {
       subtitle: data.subtitle || '',
       description: data.description || ''
     });
-
-    // Populate experience array
-    const experienceArray = this.homeForm.get('experience') as FormArray;
-    experienceArray.clear();
-    if (data.experience) {
-      data.experience.forEach((exp: any) => {
-        experienceArray.push(this.createExperienceGroup(exp));
-      });
-    }
 
     // Populate events array
     const eventsArray = this.homeForm.get('upcomingEvents') as FormArray;
@@ -105,16 +96,6 @@ export class AdminHomeComponent implements OnInit {
     }
   }
 
-  createExperienceGroup(exp?: any): FormGroup {
-    return this.formBuilder.group({
-      position: [exp?.position || ''],
-      institution: [exp?.institution || ''],
-      period: [exp?.period || ''],
-      description: [exp?.description || ''],
-      link: [exp?.link || '']
-    });
-  }
-
   createEventGroup(event?: any): FormGroup {
     return this.formBuilder.group({
       title: [event?.title || ''],
@@ -132,16 +113,6 @@ export class AdminHomeComponent implements OnInit {
       link: [seminar?.link || ''],
       youtubeChannel: [seminar?.youtubeChannel || '']
     });
-  }
-
-  addExperience(): void {
-    const experienceArray = this.homeForm.get('experience') as FormArray;
-    experienceArray.push(this.createExperienceGroup());
-  }
-
-  removeExperience(index: number): void {
-    const experienceArray = this.homeForm.get('experience') as FormArray;
-    experienceArray.removeAt(index);
   }
 
   addEvent(): void {
@@ -167,59 +138,65 @@ export class AdminHomeComponent implements OnInit {
   onProfileImageSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      this.apiService.uploadHomeImage(file).subscribe({
-        next: (response) => {
-          this.homeData.profileImage = response.imageUrl;
-          this.snackBar.open('Photo de profil mise à jour', 'Fermer', { duration: 3000 });
-        },
-        error: (error) => {
-          console.error('Error uploading profile image:', error);
-          this.snackBar.open('Erreur lors de l\'upload de l\'image', 'Fermer', { duration: 3000 });
-        }
-      });
+      this.selectedProfileImage = file;
+      this.selectedImageName = file.name;
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
     }
   }
 
-  onBackgroundImageSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.apiService.uploadHomeImage(file).subscribe({
-        next: (response) => {
-          this.homeData.backgroundImage = response.imageUrl;
-          this.snackBar.open('Image d\'arrière-plan mise à jour', 'Fermer', { duration: 3000 });
-        },
-        error: (error) => {
-          console.error('Error uploading background image:', error);
-          this.snackBar.open('Erreur lors de l\'upload de l\'image', 'Fermer', { duration: 3000 });
-        }
-      });
-    }
+  removeProfileImage(): void {
+    this.selectedProfileImage = null;
+    this.selectedImageName = '';
+    this.imagePreview = null;
+    this.currentProfileImage = '';
   }
 
   onSubmit(): void {
     if (this.homeForm.valid) {
       this.saving = true;
       
-      const formData = {
-        ...this.homeForm.value,
-        profileImage: this.homeData.profileImage,
-        backgroundImage: this.homeData.backgroundImage
-      };
-
-      this.apiService.updateHome(formData).subscribe({
-        next: (response) => {
-          this.saving = false;
-          this.snackBar.open('Données sauvegardées avec succès', 'Fermer', { duration: 3000 });
-          this.router.navigate(['/admin/dashboard']);
-
-        },
-        error: (error) => {
-          this.saving = false;
-          console.error('Error saving home data:', error);
-          this.snackBar.open('Erreur lors de la sauvegarde', 'Fermer', { duration: 3000 });
-        }
-      });
+      // If there's a new profile image, upload it first
+      if (this.selectedProfileImage) {
+        this.apiService.uploadHomeImage(this.selectedProfileImage).subscribe({
+          next: (response) => {
+            this.updateHomeData(response.imageUrl);
+          },
+          error: (error) => {
+            this.saving = false;
+            console.error('Error uploading profile image:', error);
+            this.snackBar.open('Erreur lors de l\'upload de l\'image', 'Fermer', { duration: 3000 });
+          }
+        });
+      } else {
+        this.updateHomeData(this.currentProfileImage);
+      }
     }
+  }
+
+  private updateHomeData(profileImageUrl: string): void {
+    const formData = {
+      ...this.homeForm.value,
+      profileImage: profileImageUrl
+    };
+
+    this.apiService.updateHome(formData).subscribe({
+      next: (response) => {
+        this.saving = false;
+        this.snackBar.open('Données sauvegardées avec succès', 'Fermer', { duration: 3000 });
+        this.router.navigate(['/admin/dashboard']);
+      },
+      error: (error) => {
+        this.saving = false;
+        console.error('Error saving home data:', error);
+        this.snackBar.open('Erreur lors de la sauvegarde', 'Fermer', { duration: 3000 });
+      }
+    });
   }
 }
 

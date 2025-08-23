@@ -13,7 +13,7 @@
         </div>
         <div class="header-text">
           <h1 class="page-title">Academic Curriculum Vitae</h1>
-          <p class="page-description">View and download my complete academic CV with research achievements and publications</p>
+          <p class="page-description">View my complete academic CV with research achievements and publications</p>
         </div>
       </div>
     </div>
@@ -29,15 +29,7 @@
             <p>Last updated: {{ getCurrentDate() }}</p>
           </div>
           <div class="viewer-actions">
-            <button class="action-btn primary" (click)="downloadCV()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7,10 12,15 17,10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              Download PDF
-            </button>
-            <button class="action-btn secondary" (click)="openInNewTab()">
+            <button class="action-btn primary" (click)="openInNewTab()">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                 <polyline points="15,3 21,3 21,9"/>
@@ -66,12 +58,9 @@
                 </svg>
               </div>
               <h3>PDF Preview</h3>
-              <p>For the best viewing experience, please download the PDF or open it in a new tab.</p>
+              <p>For the best viewing experience, please open the PDF in a new tab.</p>
               <div class="fallback-actions">
-                <button class="action-btn primary" (click)="downloadCV()">
-                  Download PDF
-                </button>
-                <button class="action-btn secondary" (click)="openInNewTab()">
+                <button class="action-btn primary" (click)="openInNewTab()">
                   View in New Tab
                 </button>
               </div>

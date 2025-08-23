@@ -87,8 +87,8 @@ export class TeachingComponent implements OnInit {
 
   getSemesterLabel(semester: string): string {
   const semesters: { [key: string]: string } = {
-    'semester 1': 'Semestre 1',
-    'semester 2': 'Semestre 2'
+    'semester 1': 'Semester 1',
+    'semester 2': 'Semester 2'
   };
   return semesters[semester] || semester;
 }

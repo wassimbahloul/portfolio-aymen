@@ -9,8 +9,8 @@
           </svg>
         </div>
         <div class="header-text">
-          <h1 class="page-title">Conférences & Séminaires</h1>
-          <p class="page-description">Présentations et contributions dans les conférences mathématiques internationales</p>
+          <h1 class="page-title">Conferences & Seminars</h1>
+          <p class="page-description">Presentations and contributions at international mathematical conferences</p>
         </div>
       </div>
     </div>
@@ -22,25 +22,25 @@
       <!-- Filter Section -->
       <div class="filter-section">
         <div class="filter-header">
-          <h2>Rechercher & Filtrer</h2>
-          <p>Explorez mes {{ talks.length }} présentation(s) mathématiques</p>
+          <h2>Search & Filter</h2>
+          <p>Explore my {{ talks.length }} mathematical presentation(s)</p>
         </div>
         
         <div class="filter-grid">
           <div class="filter-group">
-            <label class="filter-label">Type de Présentation</label>
+            <label class="filter-label">Presentation Type</label>
             <select [(ngModel)]="filterType" (change)="loadTalks()" class="modern-select">
-              <option value="">Tous les Types</option>
-              <option value="talk">Conférence Plénière</option>
-              <option value="international seminar">Séminaire International</option>
-              <option value="poster">Poster Scientifique</option>
-              <option value="organized seminar">Séminaire Organisé</option>
-              <option value="workshop">Atelier de Recherche</option>
+              <option value="">All Types</option>
+              <option value="talk">Plenary Conference</option>
+              <option value="international seminar">International Seminar</option>
+              <option value="poster">Scientific Poster</option>
+              <option value="organized seminar">Organized Seminar</option>
+              <option value="workshop">Research Workshop</option>
             </select>
           </div>
           
           <div class="search-group">
-            <label class="filter-label">Recherche</label>
+            <label class="filter-label">Search</label>
             <div class="search-input-wrapper">
               <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/>
@@ -49,18 +49,18 @@
               <input type="text" 
                      [(ngModel)]="searchTerm" 
                      (input)="onSearch()" 
-                     placeholder="Rechercher par titre, date, domaine mathématique..."
+                     placeholder="Search by title, date, mathematical field..."
                      class="search-input">
             </div>
           </div>
           
           <div class="filter-group">
-            <label class="filter-label">Trier par</label>
+            <label class="filter-label">Sort by</label>
             <select [(ngModel)]="sortBy" (change)="onSort()" class="modern-select">
-              <option value="date-desc">Date (Plus Récent)</option>
-              <option value="date-asc">Date (Plus Ancien)</option>
-              <option value="name-asc">Titre (A-Z)</option>
-              <option value="name-desc">Titre (Z-A)</option>
+              <option value="date-desc">Date (Most Recent)</option>
+              <option value="date-asc">Date (Oldest)</option>
+              <option value="name-asc">Title (A-Z)</option>
+              <option value="name-desc">Title (Z-A)</option>
             </select>
           </div>
           
@@ -70,7 +70,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
               </svg>
-              Effacer Filtres
+              Clear Filters
             </button>
           </div>
         </div>
@@ -90,7 +90,7 @@
               <span class="type-badge" [class]="'type-' + talk.type.replace(' ', '-')">
                 {{ getTalkTypeLabel(talk.type) }}
               </span>
-              <span class="status-badge status-completed">Présenté</span>
+              <span class="status-badge status-completed">Presented</span>
             </div>
           </div>
           
@@ -138,7 +138,7 @@
                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                 </svg>
-                Site de la Conférence
+                Conference Website
               </a>
               
               <a *ngIf="talk.slide" 
@@ -153,7 +153,7 @@
                   <line x1="16" y1="17" x2="8" y2="17"/>
                   <polyline points="10,9 9,9 8,9"/>
                 </svg>
-                Télécharger Slides
+                Download Slides
               </a>
             </div>
           </div>
@@ -167,8 +167,8 @@
             <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3L16.25 15H8.75l-2.25-1.8v5.3h12.5Z"/>
           </svg>
         </div>
-        <h2>Aucune présentation trouvée</h2>
-        <p>Aucune conférence ne correspond aux critères de recherche. Essayez d'ajuster les filtres ou le terme de recherche.</p>
+        <h2>No presentations found</h2>
+        <p>No conferences match the search criteria. Try adjusting the filters or search term.</p>
       </div>
     </div>
   </div>

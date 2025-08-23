@@ -95,18 +95,47 @@
           <div class="card-content">
             <h3 class="project-title">{{ project.title }}</h3>
             
-            <div class="project-period" *ngIf="project.startDate || project.endDate">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-              <span>
-                {{ formatDate(project.startDate) }}
-                <span *ngIf="project.endDate"> - {{ formatDate(project.endDate) }}</span>
-                <span *ngIf="!project.endDate && project.status === 'ongoing'"> - Ongoing</span>
-              </span>
+            <!-- Project Meta Information -->
+            <div class="project-meta" *ngIf="hasMetaInfo(project)">
+              <div class="project-period" *ngIf="project.startDate || project.endDate">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <span>
+                  {{ formatDate(project.startDate) }}
+                  <span *ngIf="project.endDate"> - {{ formatDate(project.endDate) }}</span>
+                  <span *ngIf="!project.endDate && project.status === 'ongoing'"> - Ongoing</span>
+                </span>
+              </div>
+
+              <!-- Institution -->
+              <div class="project-institution" *ngIf="project.institution">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21h18"/>
+                  <path d="M5 21V7l8-4v18"/>
+                  <path d="M19 21V11l-6-4"/>
+                </svg>
+                <span>{{ project.institution }}</span>
+              </div>
+
+              <!-- Funding -->
+              <div class="project-funding" *ngIf="hasFunding(project)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="6" x2="12" y2="10"/>
+                  <line x1="12" y1="14" x2="12" y2="18"/>
+                </svg>
+                <div class="funding-list">
+                  <div class="funding-item" *ngFor="let fund of project.funding">
+                    <strong>{{ fund.source }}</strong>
+                    <span *ngIf="fund.amount"> - {{ fund.amount }}</span>
+                    <span *ngIf="fund.period"> ({{ fund.period }})</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="project-description" *ngIf="project.description">
@@ -118,9 +147,205 @@
               </button>
             </div>
 
-            <!-- Project Tags -->
+            <!-- Collaborators Section -->
+            <div class="project-collaborators" *ngIf="hasCollaborators(project)">
+              <h4 class="section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                Collaborators
+              </h4>
+              <div class="collaborators-list">
+                <div class="collaborator-item" *ngFor="let collaborator of project.collaborators">
+                  <div class="collaborator-name">{{ collaborator.name }}</div>
+                  <div class="collaborator-details" *ngIf="collaborator.institution || collaborator.role">
+                    <span *ngIf="collaborator.institution" class="institution">{{ collaborator.institution }}</span>
+                    <span *ngIf="collaborator.role" class="role">{{ collaborator.role }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supervisors Section -->
+            <div class="project-supervisors" *ngIf="hasItems(project.supervisor)">
+              <h4 class="section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                Supervisors
+              </h4>
+              <div class="supervisors-list">
+                <div class="supervisor-item" *ngFor="let supervisor of project.supervisor">
+                  <div class="supervisor-name">{{ supervisor.name }}</div>
+                  <div class="supervisor-details" *ngIf="supervisor.institution || supervisor.role">
+                    <span *ngIf="supervisor.institution" class="institution">{{ supervisor.institution }}</span>
+                    <span *ngIf="supervisor.role" class="role">{{ supervisor.role }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Funding Section -->
+            <div class="project-funding" *ngIf="hasFunding(project)">
+              <h4 class="section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23"/>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                Funding & Support
+              </h4>
+              <div class="funding-list">
+                <div class="funding-item" *ngFor="let fund of project.funding">
+                  <div class="funding-header">
+                    <div class="funding-source">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="funding-icon">
+                        <path d="M12 2v20m5-5.5a2.5 2.5 0 0 0 0-5H9.5a2.5 2.5 0 0 1 0-5H17"/>
+                      </svg>
+                      {{ fund.source }}
+                    </div>
+                    <div class="funding-status" *ngIf="fund.status">
+                      <span class="status-badge" [ngClass]="'status-' + fund.status?.toLowerCase()">
+                        {{ fund.status }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="funding-details" *ngIf="fund.amount || fund.period || fund.description">
+                    <div class="funding-meta">
+                      <span *ngIf="fund.amount" class="amount">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <line x1="12" y1="1" x2="12" y2="23"/>
+                          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        {{ fund.amount }}
+                      </span>
+                      <span *ngIf="fund.period" class="period">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        {{ fund.period }}
+                      </span>
+                    </div>
+                    <div *ngIf="fund.description" class="funding-description">
+                      {{ fund.description }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Publications Section -->
+            <div class="project-publications" *ngIf="hasItems(project.publications)">
+              <h4 class="section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+                Related Publications
+              </h4>
+              <div class="publications-list">
+                <div class="publication-item" *ngFor="let publication of project.publications">
+                  <div class="publication-title">{{ publication.title }}</div>
+                  <div class="publication-details" *ngIf="publication.journal || publication.year || publication.link">
+                    <span *ngIf="publication.journal" class="journal">{{ publication.journal }}</span>
+                    <span *ngIf="publication.year" class="year">({{ publication.year }})</span>
+                    <a *ngIf="publication.link" [href]="publication.link" target="_blank" class="publication-link">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                      </svg>
+                      View
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- External Links Section -->
+            <div class="project-external-links" *ngIf="hasExternalLinks(project)">
+              <h4 class="section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                External Links
+              </h4>
+              <div class="external-links-list">
+                <a *ngFor="let link of project.externalLinks" 
+                   [href]="link.url" 
+                   target="_blank" 
+                   class="external-link">
+                  {{ link.title }}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15,3 21,3 21,9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Project Images Section -->
+            <div class="project-images" *ngIf="hasItems(project.images)">
+              <h4 class="section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="9" cy="9" r="2"/>
+                  <path d="M21 15l-3.586-3.586a2 2 0 0 0-2.828 0L6 21"/>
+                </svg>
+                Project Images
+                <span class="images-count">({{ project.images.length }} {{ project.images.length === 1 ? 'image' : 'images' }})</span>
+              </h4>
+              <div class="images-gallery">
+                <div class="image-item" 
+                     *ngFor="let image of project.images; let imgIndex = index"
+                     (click)="openImageModal(project.images, imgIndex, project.title)">
+                  <div class="image-container">
+                    <img [src]="getImageUrl(image)" 
+                         [alt]="'Project image ' + (imgIndex + 1) + ' for ' + project.title"
+                         class="project-image"
+                         loading="lazy"
+                         (error)="onImageError($event)">
+                    <div class="image-overlay">
+                      <div class="overlay-content">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M15 3h6v6"/>
+                          <path d="M10 14 21 3"/>
+                          <path d="M21 3v6"/>
+                          <path d="M21 3h-6"/>
+                        </svg>
+                        <span>View Full Size</span>
+                      </div>
+                    </div>
+                    <div class="image-number">{{ imgIndex + 1 }}/{{ project.images.length }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project Tags with Show More/Less functionality -->
             <div class="project-tags" *ngIf="hasItems(project.tags)">
-              <span *ngFor="let tag of project.tags" class="tag">{{ tag }}</span>
+              <h4 class="section-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                  <line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+                Research Tags
+              </h4>
+              <div class="tags-container">
+                <span *ngFor="let tag of getDisplayedTags(project.tags, i)" class="tag">{{ tag }}</span>
+                <button *ngIf="project.tags.length > 5" 
+                        class="show-more-tags" 
+                        (click)="toggleTags(i)">
+                  {{ expandedTags[i] ? 'Show Less' : '+' + (project.tags.length - 5) + ' more' }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -157,6 +382,57 @@
       <div class="loading-spinner">
         <div class="spinner"></div>
         <p>Loading research projects...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div class="image-modal" *ngIf="showImageModal" (click)="closeImageModal()">
+  <div class="modal-backdrop"></div>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ currentProjectTitle }} - Image {{ currentImageIndex + 1 }}/{{ currentImages.length }}</h3>
+      <button class="close-button" (click)="closeImageModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="image-container">
+        <button class="nav-button prev" 
+                (click)="previousImage()" 
+                [disabled]="currentImageIndex === 0"
+                *ngIf="currentImages.length > 1">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+        </button>
+        
+        <img [src]="getImageUrl(currentImages[currentImageIndex])" 
+             [alt]="currentProjectTitle + ' - Image ' + (currentImageIndex + 1)"
+             class="modal-image"
+             (error)="onImageError($event)">
+        
+        <button class="nav-button next" 
+                (click)="nextImage()" 
+                [disabled]="currentImageIndex === currentImages.length - 1"
+                *ngIf="currentImages.length > 1">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="image-indicators" *ngIf="currentImages.length > 1">
+        <button *ngFor="let img of currentImages; let idx = index"
+                class="indicator"
+                [class.active]="idx === currentImageIndex"
+                (click)="currentImageIndex = idx">
+        </button>
       </div>
     </div>
   </div>

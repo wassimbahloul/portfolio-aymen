@@ -103,20 +103,20 @@ export class ContactComponent implements OnInit {
   getPreferredContactLabel(method: string): string {
     const methods: { [key: string]: string } = {
       'email': 'Email',
-      'phone': 'Téléphone',
-      'office': 'Visite au bureau'
+      'phone': 'Phone',
+      'office': 'Office Visit'
     };
     return methods[method] || method;
   }
 
   getDayLabel(day: string): string {
     const days: { [key: string]: string } = {
-      'monday': 'Lundi',
-      'tuesday': 'Mardi',
-      'wednesday': 'Mercredi',
-      'thursday': 'Jeudi',
-      'friday': 'Vendredi',
-      'saturday': 'Samedi'
+      'monday': 'Monday',
+      'tuesday': 'Tuesday',
+      'wednesday': 'Wednesday',
+      'thursday': 'Thursday',
+      'friday': 'Friday',
+      'saturday': 'Saturday'
     };
     return days[day] || day;
   }

@@ -10,8 +10,8 @@
           </svg>
         </div>
         <div class="header-text">
-          <h1 class="page-title">Enseignement Mathématique</h1>
-          <p class="page-description">Cours et activités pédagogiques en mathématiques et domaines connexes</p>
+          <h1 class="page-title">Mathematical Teaching</h1>
+          <p class="page-description">Courses and educational activities in mathematics and related fields</p>
         </div>
       </div>
     </div>
@@ -127,13 +127,13 @@
           <button mat-button 
                   *ngIf="course.description.length > 300"
                   (click)="toggleDescription(i)">
-            {{ expandedDescriptions[i] ? 'Voir moins' : 'Voir plus' }}
+            {{ expandedDescriptions[i] ? 'Show Less' : 'Show More' }}
           </button>
         </div>
 
         <!-- Course PDF Files -->
         <div class="course-files" *ngIf="course.files?.length">
-          <h4><mat-icon>picture_as_pdf</mat-icon> Documents PDF</h4>
+          <h4><mat-icon>picture_as_pdf</mat-icon> PDF Documents</h4>
           <div class="files-list">
             <div class="file-item" *ngFor="let file of course.files">
               <div class="file-info">
@@ -144,7 +144,7 @@
                  [href]="'http://localhost:5000' + file.path" 
                  target="_blank" 
                  mat-icon-button
-                 matTooltip="Ouvrir le PDF">
+                 matTooltip="Open PDF">
                 <mat-icon>open_in_new</mat-icon>
               </a>
             </div>
@@ -156,14 +156,14 @@
     <!-- No Courses Message -->
     <div class="no-courses" *ngIf="filteredCourses.length === 0 && courses.length > 0">
       <mat-icon>search_off</mat-icon>
-      <h3>Aucun cours trouvé</h3>
-      <p>Essayez de modifier vos critères de recherche</p>
+      <h3>No courses found</h3>
+      <p>Try modifying your search criteria</p>
     </div>
 
     <div class="no-courses" *ngIf="courses.length === 0">
       <mat-icon>school</mat-icon>
-      <h3>Aucun cours disponible</h3>
-      <p>Les activités d'enseignement seront affichées ici une fois ajoutées</p>
+      <h3>No courses available</h3>
+      <p>Teaching activities will be displayed here once added</p>
     </div>
   </div>
 

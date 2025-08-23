@@ -171,7 +171,7 @@
         <div class="contact-item" *ngIf="contactData.department">
           <mat-icon>business</mat-icon>
           <div class="contact-details">
-            <h3>Département</h3>
+            <h3>Department</h3>
             <p>{{ contactData.department }}</p>
           </div>
         </div>
@@ -179,7 +179,7 @@
         <div class="contact-item" *ngIf="contactData.officeNumber || contactData.building">
           <mat-icon>room</mat-icon>
           <div class="contact-details">
-            <h3>Bureau</h3>
+            <h3>Office</h3>
             <p>
               <span *ngIf="contactData.building">{{ contactData.building }}</span>
               <span *ngIf="contactData.building && contactData.officeNumber"> - </span>
@@ -192,7 +192,7 @@
         <div class="contact-item" *ngIf="contactData.office && !contactData.officeNumber">
           <mat-icon>business</mat-icon>
           <div class="contact-details">
-            <h3>Bureau</h3>
+            <h3>Office</h3>
             <p>{{ contactData.office }}</p>
           </div>
         </div>
@@ -200,7 +200,7 @@
         <div class="contact-item" *ngIf="hasAddressInfo()">
           <mat-icon>location_on</mat-icon>
           <div class="contact-details">
-            <h3>Adresse complète</h3>
+            <h3>Full Address</h3>
             <div class="address">
               <ng-container *ngIf="getAddressDisplay().full; else structuredAddress">
                 <p>{{ getAddressDisplay().full }}</p>
@@ -221,7 +221,7 @@
 
     <!-- Office Hours -->
     <div class="office-hours-section" *ngIf="contactData.officeHours && contactData.officeHours.length > 0">
-      <h2>Heures de bureau</h2>
+      <h2>Office Hours</h2>
       <div class="office-hours-grid">
         <div class="office-hour-item" *ngFor="let hour of contactData.officeHours">
           <div class="day">{{ getDayLabel(hour.day) }}</div>
@@ -232,26 +232,26 @@
 
     <!-- Availability Status -->
     <div class="availability-section" *ngIf="hasAvailabilityInfo()">
-      <h2>Disponibilités</h2>
+      <h2>Availability</h2>
       <div class="availability-grid">
         <div class="availability-item" *ngIf="contactData.availableForCollaboration">
           <mat-icon class="available">check_circle</mat-icon>
-          <span>Disponible pour collaborations</span>
+          <span>Available for collaborations</span>
         </div>
         <div class="availability-item" *ngIf="contactData.acceptingStudents">
           <mat-icon class="available">check_circle</mat-icon>
-          <span>Accepte de nouveaux étudiants</span>
+          <span>Accepting new students</span>
         </div>
         <div class="availability-item" *ngIf="contactData.availableForReviews">
           <mat-icon class="available">check_circle</mat-icon>
-          <span>Disponible pour révisions d'articles</span>
+          <span>Available for article reviews</span>
         </div>
       </div>
     </div>
 
     <!-- Professional Links -->
     <div class="professional-links-section" *ngIf="hasSocialLinks()">
-      <h2>Liens professionnels</h2>
+      <h2>Professional Links</h2>
       <div class="social-grid">
         <a [href]="contactData.socialLinks.linkedin" 
            target="_blank" 
@@ -298,14 +298,14 @@
            class="social-link website"
            *ngIf="contactData.socialLinks?.website">
           <mat-icon>language</mat-icon>
-          <span>Site web personnel</span>
+          <span>Personal Website</span>
         </a>
       </div>
     </div>
 
     <!-- Additional Links -->
     <div class="additional-links-section" *ngIf="contactData.additionalLinks && contactData.additionalLinks.length > 0">
-      <h2>Liens additionnels</h2>
+      <h2>Additional Links</h2>
       <div class="additional-links-grid">
         <div class="additional-link-item" *ngFor="let link of contactData.additionalLinks">
           <a [href]="link.url" target="_blank" class="additional-link">
@@ -324,12 +324,12 @@
   <!-- Loading indicator -->
   <div class="loading" *ngIf="loading">
     <mat-spinner></mat-spinner>
-    <p>Chargement des informations de contact...</p>
+    <p>Loading contact information...</p>
   </div>
 
   <!-- No data message -->
   <div class="no-data" *ngIf="!loading && (!contactData || !contactData.email)">
     <mat-icon>contact_mail</mat-icon>
-    <p>Aucune information de contact disponible pour le moment.</p>
+    <p>No contact information available at the moment.</p>
   </div>
 </div>

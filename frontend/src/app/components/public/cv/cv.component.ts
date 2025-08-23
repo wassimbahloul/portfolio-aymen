@@ -39,18 +39,6 @@ export class CvComponent implements OnInit {
     });
   }
 
-  downloadCV(): void {
-    if (this.cvData.cvFile) {
-      const link = document.createElement('a');
-      link.href = `http://localhost:5000${this.cvData.cvFile}`;
-      link.download = 'CV.pdf';
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
-
   openInNewTab(): void {
     if (this.cvData.cvFile) {
       window.open(`http://localhost:5000${this.cvData.cvFile}`, '_blank');
