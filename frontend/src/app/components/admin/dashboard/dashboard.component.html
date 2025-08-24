@@ -1,104 +1,146 @@
-<div class="admin-page">
-  <div class="admin-header">
-    <h1 class="admin-title">Dashboard Administrateur</h1>
-    <p class="admin-subtitle">Gérez le contenu de votre portfolio</p>
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Dashboard Administrateur</h1>
+    <p>Gérez le contenu de votre portfolio</p>
   </div>
 
-  <!-- Statistics Cards -->
-  <div class="admin-stats">
-    <div class="admin-stat-card">
-      <div class="admin-stat-value">{{ stats.research || 0 }}</div>
-      <div class="admin-stat-label">Projets de recherche</div>
-    </div>
+  <div class="dashboard-grid">
+    <!-- Statistics Cards -->
+    <div class="stats-section">
+      <h2>Statistiques</h2>
+      <div class="stats-grid">
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-icon">
+              <mat-icon>science</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats.research || 0 }}</h3>
+              <p>Projets de recherche</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
 
-    <div class="admin-stat-card">
-      <div class="admin-stat-value">{{ stats.publications || 0 }}</div>
-      <div class="admin-stat-label">Publications</div>
-    </div>
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-icon">
+              <mat-icon>article</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats.publications || 0 }}</h3>
+              <p>Publications</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
 
-    <div class="admin-stat-card">
-      <div class="admin-stat-value">{{ stats.talks || 0 }}</div>
-      <div class="admin-stat-label">Conférences</div>
-    </div>
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-icon">
+              <mat-icon>mic</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats.talks || 0 }}</h3>
+              <p>Conférences</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
 
-    <div class="admin-stat-card">
-      <div class="admin-stat-value">{{ stats.teaching || 0 }}</div>
-      <div class="admin-stat-label">Enseignements</div>
-    </div>
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-icon">
+              <mat-icon>school</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats.teaching || 0 }}</h3>
+              <p>Cours enseignés</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
 
-    <div class="admin-stat-card">
-      <div class="admin-stat-value">{{ stats.photos || 0 }}</div>
-      <div class="admin-stat-label">Photos</div>
-    </div>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="admin-content">
-    <h2 class="admin-section-title">Actions rapides</h2>
-    <div class="admin-grid">
-      <button class="admin-btn admin-btn-primary" routerLink="/admin/home">
-        <mat-icon>home</mat-icon>
-        Gérer l'accueil
-      </button>
-      
-      <button class="admin-btn admin-btn-primary" routerLink="/admin/research">
-        <mat-icon>science</mat-icon>
-        Ajouter une recherche
-      </button>
-      
-      <button class="admin-btn admin-btn-primary" routerLink="/admin/publications">
-        <mat-icon>article</mat-icon>
-        Ajouter une publication
-      </button>
-      
-      <button class="admin-btn admin-btn-primary" routerLink="/admin/talks">
-        <mat-icon>mic</mat-icon>
-        Ajouter une conférence
-      </button>
-      
-      <button class="admin-btn admin-btn-primary" routerLink="/admin/teaching">
-        <mat-icon>school</mat-icon>
-        Ajouter un cours
-      </button>
-      
-      <button class="admin-btn admin-btn-primary" routerLink="/admin/photos">
-        <mat-icon>photo_library</mat-icon>
-        Gérer les photos
-      </button>
-      
-      <button class="admin-btn admin-btn-accent" routerLink="/admin/cv">
-        <mat-icon>description</mat-icon>
-        Mettre à jour le CV
-      </button>
-      
-      <button class="admin-btn admin-btn-accent" routerLink="/admin/contact">
-        <mat-icon>contact_mail</mat-icon>
-        Modifier les contacts
-      </button>
-    </div>
-  </div>
-
-  <!-- Recent Activity -->
-  <div class="admin-content">
-    <h2 class="admin-section-title">Activité récente</h2>
-    <div class="admin-card">
-      <div class="activity-list" *ngIf="recentActivity.length > 0; else noActivity">
-        <div class="activity-item" *ngFor="let activity of recentActivity">
-          <mat-icon>{{ activity.icon }}</mat-icon>
-          <div class="activity-content">
-            <p>{{ activity.description }}</p>
-            <small>{{ activity.date | date:'short' }}</small>
-          </div>
-        </div>
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-icon">
+              <mat-icon>photo_library</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats.photos || 0 }}</h3>
+              <p>Photos</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
       </div>
-      <ng-template #noActivity>
-        <p class="no-activity">Aucune activité récente</p>
-      </ng-template>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="actions-section">
+      <h2>Actions rapides</h2>
+      <div class="actions-grid">
+        <button mat-raised-button color="primary" routerLink="/admin/home">
+          <mat-icon>home</mat-icon>
+          Gérer l'accueil
+        </button>
+        
+        <button mat-raised-button color="primary" routerLink="/admin/research">
+          <mat-icon>science</mat-icon>
+          Ajouter une recherche
+        </button>
+        
+        <button mat-raised-button color="primary" routerLink="/admin/publications">
+          <mat-icon>article</mat-icon>
+          Ajouter une publication
+        </button>
+        
+        <button mat-raised-button color="primary" routerLink="/admin/talks">
+          <mat-icon>mic</mat-icon>
+          Ajouter une conférence
+        </button>
+        
+        <button mat-raised-button color="primary" routerLink="/admin/teaching">
+          <mat-icon>school</mat-icon>
+          Ajouter un cours
+        </button>
+        
+        <button mat-raised-button color="primary" routerLink="/admin/photos">
+          <mat-icon>photo_library</mat-icon>
+          Gérer les photos
+        </button>
+        
+        <button mat-raised-button color="accent" routerLink="/admin/cv">
+          <mat-icon>description</mat-icon>
+          Mettre à jour le CV
+        </button>
+        
+        <button mat-raised-button color="accent" routerLink="/admin/contact">
+          <mat-icon>contact_mail</mat-icon>
+          Modifier les contacts
+        </button>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="activity-section">
+      <h2>Activité récente</h2>
+      <mat-card>
+        <mat-card-content>
+          <div class="activity-list" *ngIf="recentActivity.length > 0; else noActivity">
+            <div class="activity-item" *ngFor="let activity of recentActivity">
+              <mat-icon>{{ activity.icon }}</mat-icon>
+              <div class="activity-content">
+                <p>{{ activity.description }}</p>
+                <small>{{ activity.date | date:'short' }}</small>
+              </div>
+            </div>
+          </div>
+          <ng-template #noActivity>
+            <p class="no-activity">Aucune activité récente</p>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
 
   <!-- Loading indicator -->
-  <div class="admin-loading" *ngIf="loading">
+  <div class="loading" *ngIf="loading">
     <mat-spinner></mat-spinner>
   </div>
 </div>

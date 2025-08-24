@@ -1,9 +1,11 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { registerLocaleData } from '@angular/common';
+import localeEn from '@angular/common/locales/en';
 
 // Angular Material Modules
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -57,6 +59,9 @@ import { AdminPhotosComponent } from './components/admin/admin-photos/admin-phot
 // Services
 import { ApiService } from './services/api.service';
 import { AuthService } from './services/auth.service';
+
+// Register English locale
+registerLocaleData(localeEn);
 
 @NgModule({
   declarations: [
@@ -116,7 +121,8 @@ import { AuthService } from './services/auth.service';
   ],
   providers: [
     ApiService,
-    AuthService
+    AuthService,
+    { provide: LOCALE_ID, useValue: 'en-US' }
   ],
   bootstrap: [AppComponent]
 })
