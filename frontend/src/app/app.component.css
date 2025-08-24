@@ -233,7 +233,7 @@ body {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   gap: 2rem;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .footer-main {

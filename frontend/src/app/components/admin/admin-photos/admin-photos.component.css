@@ -89,7 +89,7 @@
 
 .view-options {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   margin-bottom: 24px;
 }
 
@@ -515,7 +515,7 @@
   padding: 12px 8px 8px 8px;
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
   font-size: 0.8rem;
 }
 
@@ -565,7 +565,7 @@
 .person-item {
   display: flex;
   gap: 16px;
-  align-items: start;
+  align-items: flex-start;
   margin-bottom: 16px;
 }
 

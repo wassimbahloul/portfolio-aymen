@@ -27,7 +27,7 @@ export class CvComponent implements OnInit {
       next: (data) => {
         this.cvData = data;
         if (this.cvData.cvFile) {
-          const fullUrl = `http://localhost:5000${this.cvData.cvFile}`;
+          const fullUrl = `http://portfolio-aymen.onrender.com${this.cvData.cvFile}`;
           this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
         }
         this.loading = false;
@@ -42,7 +42,7 @@ export class CvComponent implements OnInit {
   downloadCV(): void {
     if (this.cvData.cvFile) {
       const link = document.createElement('a');
-      link.href = `http://localhost:5000${this.cvData.cvFile}`;
+      link.href = `http://portfolio-aymen.onrender.com${this.cvData.cvFile}`;
       link.download = 'CV.pdf';
       link.target = '_blank';
       document.body.appendChild(link);
@@ -53,7 +53,7 @@ export class CvComponent implements OnInit {
 
   openInNewTab(): void {
     if (this.cvData.cvFile) {
-      window.open(`http://localhost:5000${this.cvData.cvFile}`, '_blank');
+      window.open(`http://portfolio-aymen.onrender.com${this.cvData.cvFile}`, '_blank');
     }
   }
 

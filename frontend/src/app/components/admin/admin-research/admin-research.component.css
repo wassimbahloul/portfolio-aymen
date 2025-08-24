@@ -116,7 +116,7 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 1.5rem;
-  align-items: end;
+  align-items: flex-end;
 }
 
 .filter-section mat-form-field {
@@ -533,7 +533,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
   gap: 1rem;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .collaborator-fields mat-form-field,

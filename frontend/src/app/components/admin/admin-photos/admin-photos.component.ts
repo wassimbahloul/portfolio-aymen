@@ -203,7 +203,7 @@ export class AdminPhotosComponent implements OnInit {
   downloadPhoto(photo: any): void {
     if (photo.imageUrl && photo.allowDownload) {
       const link = document.createElement('a');
-      link.href = `http://localhost:5000${photo.imageUrl}`;
+      link.href = `http://portfolio-aymen.onrender.com${photo.imageUrl}`;
       link.download = `${photo.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.jpg`;
       link.target = '_blank';
       link.click();

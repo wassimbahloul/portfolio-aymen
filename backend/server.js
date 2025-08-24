@@ -18,14 +18,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
 app.use('/uploads/thumbnails', express.static(path.join(__dirname, 'Uploads/thumbnails')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
-
-// Routes
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ Connection error:", err));// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/home', require('./routes/home'));
 app.use('/api/contact', require('./routes/contact'));

@@ -81,7 +81,7 @@
             <div *ngFor="let file of course.files" class="file-item">
               <mat-icon>picture_as_pdf</mat-icon>
               <span>{{ file.name }}</span>
-              <button mat-button color="primary" (click)="openLink('http://localhost:5000' + file.path)">
+              <button mat-button color="primary" (click)="openLink('http://portfolio-aymen.onrender.com' + file.path)">
                 <mat-icon>open_in_new</mat-icon>
                 Ouvrir
               </button>
@@ -179,7 +179,7 @@
           <div *ngFor="let file of editingCourse.files" class="file-item">
             <mat-icon>picture_as_pdf</mat-icon>
             <span>{{ file.name }}</span>
-            <button type="button" mat-button color="primary" (click)="openLink('http://localhost:5000' + file.path)">
+            <button type="button" mat-button color="primary" (click)="openLink('http://portfolio-aymen.onrender.com' + file.path)">
               <mat-icon>open_in_new</mat-icon>
               Ouvrir
             </button>

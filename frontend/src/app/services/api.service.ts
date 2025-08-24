@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:5000/api';
+  private baseUrl = 'https://portfolio-aymen.onrender.com/api';
 
   constructor(private http: HttpClient) { }
 
