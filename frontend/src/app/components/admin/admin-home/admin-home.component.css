@@ -8,8 +8,58 @@
 
 .admin-home-header {
   text-align: center;
-  margin-bottom: 32px;
 }
+
+.admin-home-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+/* Profile Image Upload Styles */
+.admin-home-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.admin-home-file-name {
+  color: #666;
+  font-style: italic;
+}
+
+.admin-home-image-preview {
+  position: relative;
+  display: inline-block;
+}
+
+.admin-home-image-preview h4 {
+  margin-bottom: 12px;
+  color: #1a237e;
+  font-weight: 500;
+}
+
+.admin-home-preview-img {
+  max-width: 200px;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  object-fit: cover;
+}
+
+.admin-home-remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 32px;
+}  
+
 
 .admin-home-header h1 {
   font-size: 28px;
@@ -301,4 +351,46 @@ mat-form-field .mat-form-field-label {
   color: #222121;
   font-weight: 400;
   transform: translateY(-3%) scale(0.82);
+}
+
+/* Profile Image Upload Styles */
+.admin-home-file-upload {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.admin-home-file-name {
+  color: #666;
+  font-style: italic;
+}
+
+.admin-home-image-preview {
+  position: relative;
+  display: inline-block;
+}
+
+.admin-home-image-preview h4 {
+  margin-bottom: 12px;
+  color: #1a237e;
+  font-weight: 500;
+}
+
+.admin-home-preview-img {
+  max-width: 200px;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  object-fit: cover;
+}
+
+.admin-home-remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }

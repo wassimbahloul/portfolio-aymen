@@ -1,38 +1,250 @@
-<div class="cv-container">
-  <div class="cv-card">
-    <h1 class="cv-title">
-      <mat-icon>upload_file</mat-icon>
+﻿<div class="admin-cv-container">
+  <div class="header">
+    <h1>
+      <i class="material-icons">description</i>
       Gestion du CV
     </h1>
+    <button type="button" (click)="goBack()" class="back-btn">
+      <i class="material-icons">arrow_back</i>
+      Retour
+    </button>
+  </div>
 
-    <div class="cv-form-group" *ngIf="!loading">
-      <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" class="cv-hidden">
-      <button mat-raised-button color="primary" (click)="fileInput.click()">
-        <mat-icon>upload</mat-icon>
-        Choisir un CV (PDF)
-      </button>
+  <!-- Message d erreur si formulaire non initialisé -->
+  <div *ngIf="!cvForm && !loading" class="error-message">
+    <i class="material-icons">error</i>
+    Erreur : Le formulaire n est pas initialisé
+  </div>
 
-      <div class="cv-file-preview" *ngIf="selectedFile">
-        <mat-icon class="cv-pdf-icon">picture_as_pdf</mat-icon>
-        <span>{{ selectedFile.name }}</span>
-        <button mat-icon-button color="warn" (click)="removeSelectedFile()">
-          <mat-icon>close</mat-icon>
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des données...</p>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="content" *ngIf="cvForm && !loading">
+    <form [formGroup]="cvForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Section Informations personnelles -->
+      <div class="section">
+        <h2>
+          <i class="material-icons">person</i>
+          Informations personnelles
+        </h2>
+        
+        <div class="form-group">
+          <label>Nom complet *</label>
+          <input type="text" formControlName="fullName" placeholder="Entrez votre nom complet">
+          <div class="error" *ngIf="cvForm.get('fullName')?.hasError('required') && cvForm.get('fullName')?.touched">
+            Le nom complet est requis
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half">
+            <label>Date de naissance</label>
+            <input type="date" formControlName="dateOfBirth">
+          </div>
+          <div class="form-group half">
+            <label>Nationalité</label>
+            <input type="text" formControlName="nationality" placeholder="Ex: Tunisienne">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" formControlName="email" placeholder="votre.email@exemple.com">
+          <div class="error" *ngIf="cvForm.get('email')?.hasError('email') && cvForm.get('email')?.touched">
+            Email invalide
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Autres informations</label>
+          <textarea formControlName="otherInfo" rows="3" placeholder="Informations complémentaires..."></textarea>
+        </div>
+
+        <!-- Upload CV -->
+        <div class="form-group">
+          <label>
+            <i class="material-icons">upload_file</i>
+            Fichier CV (PDF)
+          </label>
+          <input type="file" accept=".pdf" (change)="onCvFileSelected($event)" #fileInput style="display: none;">
+          <button type="button" (click)="fileInput.click()" class="upload-btn">
+            <i class="material-icons">cloud_upload</i>
+            Choisir un fichier PDF
+          </button>
+          <div *ngIf="selectedCvFile" class="file-selected">
+            <i class="material-icons">description</i>
+            {{ selectedCvFile.name }}
+            <button type="button" (click)="removeCvFile()" class="remove-file">
+              <i class="material-icons">close</i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Emplois académiques -->
+      <div class="section">
+        <h2>
+          <i class="material-icons">work</i>
+          Emplois académiques
+        </h2>
+        
+        <div formArrayName="academicEmployment">
+          <div *ngFor="let employment of getEmploymentControls(); let i = index" [formGroupName]="i" class="array-item">
+            <div class="array-header">
+              <h3>Emploi {{ i + 1 }}</h3>
+              <button type="button" (click)="removeEmployment(i)" class="remove-btn">
+                <i class="material-icons">delete</i>
+              </button>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label>Date de début *</label>
+                <input type="date" formControlName="startDate">
+              </div>
+              <div class="form-group half">
+                <label>Date de fin</label>
+                <input type="date" formControlName="endDate">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label>Département *</label>
+                <input type="text" formControlName="department" placeholder="Ex: Informatique">
+              </div>
+              <div class="form-group half">
+                <label>Institution *</label>
+                <input type="text" formControlName="institution" placeholder="Ex: Université de Tunis">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Description</label>
+              <textarea formControlName="description" rows="3" placeholder="Description des responsabilités..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" (click)="addEmployment()" class="add-btn">
+          <i class="material-icons">add</i>
+          Ajouter un emploi
         </button>
       </div>
-    </div>
 
-    <button mat-raised-button color="accent" (click)="uploadCV()" [disabled]="saving || !selectedFile">
-      <mat-icon>save</mat-icon>
-      {{ saving ? 'Enregistrement...' : 'Télécharger le CV' }}
-    </button>
+      <!-- Section Formation -->
+      <div class="section">
+        <h2>
+          <i class="material-icons">school</i>
+          Formation
+        </h2>
+        
+        <div formArrayName="education">
+          <div *ngFor="let education of getEducationControls(); let i = index" [formGroupName]="i" class="array-item">
+            <div class="array-header">
+              <h3>Formation {{ i + 1 }}</h3>
+              <button type="button" (click)="removeEducation(i)" class="remove-btn">
+                <i class="material-icons">delete</i>
+              </button>
+            </div>
 
-    <div class="cv-success-message" *ngIf="showSuccessMessage">
-      <mat-icon>check_circle</mat-icon>
-      CV téléchargé avec succès !
-    </div>
+            <div class="form-row">
+              <div class="form-group half">
+                <label>Date d obtention</label>
+                <input type="date" formControlName="graduationDate">
+              </div>
+              <div class="form-group half">
+                <label>Titre du diplôme</label>
+                <input type="text" formControlName="title" placeholder="Ex: Master en Informatique">
+              </div>
+            </div>
 
-    <div class="cv-loading" *ngIf="loading">
-      <mat-spinner diameter="40"></mat-spinner>
-    </div>
+            <div class="form-row">
+              <div class="form-group half">
+                <label>Département</label>
+                <input type="text" formControlName="department" placeholder="Ex: Sciences Informatiques">
+              </div>
+              <div class="form-group half">
+                <label>Université</label>
+                <input type="text" formControlName="university" placeholder="Ex: Université de Tunis">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label>Superviseur</label>
+                <input type="text" formControlName="supervisor" placeholder="Nom du superviseur">
+              </div>
+              <div class="form-group half">
+                <label>Mention</label>
+                <input type="text" formControlName="grade" placeholder="Ex: Très bien">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Description</label>
+              <textarea formControlName="description" rows="3" placeholder="Description du programme..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" (click)="addEducation()" class="add-btn">
+          <i class="material-icons">add</i>
+          Ajouter une formation
+        </button>
+      </div>
+
+      <!-- Section Aperçu -->
+      <div class="section" *ngIf="cvData">
+        <h2>
+          <i class="material-icons">preview</i>
+          Aperçu du CV
+        </h2>
+        
+        <div class="preview-info">
+          <p><strong>Nom :</strong> {{ cvData.fullName }}</p>
+          <p><strong>Email :</strong> {{ cvData.email }}</p>
+          <p><strong>Emplois :</strong> {{ cvData.academicEmployment?.length || 0 }}</p>
+          <p><strong>Formations :</strong> {{ cvData.education?.length || 0 }}</p>
+          <p *ngIf="cvData.updatedAt"><strong>Dernière mise à jour :</strong> {{ cvData.updatedAt | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+
+        <div class="preview-actions" *ngIf="cvData.pdfUrl">
+          <button type="button" (click)="viewCurrentCv()" class="view-btn">
+            <i class="material-icons">visibility</i>
+            Voir le CV PDF
+          </button>
+          <button type="button" (click)="downloadCvPdf()" class="download-btn">
+            <i class="material-icons">download</i>
+            Télécharger
+          </button>
+        </div>
+      </div>
+
+      <!-- Bouton de soumission -->
+      <div class="submit-section">
+        <button type="submit" [disabled]="!cvForm.valid || saving" class="submit-btn">
+          <span *ngIf="!saving">
+            <i class="material-icons">save</i>
+            Sauvegarder le CV
+          </span>
+          <span *ngIf="saving">
+            <i class="material-icons">hourglass_empty</i>
+            Sauvegarde...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Message de succès -->
+  <div *ngIf="showSuccessMessage" class="success-message">
+    <i class="material-icons">check_circle</i>
+    CV sauvegardé avec succès !
   </div>
 </div>

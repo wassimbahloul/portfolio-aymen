@@ -21,13 +21,6 @@ const homeSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  experience: [{
-    position: String,
-    institution: String,
-    period: String,
-    description: String,
-    link: String
-  }],
   upcomingEvents: [{
     title: String,
     date: String,

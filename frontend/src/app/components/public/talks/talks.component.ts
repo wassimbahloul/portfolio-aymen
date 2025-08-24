@@ -97,11 +97,11 @@ export class TalksComponent implements OnInit {
 
   getTalkTypeLabel(type: string): string {
     const typeLabels: { [key: string]: string } = {
-      'talk': 'Conférence Plénière',
-      'international seminar': 'Séminaire International',
-      'poster': 'Poster Scientifique',
-      'organized seminar': 'Séminaire Organisé',
-      'workshop': 'Atelier de Recherche'
+      'talk': 'Plenary Conference',
+      'international seminar': 'International Seminar',
+      'poster': 'Scientific Poster',
+      'organized seminar': 'Organized Seminar',
+      'workshop': 'Research Workshop'
     };
     return typeLabels[type] || type;
   }
@@ -116,7 +116,7 @@ export class TalksComponent implements OnInit {
       return dateString; // Return original string if date is invalid
     }
     
-    return date.toLocaleDateString('fr-FR', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'

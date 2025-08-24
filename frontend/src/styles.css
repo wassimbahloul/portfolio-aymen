@@ -1,18 +1,39 @@
 /* ÉTAPE 1: Ajoutez ceci dans votre styles.css global */
-.cdk-overlay-pane:not(.mat-mdc-select-panel-above) div.mat-mdc-select-panel {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    transform-origin: top center;
-    background-color: whitesmoke;
-}
 
-/* Reset complet des overlays Material */
+/* Global Reset and Overflow Management */
 * {
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 html, body {
   height: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+body {
+  position: relative;
+}
+
+/* Prevent any element from creating horizontal scroll */
+* {
+  max-width: 100%;
+}
+
+/* Ensure all containers respect viewport width */
+.container,
+.app-container,
+.main-content,
+.cv-content,
+.modern-cv-container {
+  max-width: 100%;
   overflow-x: hidden;
 }
 

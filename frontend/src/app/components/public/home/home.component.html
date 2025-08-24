@@ -97,16 +97,16 @@
           <p class="about-text">{{ homeData?.description || 'Passionate mathematician dedicated to exploring the beauty of mathematical structures and their applications in solving real-world problems. My research focuses on advanced mathematical theories and their practical implementations.' }}</p>
           <div class="about-stats">
             <div class="stat-item">
-              <div class="stat-number">5+</div>
-              <div class="stat-label">Years Experience</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">20+</div>
+              <div class="stat-number">{{ publicationsCount }}</div>
               <div class="stat-label">Publications</div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">10+</div>
-              <div class="stat-label">Projects</div>
+              <div class="stat-number">{{ researchCount }}</div>
+              <div class="stat-label">Research Projects</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">{{ talksCount }}</div>
+              <div class="stat-label">Talks & Seminars</div>
             </div>
           </div>
         </div>
@@ -114,33 +114,57 @@
     </div>
   </section>
 
-  <!-- Enhanced Timeline -->
-  <section class="timeline-section" *ngIf="homeData?.experience?.length">
+  <!-- Enhanced Research Highlights -->
+  <section class="highlights-section" *ngIf="publicationsCount > 0 || researchCount > 0 || talksCount > 0">
     <div class="container">
       <div class="section-header">
         <div class="section-number">02</div>
-        <h2 class="section-title">Academic Journey</h2>
+        <h2 class="section-title">Research Highlights</h2>
         <div class="section-line"></div>
       </div>
       
-      <div class="timeline-container">
-        <div class="timeline-list">
-          <div class="timeline-item" *ngFor="let exp of homeData.experience; let i = index">
-            <div class="timeline-marker">
-              <div class="timeline-dot"></div>
-              <div class="timeline-connector" *ngIf="i < homeData.experience.length - 1"></div>
-            </div>
-            <div class="timeline-content">
-              <div class="timeline-card">
-                <div class="card-header">
-                  <div class="timeline-year">{{ getYear(exp.period) }}</div>
-                  <div class="timeline-duration">{{ exp.period }}</div>
-                </div>
-                <h3 class="timeline-title">{{ exp.position }}</h3>
-                <p class="timeline-place">{{ exp.institution }}</p>
-                <p class="timeline-description" *ngIf="exp.description">{{ exp.description }}</p>
-              </div>
-            </div>
+      <div class="highlights-grid">
+        <div class="highlight-card" *ngIf="publicationsCount > 0">
+          <div class="highlight-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+          <div class="highlight-content">
+            <h3>Publications</h3>
+            <p class="highlight-count">{{ publicationsCount }}</p>
+            <p class="highlight-description">Academic papers and research articles</p>
+            <a routerLink="/publications" class="highlight-link">View All →</a>
+          </div>
+        </div>
+
+        <div class="highlight-card" *ngIf="researchCount > 0">
+          <div class="highlight-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11H1v6h8v-6zM23 11h-8v6h8v-6z"/>
+              <path d="M15 7V1H9v6h6z"/>
+            </svg>
+          </div>
+          <div class="highlight-content">
+            <h3>Research Projects</h3>
+            <p class="highlight-count">{{ researchCount }}</p>
+            <p class="highlight-description">Active and completed research initiatives</p>
+            <a routerLink="/research" class="highlight-link">Explore →</a>
+          </div>
+        </div>
+
+        <div class="highlight-card" *ngIf="talksCount > 0">
+          <div class="highlight-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <div class="highlight-content">
+            <h3>Talks & Seminars</h3>
+            <p class="highlight-count">{{ talksCount }}</p>
+            <p class="highlight-description">Conference presentations and seminars</p>
+            <a routerLink="/talks" class="highlight-link">View Talks →</a>
           </div>
         </div>
       </div>

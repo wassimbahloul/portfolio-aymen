@@ -59,54 +59,5 @@ router.post('/upload-image', auth, upload.single('image'), async (req, res) => {
   }
 });
 
-// @route   POST /api/home/experience
-// @desc    Add experience
-// @access  Private
-router.post('/experience', auth, async (req, res) => {
-  try {
-    const home = await Home.findOne();
-    home.experience.push(req.body);
-    await home.save();
-    res.json(home);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// @route   PUT /api/home/experience/:id
-// @desc    Update experience
-// @access  Private
-router.put('/experience/:id', auth, async (req, res) => {
-  try {
-    const home = await Home.findOne();
-    const experience = home.experience.id(req.params.id);
-    if (!experience) {
-      return res.status(404).json({ message: 'Experience not found' });
-    }
-    Object.assign(experience, req.body);
-    await home.save();
-    res.json(home);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// @route   DELETE /api/home/experience/:id
-// @desc    Delete experience
-// @access  Private
-router.delete('/experience/:id', auth, async (req, res) => {
-  try {
-    const home = await Home.findOne();
-    home.experience.id(req.params.id).remove();
-    await home.save();
-    res.json(home);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
 module.exports = router;
 

@@ -206,13 +206,13 @@ export class PhotosComponent implements OnInit, OnDestroy {
 
   getCategoryLabel(category: string): string {
     const labels: { [key: string]: string } = {
-      conference: 'Conférences Mathématiques',
-      research: 'Recherche & Laboratoire',
-      teaching: 'Enseignement',
-      awards: 'Prix & Distinctions',
+      conference: 'Mathematical Conferences',
+      research: 'Research & Laboratory',
+      teaching: 'Teaching',
+      awards: 'Awards & Distinctions',
       collaboration: 'Collaborations',
-      seminar: 'Séminaires',
-      workshop: 'Ateliers'
+      seminar: 'Seminars',
+      workshop: 'Workshops'
     };
     return labels[category] || category;
   }

@@ -10,8 +10,8 @@
           </svg>
         </div>
         <div class="header-text">
-          <h1 class="page-title">Galerie Académique</h1>
-          <p class="page-description">Moments marquants de ma carrière en mathématiques et recherche académique</p>
+          <h1 class="page-title">Academic Gallery</h1>
+          <p class="page-description">Memorable moments from my career in mathematics and academic research</p>
         </div>
       </div>
     </div>
@@ -23,27 +23,27 @@
       <!-- Filter Section -->
       <div class="filter-section" *ngIf="photos.length > 0">
         <div class="filter-header">
-          <h2>Explorer la Galerie</h2>
-          <p>{{ filteredPhotos.length }} photo(s) disponible(s)</p>
+          <h2>Explore Gallery</h2>
+          <p>{{ filteredPhotos.length }} photo(s) available</p>
         </div>
         
         <div class="filter-grid">
           <div class="filter-group">
-            <label class="filter-label">Catégorie</label>
+            <label class="filter-label">Category</label>
             <select [(ngModel)]="selectedCategory" (change)="filterPhotos()" class="modern-select">
-              <option value="">Toutes les Catégories</option>
-              <option value="conference">Conférences Mathématiques</option>
-              <option value="research">Recherche & Laboratoire</option>
-              <option value="teaching">Enseignement</option>
-              <option value="awards">Prix & Distinctions</option>
+              <option value="">All Categories</option>
+              <option value="conference">Mathematical Conferences</option>
+              <option value="research">Research & Laboratory</option>
+              <option value="teaching">Teaching</option>
+              <option value="awards">Awards & Distinctions</option>
               <option value="collaboration">Collaborations</option>
-              <option value="seminar">Séminaires</option>
-              <option value="workshop">Ateliers</option>
+              <option value="seminar">Seminars</option>
+              <option value="workshop">Workshops</option>
             </select>
           </div>
           
           <div class="search-group">
-            <label class="filter-label">Recherche</label>
+            <label class="filter-label">Search</label>
             <div class="search-input-wrapper">
               <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/>
@@ -52,7 +52,7 @@
               <input type="text" 
                      [(ngModel)]="searchTerm" 
                      (input)="filterPhotos()" 
-                     placeholder="Rechercher par titre, description, lieu..."
+                     placeholder="Search by title, description, location..."
                      class="search-input">
             </div>
           </div>
@@ -63,7 +63,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
               </svg>
-              Effacer Filtres
+              Clear Filters
             </button>
           </div>
         </div>
@@ -74,7 +74,7 @@
         <div class="location-section" *ngFor="let locationGroup of photosByLocation">
           <!-- Location Title -->
           <div class="country-title">
-            <h2>{{ locationGroup.location || 'Lieu non spécifié' }}</h2>
+            <h2>{{ locationGroup.location || 'Location not specified' }}</h2>
           </div>
           
           <!-- Carousel Container -->
@@ -163,8 +163,8 @@
             <path d="21 21l-4.35-4.35"/>
           </svg>
         </div>
-        <h2>Aucune photo trouvée</h2>
-        <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
+        <h2>No photos found</h2>
+        <p>Try modifying your search criteria or filters.</p>
       </div>
 
       <div class="no-photos-section" *ngIf="photos.length === 0 && !loading">
@@ -174,8 +174,8 @@
             <circle cx="12" cy="13" r="3"/>
           </svg>
         </div>
-        <h2>Galerie en préparation</h2>
-        <p>Les photos de mes activités académiques et recherches seront bientôt disponibles.</p>
+        <h2>Gallery in preparation</h2>
+        <p>Photos from my academic activities and research will be available soon.</p>
       </div>
 
       <!-- Loading Section -->
@@ -184,7 +184,7 @@
           <div class="loading-spinner">
             <div class="spinner"></div>
           </div>
-          <p>Chargement de la galerie...</p>
+          <p>Loading gallery...</p>
         </div>
       </div>
     </div>

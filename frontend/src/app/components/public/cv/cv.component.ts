@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-cv',
   templateUrl: './cv.component.html',
-  styleUrls: ['./cv.component.css']
+  styleUrls: ['./cv.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class CvComponent implements OnInit {
   cvData: any = {};
@@ -23,37 +24,64 @@ export class CvComponent implements OnInit {
 
   loadCVData(): void {
     this.loading = true;
+    
+    // Load structured CV data first
+    this.apiService.getPublicCvData().subscribe({
+      next: (structuredData) => {
+        console.log('📋 CV Data loaded from API:', structuredData);
+        
+        if (structuredData) {
+          this.cvData = { ...this.cvData, ...structuredData };
+          console.log('✅ CV Data set:', this.cvData);
+          
+          if (structuredData.pdfUrl) {
+            const fullUrl = `http://localhost:5000${structuredData.pdfUrl}`;
+            this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
+            console.log('📄 PDF URL set:', fullUrl);
+          }
+        }
+        
+        // Always try to load old CV file as fallback for PDF
+        this.loadOldCVData();
+      },
+      error: (error) => {
+        console.error('❌ Error loading structured CV data:', error);
+        // Fallback to old CV file
+        this.loadOldCVData();
+      }
+    });
+  }
+
+  loadOldCVData(): void {
     this.apiService.getCV().subscribe({
       next: (data) => {
-        this.cvData = data;
-        if (this.cvData.cvFile) {
-          const fullUrl = `http://portfolio-aymen.onrender.com${this.cvData.cvFile}`;
-          this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
+        console.log('📎 Old CV Data loaded:', data);
+        
+        if (data && data.cvFile) {
+          this.cvData = { ...this.cvData, cvFile: data.cvFile };
+          
+          // Only set PDF URL if we don't already have one from structured data
+          if (!this.pdfUrl) {
+            const fullUrl = `http://localhost:5000${data.cvFile}`;
+            this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
+            console.log('📄 Fallback PDF URL set:', fullUrl);
+          }
         }
+        
+        console.log('🎯 Final CV Data:', this.cvData);
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading CV data:', error);
+        console.error('❌ Error loading old CV data:', error);
         this.loading = false;
       }
     });
   }
 
-  downloadCV(): void {
-    if (this.cvData.cvFile) {
-      const link = document.createElement('a');
-      link.href = `http://portfolio-aymen.onrender.com${this.cvData.cvFile}`;
-      link.download = 'CV.pdf';
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
-
   openInNewTab(): void {
-    if (this.cvData.cvFile) {
-      window.open(`http://portfolio-aymen.onrender.com${this.cvData.cvFile}`, '_blank');
+    if (this.cvData.pdfUrl || this.cvData.cvFile) {
+      const url = this.cvData.pdfUrl || this.cvData.cvFile;
+      window.open(`http://localhost:5000${url}`, '_blank');
     }
   }
 
@@ -63,5 +91,26 @@ export class CvComponent implements OnInit {
       month: 'long', 
       day: 'numeric' 
     });
+  }
+
+  calculateDuration(startDate: string, endDate: string): string {
+    const start = new Date(startDate);
+    const end = endDate ? new Date(endDate) : new Date();
+    
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30));
+    
+    if (diffMonths < 12) {
+      return `${diffMonths} month${diffMonths > 1 ? 's' : ''}`;
+    } else {
+      const years = Math.floor(diffMonths / 12);
+      const remainingMonths = diffMonths % 12;
+      
+      if (remainingMonths === 0) {
+        return `${years} year${years > 1 ? 's' : ''}`;
+      } else {
+        return `${years} year${years > 1 ? 's' : ''}, ${remainingMonths} month${remainingMonths > 1 ? 's' : ''}`;
+      }
+    }
   }
 }

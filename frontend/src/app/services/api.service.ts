@@ -58,6 +58,24 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/cv/upload`, formData, { headers: this.getAuthHeaders() });
   }
 
+  // New CV Data methods
+  getCvData(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/cv/data`, { headers: this.getAuthHeaders() });
+  }
+
+  // Public CV Data method (no auth required)
+  getPublicCvData(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/cv/public`);
+  }
+
+  saveCvData(cvData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/cv/data`, cvData, { headers: this.getAuthHeaders() });
+  }
+
+  updateCvData(cvData: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/cv/data`, cvData, { headers: this.getAuthHeaders() });
+  }
+
   // Research API
   // Ajoutez ces méthodes à votre ApiService
 

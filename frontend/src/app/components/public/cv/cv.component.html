@@ -1,4 +1,4 @@
-<div class="modern-cv-container">
+  <div class="modern-cv-container">
   <div class="cv-header">
     <div class="container">
       <div class="header-content">
@@ -13,7 +13,7 @@
         </div>
         <div class="header-text">
           <h1 class="page-title">Academic Curriculum Vitae</h1>
-          <p class="page-description">View and download my complete academic CV with research achievements and publications</p>
+          <p class="page-description">Explore my complete academic journey with research achievements</p>
         </div>
       </div>
     </div>
@@ -21,67 +21,258 @@
 
   <div class="cv-content">
     <div class="container">
-      <!-- PDF Viewer Section -->
-      <div class="pdf-viewer-section" *ngIf="cvData.cvFile && !loading">
-        <div class="viewer-header">
-          <div class="viewer-info">
-            <h2>Academic Resume</h2>
-            <p>Last updated: {{ getCurrentDate() }}</p>
+      <!-- CV Data Display -->
+      <div class="cv-sections" *ngIf="cvData && !loading">
+        
+        <!-- Personal Information Section -->
+        <div class="cv-section personal-info" *ngIf="cvData.fullName">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <h2>Personal Information</h2>
           </div>
-          <div class="viewer-actions">
-            <button class="action-btn primary" (click)="downloadCV()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7,10 12,15 17,10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              Download PDF
-            </button>
-            <button class="action-btn secondary" (click)="openInNewTab()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                <polyline points="15,3 21,3 21,9"/>
-                <line x1="10" y1="14" x2="21" y2="3"/>
-              </svg>
-              Open Full Screen
-            </button>
+          <div class="section-content">
+            <div class="info-grid">
+              <div class="info-item" *ngIf="cvData.fullName">
+                <span class="info-label">Full Name</span>
+                <span class="info-value">{{ cvData.fullName }}</span>
+              </div>
+              <div class="info-item" *ngIf="cvData.email">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ cvData.email }}</span>
+              </div>
+              <div class="info-item" *ngIf="cvData.dateOfBirth">
+                <span class="info-label">Date of Birth</span>
+                <span class="info-value">{{ cvData.dateOfBirth | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="info-item" *ngIf="cvData.nationality">
+                <span class="info-label">Nationality</span>
+                <span class="info-value">{{ cvData.nationality }}</span>
+              </div>
+            </div>
+            <div class="other-info" *ngIf="cvData.otherInfo">
+              <p>{{ cvData.otherInfo }}</p>
+            </div>
           </div>
         </div>
 
-        <div class="pdf-viewer-wrapper">
-          <iframe 
-            [src]="pdfUrl" 
-            title="Professional CV PDF" 
-            class="pdf-iframe"
-            frameborder="0">
-          </iframe>
-          
-          <!-- Fallback for mobile -->
-          <div class="mobile-fallback">
-            <div class="fallback-content">
-              <div class="fallback-icon">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14,2 14,8 20,8"/>
-                </svg>
+        <!-- Academic Employment Section -->
+        <div class="cv-section employment" *ngIf="cvData.academicEmployment && cvData.academicEmployment.length > 0">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <h2>Academic Employment</h2>
+            <div class="section-counter">
+              <span class="counter-badge">{{ cvData.academicEmployment.length }} Position{{ cvData.academicEmployment.length > 1 ? 's' : '' }}</span>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="timeline">
+              <div class="timeline-item" *ngFor="let employment of cvData.academicEmployment; let i = index">
+                <div class="timeline-marker">
+                  <div class="marker-number">{{ i + 1 }}</div>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="m22 21-3-3m0 0a5.5 5.5 0 1 0-7.78-7.78 5.5 5.5 0 0 0 7.78 7.78Z"/>
+                    </svg>
+                    Academic Position
+                  </div>
+                  <div class="timeline-header">
+                    <h3>{{ employment.department }}</h3>
+                    <div class="timeline-institution">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                      </svg>
+                      {{ employment.institution }}
+                    </div>
+                  </div>
+                  <div class="timeline-date">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <span class="date-range">
+                      {{ employment.startDate | date:'MMM yyyy' }} - 
+                      {{ employment.endDate ? (employment.endDate | date:'MMM yyyy') : 'Present' }}
+                    </span>
+                    <span class="duration" *ngIf="employment.startDate && employment.endDate">
+                      ({{ calculateDuration(employment.startDate, employment.endDate) }})
+                    </span>
+                  </div>
+                  <div class="timeline-description" *ngIf="employment.description">
+                    <div class="description-content">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10,9 9,9 8,9"/>
+                      </svg>
+                      <p>{{ employment.description }}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3>PDF Preview</h3>
-              <p>For the best viewing experience, please download the PDF or open it in a new tab.</p>
-              <div class="fallback-actions">
-                <button class="action-btn primary" (click)="downloadCV()">
-                  Download PDF
-                </button>
-                <button class="action-btn secondary" (click)="openInNewTab()">
-                  View in New Tab
+            </div>
+          </div>
+        </div>
+
+        <!-- Education Section -->
+        <div class="cv-section education" *ngIf="cvData.education && cvData.education.length > 0">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+            </div>
+            <h2>Academic Education</h2>
+            <div class="section-counter">
+              <span class="counter-badge">{{ cvData.education.length }} Degree{{ cvData.education.length > 1 ? 's' : '' }}</span>
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="timeline">
+              <div class="timeline-item" *ngFor="let education of cvData.education; let i = index">
+                <div class="timeline-marker">
+                  <div class="marker-number">{{ i + 1 }}</div>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+                      <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                    Academic Degree
+                  </div>
+                  <div class="timeline-header">
+                    <h3>{{ education.title }}</h3>
+                    <div class="timeline-institution">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                      </svg>
+                      {{ education.university }}
+                    </div>
+                  </div>
+                  <div class="timeline-date">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <span class="date-range">
+                      Graduated {{ education.graduationDate | date:'MMMM yyyy' }}
+                    </span>
+                    <span class="grade-badge" *ngIf="education.grade">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                      </svg>
+                      {{ education.grade }}
+                    </span>
+                  </div>
+                  <div class="timeline-meta" *ngIf="education.department || education.supervisor">
+                    <div class="meta-grid">
+                      <div class="meta-item" *ngIf="education.department">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                          <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <div>
+                          <span class="meta-label">Department</span>
+                          <span class="meta-value">{{ education.department }}</span>
+                        </div>
+                      </div>
+                      <div class="meta-item" *ngIf="education.supervisor">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                          <circle cx="8.5" cy="7" r="4"/>
+                          <line x1="20" y1="8" x2="20" y2="14"/>
+                          <line x1="23" y1="11" x2="17" y2="11"/>
+                        </svg>
+                        <div>
+                          <span class="meta-label">Supervisor</span>
+                          <span class="meta-value">{{ education.supervisor }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="timeline-description" *ngIf="education.description">
+                    <div class="description-content">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10,9 9,9 8,9"/>
+                      </svg>
+                      <p>{{ education.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PDF Download Section -->
+        <div class="cv-section pdf-download-section" *ngIf="pdfUrl">
+          <div class="section-header">
+            <div class="section-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+            </div>
+            <h2>Complete CV</h2>
+          </div>
+          <div class="section-content">
+            <div class="pdf-download-wrapper">
+              <div class="download-info">
+                <h3>Complete PDF Version</h3>
+                <p>Download or view the complete version of my academic CV with all details of my career and achievements.</p>
+              </div>
+              <div class="download-actions">
+                <button class="pdf-btn primary" (click)="openInNewTab()">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                  <div class="btn-content">
+                    <span class="btn-title">View PDF CV</span>
+                    <span class="btn-subtitle">Open in new tab</span>
+                  </div>
                 </button>
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
       <!-- No CV Available -->
-      <div class="no-cv-section" *ngIf="!cvData.cvFile && !loading">
+      <div class="no-cv-section" *ngIf="!cvData || (!cvData.fullName && !cvData.cvFile && !cvData.pdfUrl && !loading)">
         <div class="no-cv-content">
           <div class="no-cv-icon">
             <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -91,14 +282,14 @@
               <line x1="12" y1="12" x2="12" y2="12"/>
             </svg>
           </div>
-          <h2>Academic CV Currently Unavailable</h2>
-          <p>My academic curriculum vitae is currently being updated with the latest research achievements and publications. Please check back soon or contact me directly for the most current version.</p>
+          <h2>Academic CV Under Update</h2>
+          <p>My academic curriculum vitae is currently being updated with the latest research achievements and publications. Please check back soon or contact me directly for the most recent version.</p>
           <button class="action-btn primary" routerLink="/contact">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
               <polyline points="22,6 12,13 2,6"/>
             </svg>
-            Contact for Latest CV
+            Contact me for complete CV
           </button>
         </div>
       </div>
@@ -109,8 +300,8 @@
           <div class="loading-spinner">
             <div class="spinner"></div>
           </div>
-          <h3>Loading Resume...</h3>
-          <p>Please wait while we prepare your document.</p>
+          <h3>Loading CV...</h3>
+          <p>Please wait while we prepare the document.</p>
         </div>
       </div>
     </div>
