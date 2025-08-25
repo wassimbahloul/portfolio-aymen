@@ -35,7 +35,7 @@ export class CvComponent implements OnInit {
           console.log('✅ CV Data set:', this.cvData);
           
           if (structuredData.pdfUrl) {
-            const fullUrl = `http://localhost:5000${structuredData.pdfUrl}`;
+            const fullUrl = `https://portfolio-aymen.onrender.com${structuredData.pdfUrl}`;
             this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
             console.log('📄 PDF URL set:', fullUrl);
           }
@@ -62,7 +62,7 @@ export class CvComponent implements OnInit {
           
           // Only set PDF URL if we don't already have one from structured data
           if (!this.pdfUrl) {
-            const fullUrl = `http://localhost:5000${data.cvFile}`;
+            const fullUrl = `https://portfolio-aymen.onrender.com${data.cvFile}`;
             this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
             console.log('📄 Fallback PDF URL set:', fullUrl);
           }
@@ -81,7 +81,7 @@ export class CvComponent implements OnInit {
   openInNewTab(): void {
     if (this.cvData.pdfUrl || this.cvData.cvFile) {
       const url = this.cvData.pdfUrl || this.cvData.cvFile;
-      window.open(`http://localhost:5000${url}`, '_blank');
+      window.open(`https://portfolio-aymen.onrender.com${url}`, '_blank');
     }
   }
 

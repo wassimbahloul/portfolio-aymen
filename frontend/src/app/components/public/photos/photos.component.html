@@ -90,7 +90,7 @@
               </button>
               
               <div class="main-photo" (click)="openPhotoModal(locationGroup.photos[locationGroup.currentIndex])">
-                <img [src]="'http://portfolio-aymen.onrender.com' + locationGroup.photos[locationGroup.currentIndex].imageUrl" 
+                <img [src]="'https://portfolio-aymen.onrender.com' + locationGroup.photos[locationGroup.currentIndex].imageUrl" 
                      [alt]="locationGroup.photos[locationGroup.currentIndex].altText || locationGroup.photos[locationGroup.currentIndex].title"
                      loading="lazy">
                 
@@ -206,7 +206,7 @@
     
     <div class="modal-body">
       <div class="modal-image">
-        <img [src]="'http://portfolio-aymen.onrender.com' + selectedPhoto.imageUrl" 
+        <img [src]="'https://portfolio-aymen.onrender.com' + selectedPhoto.imageUrl" 
              [alt]="selectedPhoto.altText || selectedPhoto.title">
       </div>
       

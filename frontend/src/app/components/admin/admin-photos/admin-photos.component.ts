@@ -71,17 +71,37 @@ export class AdminPhotosComponent implements OnInit {
 
   loadPhotos(): void {
     this.loading = true;
+    console.log('🔍 Loading photos for admin...');
+    console.log('🔑 Auth token:', localStorage.getItem('token') ? 'Present' : 'Missing');
+    
+    // Try admin endpoint first, fallback to public endpoint
     this.apiService.getPhotosAdmin().subscribe({
       next: (data) => {
+        console.log('📸 Photos loaded from admin endpoint:', data);
         this.photos = data || [];
         this.filteredPhotos = [...this.photos];
         this.updateAvailableYears();
         this.loading = false;
+        console.log('✅ Admin photos processed:', this.photos.length);
       },
       error: (error) => {
-        console.error('Error loading photos:', error);
-        alert('Erreur lors du chargement des photos: ' + (error.error?.message || error.message));
-        this.loading = false;
+        console.error('❌ Admin endpoint failed, trying public endpoint:', error);
+        // Fallback to public endpoint
+        this.apiService.getPhotos().subscribe({
+          next: (data) => {
+            console.log('� Photos loaded from public endpoint:', data);
+            this.photos = data || [];
+            this.filteredPhotos = [...this.photos];
+            this.updateAvailableYears();
+            this.loading = false;
+            console.log('✅ Public photos processed:', this.photos.length);
+          },
+          error: (publicError) => {
+            console.error('❌ Both endpoints failed:', publicError);
+            alert('Erreur lors du chargement des photos: ' + (publicError.error?.message || publicError.message));
+            this.loading = false;
+          }
+        });
       }
     });
   }
@@ -203,7 +223,7 @@ export class AdminPhotosComponent implements OnInit {
   downloadPhoto(photo: any): void {
     if (photo.imageUrl && photo.allowDownload) {
       const link = document.createElement('a');
-      link.href = `http://portfolio-aymen.onrender.com${photo.imageUrl}`;
+      link.href = `https://portfolio-aymen.onrender.com${photo.imageUrl}`;
       link.download = `${photo.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.jpg`;
       link.target = '_blank';
       link.click();
