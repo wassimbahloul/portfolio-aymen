@@ -116,6 +116,11 @@ export class AdminCvComponent implements OnInit {
         if (data) {
           this.cvData = data;
           this.populateForm(data);
+          
+          // Check if PDF file exists if we have a pdfUrl
+          if (data.pdfUrl) {
+            this.checkPdfFileExists(data.pdfUrl);
+          }
         } else {
           // Initialize with one empty employment and education
           this.addEmployment();
@@ -131,6 +136,24 @@ export class AdminCvComponent implements OnInit {
         this.addEducation();
       }
     });
+  }
+
+  private checkPdfFileExists(pdfUrl: string): void {
+    const fullUrl = `https://portfolio-aymen.onrender.com${pdfUrl}`;
+    fetch(fullUrl, { method: 'HEAD' })
+      .then(response => {
+        if (!response.ok) {
+          console.warn('⚠️ Le fichier PDF configuré n\'existe plus:', fullUrl);
+          this.snackBar.open('⚠️ Le fichier PDF configuré n\'existe plus. Veuillez télécharger un nouveau fichier.', 'Fermer', { 
+            duration: 5000 
+          });
+        } else {
+          console.log('✅ Fichier PDF vérifié et accessible:', fullUrl);
+        }
+      })
+      .catch(error => {
+        console.error('❌ Erreur lors de la vérification du fichier PDF:', error);
+      });
   }
 
   private populateForm(data: any): void {

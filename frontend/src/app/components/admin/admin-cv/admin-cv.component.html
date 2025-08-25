@@ -38,8 +38,30 @@
         </div>
         <div class="form-group">
           <label><i class="material-icons">upload_file</i> Fichier CV (PDF)</label>
+          
+          <!-- Current PDF Status -->
+          <div class="current-pdf-status" *ngIf="cvData && cvData.pdfUrl">
+            <div class="pdf-info">
+              <i class="material-icons">description</i>
+              <span>Fichier PDF actuel: {{ cvData.pdfUrl.split('/').pop() }}</span>
+              <small class="pdf-note">Le fichier sera remplacé si vous en téléchargez un nouveau</small>
+            </div>
+          </div>
+          
+          <div class="no-pdf-warning" *ngIf="!cvData || !cvData.pdfUrl">
+            <div class="warning-content">
+              <i class="material-icons">warning</i>
+              <span>Aucun fichier PDF configuré. Veuillez télécharger un fichier CV.</span>
+            </div>
+          </div>
+          
+          <!-- File Upload Section -->
           <input type="file" accept=".pdf" (change)="onCvFileSelected($event)" #fileInput style="display:none;">
-          <button type="button" (click)="fileInput.click()" class="upload-btn"><i class="material-icons">cloud_upload</i> Choisir un fichier PDF</button>
+          <button type="button" (click)="fileInput.click()" class="upload-btn">
+            <i class="material-icons">cloud_upload</i> 
+            {{ (cvData && cvData.pdfUrl) ? 'Remplacer le fichier PDF' : 'Choisir un fichier PDF' }}
+          </button>
+          
           <div *ngIf="selectedCvFile" class="file-selected">
             <i class="material-icons">description</i> {{ selectedCvFile.name }}
             <button type="button" (click)="removeCvFile()" class="remove-file"><i class="material-icons">close</i></button>

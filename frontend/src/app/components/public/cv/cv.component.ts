@@ -81,7 +81,31 @@ export class CvComponent implements OnInit {
   openInNewTab(): void {
     if (this.cvData.pdfUrl || this.cvData.cvFile) {
       const url = this.cvData.pdfUrl || this.cvData.cvFile;
-      window.open(`https://portfolio-aymen.onrender.com${url}`, '_blank');
+      const fullUrl = `https://portfolio-aymen.onrender.com${url}`;
+      
+      console.log('🔍 Tentative d\'ouverture du PDF:', fullUrl);
+      console.log('📄 Données CV:', this.cvData);
+      
+      // Pour Render, on peut essayer d'ouvrir directement d'abord
+      console.log('🚀 Ouverture directe du PDF (Render)...');
+      window.open(fullUrl, '_blank');
+      
+      // Vérification en arrière-plan pour information
+      fetch(fullUrl, { method: 'HEAD' })
+        .then(response => {
+          if (response.ok) {
+            console.log('✅ Fichier PDF vérifié et accessible:', fullUrl);
+          } else {
+            console.error('❌ Fichier PDF non trouvé (status:', response.status, ')');
+            // Ne pas afficher d'alerte car on a déjà ouvert l'onglet
+          }
+        })
+        .catch(error => {
+          console.error('🚨 Erreur lors de la vérification du PDF:', error);
+        });
+    } else {
+      console.warn('⚠️ Aucun fichier PDF configuré');
+      alert('Aucun fichier PDF n\'est configuré. L\'administrateur doit télécharger un fichier CV.');
     }
   }
 
