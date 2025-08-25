@@ -250,6 +250,36 @@
   transition: transform 0.3s ease;
 }
 
+/* Uniformisation supplémentaire : empêcher sauts de layout */
+.photo-image, .main-photo, .modal-image {
+  background-color: #f0f3f5;
+}
+
+.modal-image img, .main-photo img, .photo-image img {
+  object-position: center center;
+  background-color: #f0f3f5;
+  object-fit: cover;
+  display: block;
+}
+
+/* Classe réutilisable si besoin dans d'autres composants */
+.uniform-image-wrapper {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.uniform-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
 .photo-card:hover .photo-image img {
   transform: scale(1.05);
 }
@@ -660,8 +690,8 @@
 
 /* Clean Carousel Container */
 .carousel-container {
-  padding: 2rem;
-  background: white;
+  padding: 2rem !important;
+  background: transparent !important;
 }
 
 /* Simplified Main Photo Container */
@@ -671,6 +701,9 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .carousel-btn {
@@ -709,19 +742,34 @@
 
 /* Standardized Main Photo with Fixed Dimensions */
 .main-photo {
-  position: relative;
-  width: 100%;
-  height: 450px;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 25px rgba(44, 62, 80, 0.15);
+  position: relative !important;
+  width: 100% !important;
+  max-width: 600px !important;
+  height: 200px !important;
+  margin: 0 auto !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.15),
+    0 8px 20px rgba(102, 126, 234, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  border: 3px solid transparent !important;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) border-box !important;
+  transform: translateZ(0) translateY(-5px) !important;
+  z-index: 2 !important;
 }
 
 .main-photo:hover {
-  transform: scale(1.02);
-  box-shadow: 0 12px 35px rgba(44, 62, 80, 0.25);
+  transform: translateY(-15px) scale(1.03) !important;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.25),
+    0 15px 35px rgba(102, 126, 234, 0.3),
+    0 0 40px rgba(118, 75, 162, 0.2) !important;
+  border-color: rgba(102, 126, 234, 0.4) !important;
+  z-index: 10 !important;
 }
 
 .main-photo img {
@@ -729,11 +777,14 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition: transform 0.3s ease;
+  transition: all 0.4s ease;
+  display: block;
+  filter: brightness(1) contrast(1.05) saturate(1.1);
 }
 
 .main-photo:hover img {
-  transform: scale(1.05);
+  transform: scale(1.08);
+  filter: brightness(1.1) contrast(1.1) saturate(1.2);
 }
 
 /* Simple Photo Overlay */
@@ -743,21 +794,33 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(102, 126, 234, 0.6) 50%,
+    rgba(118, 75, 162, 0.7) 100%
+  );
   display: flex;
   align-items: flex-end;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(2px);
 }
 
 .main-photo:hover .photo-overlay {
   opacity: 1;
 }
 
+.main-photo:hover .photo-info {
+  transform: translateY(0);
+}
+
 .photo-info {
   padding: 1.5rem;
   color: white;
   width: 100%;
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
 }
 
 .photo-info h3 {
@@ -923,11 +986,13 @@
 }
 
 .modal-image img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  object-position: center;
   border-radius: 8px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: block;
 }
 
 .modal-info {

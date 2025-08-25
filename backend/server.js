@@ -14,8 +14,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
-app.use('/uploads/thumbnails', express.static(path.join(__dirname, 'Uploads/thumbnails')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads/thumbnails', express.static(path.join(__dirname, 'uploads/thumbnails')));
 
 // Connect to MongoDB
 mongoose

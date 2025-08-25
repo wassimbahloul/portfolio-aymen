@@ -8,16 +8,11 @@ const fs = require('fs').promises;
 
 const router = express.Router();
 
-// Helper function to generate thumbnail
+// (Legacy) Helper kept for backward compatibility; new code now inlined to force .jpg extension
 async function generateThumbnail(filePath, outputPath, maxWidth = 300, maxHeight = 300) {
   try {
     await sharp(filePath)
-      .resize({
-        width: maxWidth,
-        height: maxHeight,
-        fit: sharp.fit.inside,
-        withoutEnlargement: true
-      })
+      .resize({ width: maxWidth, height: maxHeight, fit: sharp.fit.inside, withoutEnlargement: true })
       .jpeg({ quality: 80 })
       .toFile(outputPath);
   } catch (error) {
@@ -95,10 +90,15 @@ router.post('/', auth, upload.array('photos', 10), async (req, res) => {
     const photos = [];
 
     for (const file of req.files) {
-      // Generate thumbnail
-      const thumbnailFilename = `thumb_${file.filename}`;
+      // Generate thumbnail with consistent .jpg extension (avoid mismatched content/extension)
+      const originalExt = path.extname(file.filename); // e.g. .png / .jpg
+      const baseName = path.basename(file.filename, originalExt);
+      const thumbnailFilename = `thumb_${baseName}.jpg`;
       const thumbnailPath = path.join(__dirname, '../uploads/thumbnails', thumbnailFilename);
-      await generateThumbnail(file.path, thumbnailPath);
+      await sharp(file.path)
+        .resize({ width: 300, height: 300, fit: sharp.fit.inside, withoutEnlargement: true })
+        .jpeg({ quality: 80 })
+        .toFile(thumbnailPath);
 
       const photo = new Photo({
         title: photoData.title || file.originalname,
@@ -215,9 +215,14 @@ router.post('/upload', auth, upload.single('photo'), async (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const thumbnailFilename = `thumb_${req.file.filename}`;
+    const originalExt = path.extname(req.file.filename);
+    const baseName = path.basename(req.file.filename, originalExt);
+    const thumbnailFilename = `thumb_${baseName}.jpg`;
     const thumbnailPath = path.join(__dirname, '../uploads/thumbnails', thumbnailFilename);
-    await generateThumbnail(req.file.path, thumbnailPath);
+    await sharp(req.file.path)
+      .resize({ width: 300, height: 300, fit: sharp.fit.inside, withoutEnlargement: true })
+      .jpeg({ quality: 80 })
+      .toFile(thumbnailPath);
 
     res.json({
       filename: req.file.filename,

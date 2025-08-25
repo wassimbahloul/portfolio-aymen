@@ -7,7 +7,11 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
   private baseUrl = 'https://portfolio-aymen.onrender.com/api';
-
+  
+  // Exposer l'URL de base pour les images
+  get baseImageUrl(): string {
+    return 'https://portfolio-aymen.onrender.com';
+  }
   constructor(private http: HttpClient) { }
 
   private getAuthHeaders(): HttpHeaders {
