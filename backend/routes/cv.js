@@ -28,22 +28,37 @@ router.get('/', async (req, res) => {
 // @access  Private
 router.post('/upload', auth, upload.single('cv'), async (req, res) => {
   try {
+    console.log('📤 CV Upload attempt...');
+    console.log('📁 Request file:', req.file);
+    
     if (!req.file) {
+      console.log('❌ No file uploaded');
       return res.status(400).json({ message: 'No file uploaded' });
     }
+    
+    console.log('📄 File uploaded:', req.file.filename);
+    console.log('📍 File path:', req.file.path);
+    console.log('📏 File size:', req.file.size);
+    
     const fileUrl = `/uploads/${req.file.filename}`;
+    console.log('🔗 File URL:', fileUrl);
+    
     let cv = await CV.findOne();
     if (!cv) {
       cv = new CV({ cvFile: fileUrl });
+      console.log('🆕 Created new CV record');
     } else {
+      console.log('📝 Updating existing CV record');
       cv.cvFile = fileUrl;
     }
     await cv.save();
+    console.log('💾 CV saved to database');
     
     // Return cvUrl instead of fileUrl to match frontend expectations
     res.json({ cvUrl: fileUrl });
+    console.log('✅ CV upload successful');
   } catch (error) {
-    console.error(error);
+    console.error('❌ CV upload error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
