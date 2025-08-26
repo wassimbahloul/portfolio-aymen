@@ -13,9 +13,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/uploads/thumbnails', express.static(path.join(__dirname, 'uploads/thumbnails')));
+// Serve static files - DISABLED: Now using Cloudinary for file storage
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads/thumbnails', express.static(path.join(__dirname, 'uploads/thumbnails')));
 
 // Connect to MongoDB
 mongoose

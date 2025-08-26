@@ -73,6 +73,15 @@ const photoSchema = new mongoose.Schema({
   order: {
     type: Number,
     default: 0
+  },
+  // Cloudinary fields
+  cloudinaryUrl: {
+    type: String,
+    trim: true
+  },
+  cloudinaryPublicId: {
+    type: String,
+    trim: true
   }
 }, {
   timestamps: true

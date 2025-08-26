@@ -2,7 +2,7 @@ const express = require('express');
 const CV = require('../models/CV');
 const CvData = require('../models/CvData');
 const auth = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const { uploadPDF } = require('../middleware/cloudinary');
 
 const router = express.Router();
 
@@ -24,11 +24,11 @@ router.get('/', async (req, res) => {
 });
 
 // @route   POST /cv/upload
-// @desc    Upload CV file
+// @desc    Upload CV file to Cloudinary
 // @access  Private
-router.post('/upload', auth, upload.single('cv'), async (req, res) => {
+router.post('/upload', auth, uploadPDF.single('cv'), async (req, res) => {
   try {
-    console.log('📤 CV Upload attempt...');
+    console.log('📤 CV Upload to Cloudinary...');
     console.log('📁 Request file:', req.file);
     
     if (!req.file) {
@@ -36,12 +36,11 @@ router.post('/upload', auth, upload.single('cv'), async (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
     
-    console.log('📄 File uploaded:', req.file.filename);
-    console.log('📍 File path:', req.file.path);
-    console.log('📏 File size:', req.file.size);
+    console.log('📄 File uploaded to Cloudinary:', req.file.path);
+    console.log('� Cloudinary URL:', req.file.path);
     
-    const fileUrl = `/uploads/${req.file.filename}`;
-    console.log('🔗 File URL:', fileUrl);
+    // Cloudinary renvoie l'URL complète dans req.file.path
+    const fileUrl = req.file.path;
     
     let cv = await CV.findOne();
     if (!cv) {

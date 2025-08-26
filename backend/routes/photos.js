@@ -1,8 +1,7 @@
 const express = require('express');
 const Photo = require('../models/Photo');
 const auth = require('../middleware/auth');
-const upload = require('../middleware/upload');
-const sharp = require('sharp');
+const { uploadGallery, cloudinary } = require('../middleware/cloudinary');
 const path = require('path');
 const fs = require('fs').promises;
 
@@ -26,11 +25,13 @@ async function generateThumbnail(filePath, outputPath, maxWidth = 300, maxHeight
 router.get('/', async (req, res) => {
   try {
     const photos = await Photo.find({ isPublic: true }).sort({ order: 1, date: -1 });
-    // Add full image and thumbnail URLs
+    // Add full image and thumbnail URLs (handle both local and Cloudinary)
     const photosWithUrls = photos.map(photo => ({
       ...photo.toObject(),
-      imageUrl: `/uploads/${photo.filename}`,
-      thumbnailUrl: photo.thumbnailFilename ? `/uploads/thumbnails/${photo.thumbnailFilename}` : `/uploads/${photo.filename}`
+      imageUrl: photo.cloudinaryUrl || `/uploads/${photo.filename}`,
+      thumbnailUrl: photo.cloudinaryUrl 
+        ? photo.cloudinaryUrl.replace('/upload/', '/upload/c_fill,w_300,h_300,q_auto/')
+        : (photo.thumbnailFilename ? `/uploads/thumbnails/${photo.thumbnailFilename}` : `/uploads/${photo.filename}`)
     }));
     res.json(photosWithUrls);
   } catch (error) {
@@ -47,8 +48,10 @@ router.get('/admin', auth, async (req, res) => {
     const photos = await Photo.find().sort({ order: 1, date: -1 });
     const photosWithUrls = photos.map(photo => ({
       ...photo.toObject(),
-      imageUrl: `/uploads/${photo.filename}`,
-      thumbnailUrl: photo.thumbnailFilename ? `/uploads/thumbnails/${photo.thumbnailFilename}` : `/uploads/${photo.filename}`
+      imageUrl: photo.cloudinaryUrl || `/uploads/${photo.filename}`,
+      thumbnailUrl: photo.cloudinaryUrl 
+        ? photo.cloudinaryUrl.replace('/upload/', '/upload/c_fill,w_300,h_300,q_auto/')
+        : (photo.thumbnailFilename ? `/uploads/thumbnails/${photo.thumbnailFilename}` : `/uploads/${photo.filename}`)
     }));
     res.json(photosWithUrls);
   } catch (error) {
@@ -68,8 +71,10 @@ router.get('/:id', async (req, res) => {
     }
     res.json({
       ...photo.toObject(),
-      imageUrl: `/uploads/${photo.filename}`,
-      thumbnailUrl: photo.thumbnailFilename ? `/uploads/thumbnails/${photo.thumbnailFilename}` : `/uploads/${photo.filename}`
+      imageUrl: photo.cloudinaryUrl || `/uploads/${photo.filename}`,
+      thumbnailUrl: photo.cloudinaryUrl 
+        ? photo.cloudinaryUrl.replace('/upload/', '/upload/c_fill,w_300,h_300,q_auto/')
+        : (photo.thumbnailFilename ? `/uploads/thumbnails/${photo.thumbnailFilename}` : `/uploads/${photo.filename}`)
     });
   } catch (error) {
     console.error(error);
@@ -78,11 +83,15 @@ router.get('/:id', async (req, res) => {
 });
 
 // @route   POST /api/photos
-// @desc    Upload new photos
+// @desc    Upload new photos to Cloudinary
 // @access  Private
-router.post('/', auth, upload.array('photos', 10), async (req, res) => {
+router.post('/', auth, uploadGallery.array('photos', 10), async (req, res) => {
   try {
+    console.log('📤 Photos upload to Cloudinary...');
+    console.log('📁 Request files:', req.files);
+    
     if (!req.files || req.files.length === 0) {
+      console.log('❌ No files uploaded');
       return res.status(400).json({ message: 'No files uploaded' });
     }
 
@@ -90,21 +99,18 @@ router.post('/', auth, upload.array('photos', 10), async (req, res) => {
     const photos = [];
 
     for (const file of req.files) {
-      // Generate thumbnail with consistent .jpg extension (avoid mismatched content/extension)
-      const originalExt = path.extname(file.filename); // e.g. .png / .jpg
-      const baseName = path.basename(file.filename, originalExt);
-      const thumbnailFilename = `thumb_${baseName}.jpg`;
-      const thumbnailPath = path.join(__dirname, '../uploads/thumbnails', thumbnailFilename);
-      await sharp(file.path)
-        .resize({ width: 300, height: 300, fit: sharp.fit.inside, withoutEnlargement: true })
-        .jpeg({ quality: 80 })
-        .toFile(thumbnailPath);
+      console.log('🖼️ Processing file:', file.path);
+      
+      // Cloudinary génère automatiquement les thumbnails
+      // L'URL du thumbnail sera générée en modifiant l'URL principale
+      const imageUrl = file.path; // URL complète Cloudinary
+      const thumbnailUrl = imageUrl.replace('/upload/', '/upload/c_fill,w_300,h_300,q_auto/');
 
       const photo = new Photo({
         title: photoData.title || file.originalname,
         description: photoData.description || '',
-        filename: file.filename,
-        thumbnailFilename: thumbnailFilename,
+        filename: file.filename, // Garder pour compatibilité
+        thumbnailFilename: file.filename, // Utiliser le même nom
         originalName: file.originalname,
         category: photoData.category || 'conference',
         location: photoData.location || '',
@@ -117,20 +123,26 @@ router.post('/', auth, upload.array('photos', 10), async (req, res) => {
         isPublic: photoData.isPublic !== false,
         isFeatured: photoData.isFeatured || false,
         allowDownload: photoData.allowDownload !== false,
-        order: photoData.order || 0
+        order: photoData.order || 0,
+        // Nouvelles propriétés pour Cloudinary
+        cloudinaryUrl: imageUrl,
+        cloudinaryPublicId: file.filename
       });
 
       await photo.save();
       photos.push({
         ...photo.toObject(),
-        imageUrl: `/uploads/${photo.filename}`,
-        thumbnailUrl: `/uploads/thumbnails/${thumbnailFilename}`
+        imageUrl: imageUrl,
+        thumbnailUrl: thumbnailUrl
       });
+      
+      console.log('✅ Photo saved:', photo.title);
     }
 
+    console.log('✅ All photos uploaded successfully');
     res.status(201).json(photos);
   } catch (error) {
-    console.error(error);
+    console.error('❌ Photos upload error:', error);
     res.status(500).json({ message: 'Server error', details: error.message });
   }
 });
@@ -170,8 +182,10 @@ router.put('/:id', auth, async (req, res) => {
 
     res.json({
       ...updatedPhoto.toObject(),
-      imageUrl: `/uploads/${updatedPhoto.filename}`,
-      thumbnailUrl: updatedPhoto.thumbnailFilename ? `/uploads/thumbnails/${updatedPhoto.thumbnailFilename}` : `/uploads/${updatedPhoto.filename}`
+      imageUrl: updatedPhoto.cloudinaryUrl || `/uploads/${updatedPhoto.filename}`,
+      thumbnailUrl: updatedPhoto.cloudinaryUrl 
+        ? updatedPhoto.cloudinaryUrl.replace('/upload/', '/upload/c_fill,w_300,h_300,q_auto/')
+        : (updatedPhoto.thumbnailFilename ? `/uploads/thumbnails/${updatedPhoto.thumbnailFilename}` : `/uploads/${updatedPhoto.filename}`)
     });
   } catch (error) {
     console.error(error);
@@ -189,14 +203,24 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(404).json({ message: 'Photo not found' });
     }
 
-    // Delete image and thumbnail files
-    const imagePath = path.join(__dirname, '../uploads', photo.filename);
-    const thumbnailPath = photo.thumbnailFilename ? path.join(__dirname, '../uploads/thumbnails', photo.thumbnailFilename) : null;
+    // Delete from Cloudinary if it's a Cloudinary image
+    if (photo.cloudinaryPublicId) {
+      try {
+        await cloudinary.uploader.destroy(photo.cloudinaryPublicId);
+        console.log('✅ Image deleted from Cloudinary:', photo.cloudinaryPublicId);
+      } catch (cloudinaryError) {
+        console.warn('⚠️ Error deleting from Cloudinary:', cloudinaryError);
+      }
+    } else {
+      // Delete local files (backward compatibility)
+      const imagePath = path.join(__dirname, '../uploads', photo.filename);
+      const thumbnailPath = photo.thumbnailFilename ? path.join(__dirname, '../uploads/thumbnails', photo.thumbnailFilename) : null;
 
-    await Promise.all([
-      fs.unlink(imagePath).catch(err => console.warn('Error deleting image file:', err)),
-      thumbnailPath ? fs.unlink(thumbnailPath).catch(err => console.warn('Error deleting thumbnail file:', err)) : Promise.resolve()
-    ]);
+      await Promise.all([
+        fs.unlink(imagePath).catch(err => console.warn('Error deleting image file:', err)),
+        thumbnailPath ? fs.unlink(thumbnailPath).catch(err => console.warn('Error deleting thumbnail file:', err)) : Promise.resolve()
+      ]);
+    }
 
     await Photo.findByIdAndDelete(req.params.id);
     res.json({ message: 'Photo deleted successfully' });
@@ -207,31 +231,33 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 // @route   POST /api/photos/upload
-// @desc    Upload a single photo file (for standalone uploads)
+// @desc    Upload a single photo file to Cloudinary (for standalone uploads)
 // @access  Private
-router.post('/upload', auth, upload.single('photo'), async (req, res) => {
+router.post('/upload', auth, uploadGallery.single('photo'), async (req, res) => {
   try {
+    console.log('📤 Single photo upload to Cloudinary...');
+    
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const originalExt = path.extname(req.file.filename);
-    const baseName = path.basename(req.file.filename, originalExt);
-    const thumbnailFilename = `thumb_${baseName}.jpg`;
-    const thumbnailPath = path.join(__dirname, '../uploads/thumbnails', thumbnailFilename);
-    await sharp(req.file.path)
-      .resize({ width: 300, height: 300, fit: sharp.fit.inside, withoutEnlargement: true })
-      .jpeg({ quality: 80 })
-      .toFile(thumbnailPath);
+    console.log('🖼️ File uploaded to Cloudinary:', req.file.path);
+    
+    const imageUrl = req.file.path;
+    const thumbnailUrl = imageUrl.replace('/upload/', '/upload/c_fill,w_300,h_300,q_auto/');
 
     res.json({
       filename: req.file.filename,
       originalName: req.file.originalname,
-      imageUrl: `/uploads/${req.file.filename}`,
-      thumbnailUrl: `/uploads/thumbnails/${thumbnailFilename}`
+      imageUrl: imageUrl,
+      thumbnailUrl: thumbnailUrl,
+      cloudinaryUrl: imageUrl,
+      cloudinaryPublicId: req.file.filename
     });
+    
+    console.log('✅ Single photo upload successful');
   } catch (error) {
-    console.error(error);
+    console.error('❌ Single photo upload error:', error);
     res.status(500).json({ message: 'Server error', details: error.message });
   }
 });
