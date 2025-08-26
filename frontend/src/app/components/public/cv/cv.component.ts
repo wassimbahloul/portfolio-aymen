@@ -35,7 +35,10 @@ export class CvComponent implements OnInit {
           console.log('✅ CV Data set:', this.cvData);
           
           if (structuredData.pdfUrl) {
-            const fullUrl = `https://portfolio-aymen.onrender.com${structuredData.pdfUrl}`;
+            // Si l'URL commence par http, c'est déjà une URL complète (Cloudinary)
+            const fullUrl = structuredData.pdfUrl.startsWith('http') 
+              ? structuredData.pdfUrl 
+              : `https://portfolio-aymen.onrender.com${structuredData.pdfUrl}`;
             this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
             console.log('📄 PDF URL set:', fullUrl);
           }
@@ -62,7 +65,10 @@ export class CvComponent implements OnInit {
           
           // Only set PDF URL if we don't already have one from structured data
           if (!this.pdfUrl) {
-            const fullUrl = `https://portfolio-aymen.onrender.com${data.cvFile}`;
+            // Si l'URL commence par http, c'est déjà une URL complète (Cloudinary)
+            const fullUrl = data.cvFile.startsWith('http') 
+              ? data.cvFile 
+              : `https://portfolio-aymen.onrender.com${data.cvFile}`;
             this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
             console.log('📄 Fallback PDF URL set:', fullUrl);
           }
@@ -81,13 +87,16 @@ export class CvComponent implements OnInit {
   openInNewTab(): void {
     if (this.cvData.pdfUrl || this.cvData.cvFile) {
       const url = this.cvData.pdfUrl || this.cvData.cvFile;
-      const fullUrl = `https://portfolio-aymen.onrender.com${url}`;
+      // Si l'URL commence par http, c'est déjà une URL complète (Cloudinary)
+      const fullUrl = url.startsWith('http') 
+        ? url 
+        : `https://portfolio-aymen.onrender.com${url}`;
       
       console.log('🔍 Tentative d\'ouverture du PDF:', fullUrl);
       console.log('📄 Données CV:', this.cvData);
       
-      // Pour Render, on peut essayer d'ouvrir directement d'abord
-      console.log('🚀 Ouverture directe du PDF (Render)...');
+      // Pour Cloudinary et Render, on peut essayer d'ouvrir directement d'abord
+      console.log('🚀 Ouverture directe du PDF...');
       window.open(fullUrl, '_blank');
       
       // Vérification en arrière-plan pour information
