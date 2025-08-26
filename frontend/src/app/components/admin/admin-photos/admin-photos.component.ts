@@ -223,7 +223,7 @@ export class AdminPhotosComponent implements OnInit {
   downloadPhoto(photo: any): void {
     if (photo.imageUrl && photo.allowDownload) {
       const link = document.createElement('a');
-      link.href = `https://portfolio-aymen.onrender.com${photo.imageUrl}`;
+      link.href = this.getImageUrl(photo.imageUrl);
       link.download = `${photo.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.jpg`;
       link.target = '_blank';
       link.click();
@@ -434,5 +434,17 @@ export class AdminPhotosComponent implements OnInit {
     });
 
     return stats;
+  }
+
+  getImageUrl(imagePath: string): string {
+    if (!imagePath) return '';
+    
+    // Si l'URL commence par http, c'est déjà une URL complète (Cloudinary)
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // Sinon, c'est un chemin local, ajouter le serveur
+    return 'https://portfolio-aymen.onrender.com' + imagePath;
   }
 }

@@ -198,5 +198,17 @@ export class AdminHomeComponent implements OnInit {
       }
     });
   }
+
+  getImageUrl(imagePath: string): string {
+    if (!imagePath) return '';
+    
+    // Si l'URL commence par http, c'est déjà une URL complète (Cloudinary)
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // Sinon, c'est un chemin local, ajouter le serveur
+    return 'https://portfolio-aymen.onrender.com' + imagePath;
+  }
 }
 

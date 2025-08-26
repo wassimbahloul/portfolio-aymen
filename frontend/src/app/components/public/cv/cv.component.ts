@@ -88,9 +88,16 @@ export class CvComponent implements OnInit {
     if (this.cvData.pdfUrl || this.cvData.cvFile) {
       const url = this.cvData.pdfUrl || this.cvData.cvFile;
       // Si l'URL commence par http, c'est déjà une URL complète (Cloudinary)
-      const fullUrl = url.startsWith('http') 
+      let fullUrl = url.startsWith('http') 
         ? url 
         : `https://portfolio-aymen.onrender.com${url}`;
+      
+      // Pour les PDFs Cloudinary, utiliser Google Docs Viewer pour l'affichage
+      if (fullUrl.includes('res.cloudinary.com')) {
+        // Utiliser Google Docs Viewer pour afficher le PDF dans le navigateur
+        fullUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
+        console.log('🔄 URL modifiée avec Google Viewer:', fullUrl);
+      }
       
       console.log('🔍 Tentative d\'ouverture du PDF:', fullUrl);
       console.log('📄 Données CV:', this.cvData);

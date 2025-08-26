@@ -66,5 +66,17 @@ export class HomeComponent implements OnInit {
     const match = period.match(/\d{4}/);
     return match ? match[0] : period.substring(0, 4);
   }
+
+  getImageUrl(imagePath: string): string {
+    if (!imagePath) return '';
+    
+    // Si l'URL commence par http, c'est déjà une URL complète (Cloudinary)
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // Sinon, c'est un chemin local, ajouter le serveur
+    return 'https://portfolio-aymen.onrender.com' + imagePath;
+  }
 }
 

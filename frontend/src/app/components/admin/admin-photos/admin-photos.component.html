@@ -53,7 +53,7 @@
   <div class="photos-grid" *ngIf="viewMode === 'grid' && !loading">
     <div *ngFor="let photo of filteredPhotos" class="photo-card">
       <div class="photo-image" (click)="openPhotoModal(photo)">
-        <img [src]="'https://portfolio-aymen.onrender.com' + (photo.thumbnailUrl || photo.imageUrl)" [alt]="photo.altText || photo.title" loading="lazy">
+        <img [src]="getImageUrl(photo.thumbnailUrl || photo.imageUrl)" [alt]="photo.altText || photo.title" loading="lazy">
         <div class="photo-overlay">
           <mat-icon>zoom_in</mat-icon>
         </div>
@@ -101,7 +101,7 @@
     <mat-card *ngFor="let photo of filteredPhotos" class="photo-list-card">
       <div class="list-content">
         <div class="list-image" (click)="openPhotoModal(photo)">
-          <img [src]="'https://portfolio-aymen.onrender.com' + (photo.thumbnailUrl || photo.imageUrl)" [alt]="photo.altText || photo.title" loading="lazy">
+          <img [src]="getImageUrl(photo.thumbnailUrl || photo.imageUrl)" [alt]="photo.altText || photo.title" loading="lazy">
         </div>
         
         <div class="list-info">
@@ -194,7 +194,7 @@
       <div class="current-image-section" *ngIf="editingPhoto">
         <h3>Image actuelle</h3>
         <div class="current-image">
-          <img [src]="'https://portfolio-aymen.onrender.com' + (editingPhoto.thumbnailUrl || editingPhoto.imageUrl)" [alt]="editingPhoto.altText || editingPhoto.title">
+          <img [src]="getImageUrl(editingPhoto.thumbnailUrl || editingPhoto.imageUrl)" [alt]="editingPhoto.altText || editingPhoto.title">
         </div>
       </div>
 
@@ -318,7 +318,7 @@
     </div>
     
     <div class="modal-image">
-      <img [src]="'https://portfolio-aymen.onrender.com' + selectedPhoto?.imageUrl" [alt]="selectedPhoto?.altText || selectedPhoto?.title">
+      <img [src]="getImageUrl(selectedPhoto?.imageUrl)" [alt]="selectedPhoto?.altText || selectedPhoto?.title">
     </div>
     
     <div class="modal-info" *ngIf="selectedPhoto">
